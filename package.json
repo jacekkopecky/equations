@@ -1,0 +1,22 @@
+{
+  "name": "equations",
+  "version": "0.0.1",
+  "description": "a little program for practicing equations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacekkopecky/equations.git"
+  },
+  "author": "Jacek Kopecky <jacek@jacek.cz>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacekkopecky/equations/issues"
+  },
+  "homepage": "https://github.com/jacekkopecky/equations#readme",
+  "dependencies": {
+    "nearley": "^2.19.6"
+  }
+}
