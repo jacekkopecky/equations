@@ -4,7 +4,9 @@
   "description": "a little program for practicing equations",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm run build:grammars",
+    "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js"
   },
   "repository": {
     "type": "git",
