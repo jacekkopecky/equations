@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm run build:grammars",
-    "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js"
+    "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js && nearley-railroad src/grammars/equation.ne -o src/grammars/equation.html"
   },
   "repository": {
     "type": "git",
