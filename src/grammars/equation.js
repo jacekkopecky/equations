@@ -131,6 +131,7 @@ var grammar = {
     {"name": "add", "symbols": ["part"], "postprocess": d => [d[0]]},
     {"name": "part", "symbols": ["N"], "postprocess": d => ({ n: d[0] })},
     {"name": "part", "symbols": ["var"], "postprocess": d => ({ n: 1, var: d[0] })},
+    {"name": "part", "symbols": [{"literal":"-"}, "var"], "postprocess": d => ({ n: -1, var: d[1] })},
     {"name": "part", "symbols": ["N", "_", {"literal":"*"}, "_", "var"], "postprocess": d => ({ n: d[0], var: d[4] })},
     {"name": "part", "symbols": ["N", "_", "var"], "postprocess": d => ({ n: d[0], var: d[2] })},
     {"name": "var", "symbols": [/[a-z]/], "postprocess": id},
