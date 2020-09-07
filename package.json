@@ -2,11 +2,13 @@
   "name": "equations",
   "version": "0.0.1",
   "description": "a little program for practicing equations",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:grammars",
-    "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js && nearley-railroad src/grammars/equation.ne -o src/grammars/equation.html"
+    "build": "npm run build:grammars && npm run build:react",
+    "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js && nearley-railroad src/grammars/equation.ne -o src/grammars/equation.html",
+    "build:react": "parcel build --no-cache --dist-dir dist/ src/eq.html",
+    "watch:react": "NODE_ENV=development parcel watch --no-cache --dist-dir dist/ src/eq.html",
+    "lint": "echo eslint && eslint src --ext .js,.json && echo stylelint && stylelint 'src/**/*.css' 'src/**/*.html'"
   },
   "repository": {
     "type": "git",
@@ -20,5 +22,27 @@
   "homepage": "https://github.com/jacekkopecky/equations#readme",
   "dependencies": {
     "nearley": "^2.19.6"
+  },
+  "devDependencies": {
+    "parcel": "^2.0.0-beta.1",
+    "react-dom": "^16.13.1",
+    "react-router-dom": "^5.2.0",
+    "react": "^16.13.1",
+    "babel-eslint": "^10.1.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-portsoc": "^0.6.0",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-json": "^2.1.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react-hooks": "^4.0.2",
+    "eslint-plugin-react": "^7.20.0",
+    "eslint": "^7.0.0",
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-proposal-class-properties": "^7.8.3",
+    "@babel/plugin-transform-runtime": "^7.9.6",
+    "@babel/preset-env": "^7.9.6",
+    "@babel/preset-react": "^7.9.4",
+    "stylelint-config-standard": "^20.0.0",
+    "stylelint": "^13.4.0"
   }
 }
