@@ -1,0 +1,31 @@
+#solve-equation .equation,
+#solve-equation .answer {
+  font-family: "Times New Roman", serif;
+  font-style: italic;
+  font-size: 150%;
+}
+
+#solve-equation textarea.equation {
+  border: thin solid #ccc;
+  outline: none;
+  box-sizing: border-box;
+  min-height: 6em;
+  margin-top: 0.5em;
+  width: 100%;
+}
+
+#solve-equation .answer input {
+  font-size: inherit;
+  font-family: inherit;
+  font-style: inherit;
+  padding: 0.3em;
+}
+
+#solve-equation button.check-answers {
+  font-size: 1em;
+  padding: 1em;
+}
+
+#solve-equation .equations-text {
+  margin: 1em 0;
+}
