@@ -60,10 +60,8 @@ function twoDecimalPoints(n) {
 function onlyText(f) {
   return (...args) => {
     const retval = f(...args);
-    if (retval.text) {
-      retval.onlyText = true;
-      retval.text.push('', 'Part of the challenge is to write the first two equations.');
-    }
+    retval.onlyText = true;
+    retval.text.push('', 'Part of the challenge is to write the first two equations.');
     return retval;
   };
 }

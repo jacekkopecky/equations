@@ -1,0 +1,6 @@
+{
+  "plugins": ["jest", "json"],
+  "env": {
+    "jest/globals": true
+  }
+}

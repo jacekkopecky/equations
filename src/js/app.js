@@ -1,5 +1,4 @@
-import React, { useState } from 'react';
-import ReactDom from 'react-dom';
+import React from 'react';
 import {
   BrowserRouter as Router,
   Link,
@@ -9,7 +8,7 @@ import {
 
 import SolveEquation from './solve-equation';
 
-function App() {
+export default function App() {
   return (
     <Router>
       <header>
@@ -34,5 +33,3 @@ function App() {
     </Router>
   );
 }
-
-ReactDom.render(<App />, document.querySelector('#app'));
