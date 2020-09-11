@@ -56,13 +56,12 @@ export default function SolveAssignment(props) {
       ) }
 
       { assignment.text && Equations.formatEquationsText(assignment.text) }
-      { assignment.onlyText
-        || (
-          <>
-            <div>{ Equations.formatEquation(assignment.equations[0], 1) }</div>
-            <div>{ Equations.formatEquation(assignment.equations[1], 2) }</div>
-          </>
-        ) }
+      { assignment.onlyText || (
+        <>
+          <div>{ Equations.formatEquation(assignment.equations[0], 1) }</div>
+          <div>{ Equations.formatEquation(assignment.equations[1], 2) }</div>
+        </>
+      ) }
 
       <textarea className="equation" onInput={resizeTextArea} autoFocus ref={textAreaRef} />
       {
