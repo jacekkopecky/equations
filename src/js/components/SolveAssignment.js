@@ -6,6 +6,7 @@ import './SolveAssignment.css';
 import * as Equations from '../tools/equations';
 import Random from '../tools/random';
 import levels from '../levels/index';
+import { useAutofocusRef } from '../tools/react';
 
 export default function SolveAssignment({ level, n }) {
   const rng = new Random(`${level}/${n}`);
@@ -42,6 +43,9 @@ export default function SolveAssignment({ level, n }) {
     );
   }
 
+  // autofocus when moving to a new assignment
+  const textAreaRef = useAutofocusRef([level, n]);
+
   return (
     <main id="solve-equation">
       { assignment.text && Equations.formatEquationsText(assignment.text) }
@@ -53,7 +57,7 @@ export default function SolveAssignment({ level, n }) {
           </>
         ) }
 
-      <textarea className="equation" onInput={resizeTextArea} autoFocus />
+      <textarea className="equation" onInput={resizeTextArea} autoFocus ref={textAreaRef} />
       {
         // todo make the text area remember contents in localStorage
       }
