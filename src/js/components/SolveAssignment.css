@@ -36,3 +36,10 @@
 #solve-equation .equations-text {
   margin: 1em 0;
 }
+
+#solve-equation .assignment-icon {
+  max-width: 5em;
+  max-height: 5em;
+  margin-left: 1em;
+  float: right;
+}

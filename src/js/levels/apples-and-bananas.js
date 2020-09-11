@@ -1,3 +1,5 @@
+import image from '../../../images/apples-and-bananas.png';
+
 /*
  * Max buys x1 apples and y1 bananas and pays n1,
  * Jamie buys x2 apples and y2 bananas and pays n2.
@@ -49,6 +51,7 @@ function applesAndBananas(rng, x1, x2, y1, y2, a, b) {
     equations,
     text,
     solution,
+    image,
   };
 }
 

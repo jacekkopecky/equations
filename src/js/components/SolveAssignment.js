@@ -51,6 +51,10 @@ export default function SolveAssignment(props) {
 
   return (
     <main id="solve-equation">
+      { assignment.image && (
+        <img src={assignment.image} className="assignment-icon" alt="assignment icon" />
+      ) }
+
       { assignment.text && Equations.formatEquationsText(assignment.text) }
       { assignment.onlyText
         || (
