@@ -4,6 +4,7 @@ import {
   Link,
   Switch,
   Route,
+  useParams,
 } from 'react-router-dom';
 
 import SolveAssignment from './SolveAssignment';
@@ -21,10 +22,10 @@ export default function App() {
           <Link to="/eq">Get started</Link>
         </Route>
         <Route path="/eq/:level/:n">
-          <SolveAssignment />
+          <AssignmentParams />
         </Route>
         <Route path="/eq">
-          <SolveAssignment />
+          <AssignmentParams />
         </Route>
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>
@@ -35,4 +36,9 @@ export default function App() {
       </Switch>
     </Router>
   );
+}
+
+function AssignmentParams() {
+  const { level = 1, n = 1 } = useParams();
+  return <SolveAssignment level={level} n={n} />;
 }

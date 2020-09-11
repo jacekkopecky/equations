@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Link,
-  useParams,
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './SolveAssignment.css';
 
@@ -10,9 +7,7 @@ import * as Equations from '../tools/equations';
 import Random from '../tools/random';
 import levels from '../levels/index';
 
-export default function SolveAssignment() {
-  const { level = 1, n = 1 } = useParams();
-
+export default function SolveAssignment({ level, n }) {
   const rng = new Random(`${level}/${n}`);
 
   const [answers, setAnswers] = useState(new Map());
