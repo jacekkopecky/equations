@@ -1,0 +1,24 @@
+:root {
+  --bg: white;
+  --fg: black;
+  --header-bg: #cdf;
+}
+
+html,
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  padding: 0;
+  margin: 0;
+}
+
+#app-header {
+  background: var(--header-bg);
+  width: 100%;
+  box-sizing: border-box;
+  padding: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+}

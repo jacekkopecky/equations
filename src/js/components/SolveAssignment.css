@@ -1,3 +1,10 @@
+#solve-equation {
+  margin: 1em auto;
+  padding: 0 1em;
+  max-width: 50em;
+  box-sizing: border-box;
+}
+
 #solve-equation .equation,
 #solve-equation .answer {
   font-family: "Times New Roman", serif;

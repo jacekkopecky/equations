@@ -9,10 +9,12 @@ import {
 import SolveAssignment from './SolveAssignment';
 import { PropsFromRouteParams } from '../tools/react';
 
+import './App.css';
+
 export default function App() {
   return (
     <Router>
-      <header>
+      <header id="app-header">
         <h1><Link to="/">Equations</Link></h1>
         <Link to="/about">(About)</Link>
       </header>
