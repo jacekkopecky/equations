@@ -4,13 +4,13 @@ import {
   useParams,
 } from 'react-router-dom';
 
-import './solve-equation.css';
+import './SolveAssignment.css';
 
-import * as Equations from './tools/equations';
-import Random from './tools/random';
-import levels from './levels/index';
+import * as Equations from '../tools/equations';
+import Random from '../tools/random';
+import levels from '../levels/index';
 
-export default function SolveEquation() {
+export default function SolveAssignment() {
   const { level = 1, n = 1 } = useParams();
 
   const rng = new Random(`${level}/${n}`);

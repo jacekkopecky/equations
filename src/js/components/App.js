@@ -6,7 +6,7 @@ import {
   Route,
 } from 'react-router-dom';
 
-import SolveEquation from './solve-equation';
+import SolveAssignment from './SolveAssignment';
 
 export default function App() {
   return (
@@ -21,10 +21,10 @@ export default function App() {
           <Link to="/eq">Get started</Link>
         </Route>
         <Route path="/eq/:level/:n">
-          <SolveEquation />
+          <SolveAssignment />
         </Route>
         <Route path="/eq">
-          <SolveEquation />
+          <SolveAssignment />
         </Route>
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>

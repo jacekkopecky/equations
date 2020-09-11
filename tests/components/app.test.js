@@ -1,7 +1,7 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 
-import App from '../../src/js/app';
+import App from '../../src/js/components/App';
 
 test('foo', () => {
   const wrapper = shallow(<App />);
@@ -9,7 +9,7 @@ test('foo', () => {
   expect(wrapper.find('header')).toHaveLength(1);
   expect(wrapper.find('main')).toHaveLength(0);
 
-  expect(wrapper.find('SolveEquation').length).toBeGreaterThan(0);
+  expect(wrapper.find('SolveAssignment').length).toBeGreaterThan(0);
 });
 
 test.todo('routes, incl 404');
