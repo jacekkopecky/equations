@@ -29,6 +29,9 @@ export default function App() {
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>
         </Route>
+        <Route>
+          <p>404 page not found</p>
+        </Route>
       </Switch>
     </Router>
   );

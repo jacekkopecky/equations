@@ -11,3 +11,6 @@ test('foo', () => {
 
   expect(wrapper.find('SolveEquation').length).toBeGreaterThan(0);
 });
+
+test.todo('routes, incl 404');
+// see https://medium.com/@antonybudianto/react-router-testing-with-jest-and-enzyme-17294fefd303
