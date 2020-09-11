@@ -8,7 +8,10 @@ import Random from '../tools/random';
 import levels from '../levels/index';
 import { useAutofocusRef } from '../tools/react';
 
-export default function SolveAssignment({ level, n }) {
+export default function SolveAssignment(props) {
+  const level = Number(props.level);
+  const n = Number(props.n);
+
   const rng = new Random(`${level}/${n}`);
 
   const [answers, setAnswers] = useState(new Map());

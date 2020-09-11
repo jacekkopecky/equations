@@ -4,10 +4,10 @@ import {
   Link,
   Switch,
   Route,
-  useParams,
 } from 'react-router-dom';
 
 import SolveAssignment from './SolveAssignment';
+import { PropsFromRouteParams } from '../tools/react';
 
 export default function App() {
   return (
@@ -21,11 +21,13 @@ export default function App() {
         <Route exact path="/">
           <Link to="/eq">Get started</Link>
         </Route>
-        <Route path="/eq/:level/:n">
-          <AssignmentParams />
+        <Route exact path="/eq/:level(\d+)/:n(\d+)">
+          <PropsFromRouteParams>
+            <SolveAssignment />
+          </PropsFromRouteParams>
         </Route>
-        <Route path="/eq">
-          <AssignmentParams />
+        <Route path="/eq" exact>
+          <SolveAssignment level={1} n={1} />
         </Route>
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>
@@ -36,18 +38,6 @@ export default function App() {
       </Switch>
     </Router>
   );
-}
-
-function AssignmentParams() {
-  const params = useParams();
-  const level = Number(params.level ?? 1);
-  const n = Number(params.n ?? 1);
-
-  if (Number.isInteger(level) && Number.isInteger(n)) {
-    return <SolveAssignment level={level} n={n} />;
-  } else {
-    return <NotFound />;
-  }
 }
 
 function NotFound() {

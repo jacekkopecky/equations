@@ -9,7 +9,7 @@ test('foo', () => {
   expect(wrapper.find('header')).toHaveLength(1);
   expect(wrapper.find('main')).toHaveLength(0);
 
-  expect(wrapper.find('AssignmentParams').length).toBeGreaterThan(0);
+  expect(wrapper.find('SolveAssignment')).toHaveLength(2);
 });
 
 test.todo('routes, incl 404');
