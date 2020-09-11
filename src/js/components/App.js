@@ -30,8 +30,8 @@ export default function App() {
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>
         </Route>
-        <Route>
-          <p>404 page not found</p>
+        <Route path="*">
+          <NotFound />
         </Route>
       </Switch>
     </Router>
@@ -39,6 +39,17 @@ export default function App() {
 }
 
 function AssignmentParams() {
-  const { level = 1, n = 1 } = useParams();
-  return <SolveAssignment level={level} n={n} />;
+  const params = useParams();
+  const level = Number(params.level ?? 1);
+  const n = Number(params.n ?? 1);
+
+  if (Number.isInteger(level) && Number.isInteger(n)) {
+    return <SolveAssignment level={level} n={n} />;
+  } else {
+    return <NotFound />;
+  }
+}
+
+function NotFound() {
+  return <p>404 page not found</p>;
 }
