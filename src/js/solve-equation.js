@@ -18,8 +18,11 @@ export default function SolveEquation() {
   const [answers, setAnswers] = useState(new Map());
   const [correctness, setCorrectness] = useState(null);
 
-  const equations = levels[level](rng);
-  const varNames = Array.from(Equations.extractVariables(equations));
+  const assignment = levels[level](rng);
+  assignment.level = level;
+  assignment.n = n;
+
+  const varNames = Array.from(Equations.extractVariables(assignment.equations));
 
   function setAnswer(variable, value) {
     const copy = new Map(answers);
@@ -33,7 +36,7 @@ export default function SolveEquation() {
   }
 
   function checkAnswers() {
-    setCorrectness(Equations.checkAnswers(equations, answers));
+    setCorrectness(Equations.checkAnswers(assignment.equations, answers));
   }
 
   function answerInput(varName) {
@@ -46,12 +49,12 @@ export default function SolveEquation() {
 
   return (
     <main id="solve-equation">
-      { equations.text && Equations.formatEquationsText(equations.text) }
-      { equations.onlyText
+      { assignment.text && Equations.formatEquationsText(assignment.text) }
+      { assignment.onlyText
         || (
           <>
-            <div>{ Equations.formatEquation(equations[0], 1) }</div>
-            <div>{ Equations.formatEquation(equations[1], 2) }</div>
+            <div>{ Equations.formatEquation(assignment.equations[0], 1) }</div>
+            <div>{ Equations.formatEquation(assignment.equations[1], 2) }</div>
           </>
         ) }
 
@@ -66,7 +69,7 @@ export default function SolveEquation() {
         className="check-answers"
         type="button"
         onClick={checkAnswers}
-        disabled={!Equations.areAllVariablesAnswered(equations, answers)}
+        disabled={!Equations.areAllVariablesAnswered(assignment.equations, answers)}
       >
         Check answers
       </button>

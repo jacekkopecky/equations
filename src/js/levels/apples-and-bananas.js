@@ -3,7 +3,7 @@
  * Jamie buys x2 apples and y2 bananas and pays n2.
  * How much do the apples and bananas cost?
  */
-function applesAndBananas(rng, x1, x2, y1, y2, a, b, onlyTextFlag = false) {
+function applesAndBananas(rng, x1, x2, y1, y2, a, b) {
   // randomly switch x/y
   if (rng.bool()) [x1, x2, y1, y2] = [y1, y2, x1, x2];
 
@@ -34,7 +34,7 @@ function applesAndBananas(rng, x1, x2, y1, y2, a, b, onlyTextFlag = false) {
     },
   ];
 
-  equations.text = [
+  const text = [
     `Max bought ${x1} apple${s(x1)} and ${y1} banana${s(y1)} and paid ${n1},`,
     `Jamie bought ${x2} apple${s(x2)} and ${y2} banana${s(y2)} and paid ${n2}.`,
     'How much do the apples and bananas cost?',
@@ -43,9 +43,13 @@ function applesAndBananas(rng, x1, x2, y1, y2, a, b, onlyTextFlag = false) {
      E.g. a price of 50p would be written as 0.50)`,
   ];
 
-  equations.onlyText = onlyTextFlag;
+  const solution = { a, b };
 
-  return equations;
+  return {
+    equations,
+    text,
+    solution,
+  };
 }
 
 // plural suffix 's' if n is more than 1
@@ -130,8 +134,8 @@ function applesAndBananas3(rng) {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-// function applesAndBananas3(rng) {
-//   // Like applesAndBananas2, but:
+// function applesAndBananas4(rng) {
+//   // Like applesAndBananas3, but:
 //   //
 //   // - x1 not divisible by x2; x1 and x2 have a low lowest common multiple (LCM) L
 //   // - y1*L/x1 > y2*L/x2
