@@ -1,0 +1,66 @@
+#overview .levels {
+  display: flex;
+  flex-direction: row;
+}
+
+#overview .level {
+  position: relative;
+  width: 20%;
+  min-height: 4em;
+  z-index: 0;
+  padding: 1em;
+  border: solid thin var(--border);
+  border-radius: 0.5em;
+  text-align: center;
+  text-decoration: none;
+  background-color: var(--level-bg);
+}
+
+#overview .level.disabled {
+  cursor: default;
+  filter: grayscale(0.8);
+}
+
+#overview .level:not(.disabled):hover {
+  box-shadow: 0.3em 0.3em 1em var(--border);
+}
+
+#overview .levels > .level:not(:first-child) {
+  margin-left: 1em;
+}
+
+#overview .level .icon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  max-height: 100%;
+  max-width: 100%;
+  padding: 1em;
+  box-sizing: border-box;
+  opacity: 0.4;
+  margin: auto;
+  z-index: -1;
+}
+
+#overview .level .n {
+  font-family: sans-serif;
+  font-size: 4em;
+  color: var(--level-n-fg);
+  text-shadow: var(--level-n-shadow);
+  font-weight: bold;
+}
+
+#overview .level.disabled .n {
+  color: var(--level-n-dis-fg);
+  text-shadow: var(--level-n-dis-shadow);
+}
+
+#overview .level.challenge::before {
+  content: '⭐️';
+  font-size: 2em;
+  position: absolute;
+  top: 0.1em;
+  right: 0.2em;
+}

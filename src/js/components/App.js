@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 
 import SolveAssignment from './SolveAssignment';
+import Overview from './Overview';
 import { PropsFromRouteParams } from '../tools/react';
 
 import './App.css';
@@ -21,7 +22,7 @@ export default function App() {
 
       <Switch>
         <Route exact path="/">
-          <Link to="/eq">Get started</Link>
+          <Overview />
         </Route>
         <Route exact path="/eq/:level(\d+)/:n(\d+)">
           <PropsFromRouteParams>
