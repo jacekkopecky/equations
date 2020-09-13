@@ -7,8 +7,6 @@ test('foo', () => {
   const wrapper = shallow(<App />);
 
   expect(wrapper.find('header')).toHaveLength(1);
-  expect(wrapper.find('main')).toHaveLength(0);
-
   expect(wrapper.find('SolveAssignment')).toHaveLength(2);
 });
 
