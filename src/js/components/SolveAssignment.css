@@ -5,13 +5,28 @@
   font-size: 150%;
 }
 
-#solve-equation textarea.equation {
-  border: thin solid #ccc;
+#solve-equation textarea.equation,
+#solve-equation pre.equation {
+  display: block;
+  border: thin solid var(--border);
   outline: none;
   box-sizing: border-box;
   min-height: 6em;
   margin-top: 0.5em;
+  margin-bottom: 0;
   width: 100%;
+}
+
+#solve-equation pre.equation {
+  padding: 0.2rem;
+  background: var(--disabled-bg);
+}
+
+#solve-equation .answer {
+  line-height: 2em;
+  height: 2em;
+  display: block;
+  white-space: pre;
 }
 
 #solve-equation .answer input {
@@ -19,6 +34,9 @@
   font-family: inherit;
   font-style: inherit;
   padding: 0.3em;
+  line-height: 2em;
+  height: 2em;
+  box-sizing: border-box;
 }
 
 #solve-equation button {
@@ -36,4 +54,26 @@
   max-height: 5em;
   margin-left: 1em;
   float: right;
+}
+
+#solve-equation .answers {
+  margin: 1rem 0;
+  box-sizing: border-box;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+#solve-equation .answers .answer {
+  margin-bottom: 1rem;
+}
+
+#solve-equation .answers .answer:last-child {
+  margin-bottom: 0;
+}
+
+#solve-equation .answers .correctness {
+  font-size: 1.5em;
+  margin-left: 2em;
+  align-self: center;
 }

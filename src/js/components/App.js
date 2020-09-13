@@ -12,7 +12,11 @@ import { PropsFromRouteParams } from '../tools/react';
 
 import './App.css';
 
+import AppState from '../AppState';
+
 export default function App() {
+  const appState = new AppState();
+
   return (
     <Router>
       <header id="app-header">
@@ -22,15 +26,15 @@ export default function App() {
 
       <Switch>
         <Route exact path="/">
-          <Overview />
+          <Overview appState={appState} />
         </Route>
         <Route exact path="/eq/:level(\d+)/:n(\d+)">
           <PropsFromRouteParams>
-            <SolveAssignment back="/" />
+            <SolveAssignment appState={appState} back="/" />
           </PropsFromRouteParams>
         </Route>
         <Route path="/eq" exact>
-          <SolveAssignment level={1} n={1} back="/" />
+          <SolveAssignment level={1} n={1} appState={appState} back="/" />
         </Route>
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>

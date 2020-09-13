@@ -1,6 +1,7 @@
 :root {
   --bg: white;
   --fg: black;
+  --disabled-bg: #eee;
   --header-bg: #cdf;
   --border: #aaa;
   --level-n-fg: #44f;
