@@ -9,12 +9,13 @@ import Random from '../tools/random';
 const rng = new Random();
 export default function Overview({ appState }) {
   const batch = appState.getUpcomingAssignments();
+  const newcomer = batch[0].n === 1 && !batch[0].done;
   const userLevel = appState.level;
   disableAfterFirstUnsolved(batch);
 
   return (
     <main id="overview">
-      <h1>Hello newcomer!</h1>
+      <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
       <p>Score: { appState.score }</p>
       <p>Level: { userLevel } (progress to next level { appState.progressIndicator })</p>
       <div className="assignments">
@@ -86,7 +87,7 @@ function Assignment(props) {
     );
   } else {
     return (
-      <Link to={`/eq/${level}/${n}`} className={classes.join(' ')}>
+      <Link to={`/eq/${level}/${n}`} className={classes.join(' ')} draggable="false">
         { content }
       </Link>
     );

@@ -45,6 +45,10 @@
   margin-right: 1em;
 }
 
+#solve-equation a > button {
+  margin: 0;
+}
+
 #solve-equation .equations-text {
   margin: 1em 0;
 }

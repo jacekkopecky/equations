@@ -6,7 +6,7 @@ const BATCH_SIZE = 5;
 
 export default class AppState {
   constructor() {
-    const [state, setState] = useLocalStorage('state', {});
+    const [state, setState] = useLocalStorage('equationsState', {});
     this.state = state;
     this.setState = setState;
 

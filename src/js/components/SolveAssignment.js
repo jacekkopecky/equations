@@ -108,7 +108,7 @@ export default function SolveAssignment(props) {
       </button>
 
       { props.back && (
-        <Link to={props.back}><button type="button">Back</button></Link>
+        <Link to={props.back}><button tabIndex={-1} type="button">Back</button></Link>
       ) }
 
     </main>

@@ -37,7 +37,7 @@ export default function App() {
           <SolveAssignment level={1} n={1} appState={appState} back="/" />
         </Route>
         <Route path="/about">
-          <p>This is a simple app for practicing equations.</p>
+          <main>This is a simple app for practicing equations.</main>
         </Route>
         <Route path="*">
           <NotFound />
@@ -48,5 +48,5 @@ export default function App() {
 }
 
 function NotFound() {
-  return <p>404 page not found</p>;
+  return <main>404 page not found</main>;
 }
