@@ -128,18 +128,16 @@ export default function SolveAssignment(props) {
   function checkAnswers() {
     const correct = Equations.checkAnswers(assignment.equations, answers);
     setCorrectness(correct);
+    assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
       assignment.attemptText = attemptText;
       assignment.answeredCorrectly = true;
       assignment.done = true;
       assignment.doneTime = Date.now();
-      assignment.save();
       deleteStoredAttemptText();
       setAskedToCheckAnswers(true);
-    } else {
-      assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
-      assignment.save();
     }
+    assignment.save();
   }
 
   function showAnswers() {
