@@ -46,7 +46,7 @@ export default function SolveAssignment(props) {
     deleteStoredAttemptText();
   }
 
-  const finished = assignment.answeredCorrectly != null;
+  const finished = assignment.answered != null;
   const attemptText = assignment.attemptText ?? storedAttemptText;
 
   return (
@@ -117,6 +117,7 @@ export default function SolveAssignment(props) {
     if (correct) {
       assignment.attemptText = attemptText;
       assignment.answeredCorrectly = true;
+      assignment.answered = true;
       assignment.save();
       setStoredAttemptText(null);
       setAskedToCheckAnswers(true);

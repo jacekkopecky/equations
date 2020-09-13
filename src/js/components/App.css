@@ -4,11 +4,12 @@
   --disabled-bg: #eee;
   --header-bg: #cdf;
   --border: #aaa;
-  --level-n-fg: #44f;
-  --level-n-shadow: 0.1em 0.1em 0.2em #88f;
-  --level-n-dis-fg: #888;
-  --level-n-dis-shadow: none;
-  --level-bg: #cdf;
+  --assignment-n-fg: #44f;
+  --assignment-n-shadow: 0.1em 0.1em 0.2em #88f;
+  --assignment-n-dis-fg: #888;
+  --assignment-n-dis-shadow: none;
+  --assignment-bg: #cdf;
+  --assignment-challenge-bg: #ffa;
 }
 
 html,
