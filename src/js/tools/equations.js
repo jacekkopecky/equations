@@ -61,19 +61,19 @@ export function extractVariables(equations) {
 export function formatEquation(e, n) {
   return (
     <span className="equation">
-      { formatAddition(e.lhs, e.numberToString) }
+      { formatAddition(e.lhs) }
       &nbsp;=&nbsp;
-      { formatAddition(e.rhs, e.numberToString) }
+      { formatAddition(e.rhs) }
       { ` (${n})` }
     </span>
   );
 }
 
-function formatAddition(arr, numToString = round8) {
+function formatAddition(arr) {
   const partStrings = [];
   for (const part of arr) {
     partStrings.push(Number(part.n) < 0 ? '-' : '+');
-    if (abs(part.n) !== 1) partStrings.push(numToString(abs(part.n)));
+    if (abs(part.n) !== 1) partStrings.push(round8(abs(part.n)));
     if (part.var) partStrings.push(part.var);
   }
 

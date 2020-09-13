@@ -45,7 +45,10 @@ function applesAndBananas(rng, x1, x2, y1, y2, a, b) {
      E.g. a price of 50p would be written as 0.50)`,
   ];
 
-  const solution = { a, b };
+  const solution = {
+    a: twoDecimalPoints(a),
+    b: twoDecimalPoints(b),
+  };
 
   return {
     equations,
