@@ -37,7 +37,7 @@ export default class AppState {
   }
 
   getUpcomingAssignments() {
-    let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.answered);
+    let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = 1;
 
     const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
@@ -51,7 +51,7 @@ export default class AppState {
         assignments[i] = {
           level: attempted.level,
           n: attempted.n,
-          answered: attempted.answered,
+          done: attempted.done,
           answeredCorrectly: attempted.answeredCorrectly,
         };
       } else {

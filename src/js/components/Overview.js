@@ -31,7 +31,7 @@ export default function Overview({ appState }) {
         n={a.n}
         isChallenge={a.level > userLevel}
         disabled={a.disabled}
-        answered={a.answered}
+        done={a.done}
         answeredCorrectly={a.answeredCorrectly}
       />
     );
@@ -42,7 +42,7 @@ function disableAfterFirstUnsolved(assignments) {
   let foundUnsolved = false;
   for (const a of assignments) {
     if (foundUnsolved) a.disabled = true;
-    if (!a.answered) foundUnsolved = true;
+    if (!a.done) foundUnsolved = true;
   }
 }
 
@@ -52,7 +52,7 @@ function Assignment(props) {
     n,
     isChallenge,
     disabled,
-    answered,
+    done,
     answeredCorrectly,
   } = props;
 
@@ -64,8 +64,8 @@ function Assignment(props) {
   const classes = ['assignment'];
   if (isChallenge) classes.push('challenge');
   if (disabled) classes.push('disabled');
-  if (answered) {
-    classes.push('answered');
+  if (done) {
+    classes.push('done');
     classes.push(answeredCorrectly ? 'correctly' : 'asked');
   }
 

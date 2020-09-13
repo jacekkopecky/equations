@@ -56,11 +56,11 @@
   font-weight: bold;
 }
 
-#overview .assignment.answered .n {
+#overview .assignment.done .n {
   display: none;
 }
 
-#overview .assignment.answered::before {
+#overview .assignment.done::before {
   font-size: 4em;
   position: absolute;
   top: 50%;
@@ -68,12 +68,12 @@
   transform: translate(-50%, -50%);
 }
 
-#overview .assignment.answered.correctly::before {
+#overview .assignment.done.correctly::before {
   content: '✓';
   color: green;
 }
 
-#overview .assignment.answered.asked::before {
+#overview .assignment.done.asked::before {
   color: gray;
   content: '—';
 }
