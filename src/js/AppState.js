@@ -39,7 +39,7 @@ export default class AppState {
 
   getUpcomingAssignments() {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
-    if (firstUnsolved === -1) firstUnsolved = 1;
+    if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
 
     const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
     const assignments = [];
