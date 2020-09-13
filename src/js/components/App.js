@@ -25,11 +25,11 @@ export default function App() {
         </Route>
         <Route exact path="/eq/:level(\d+)/:n(\d+)">
           <PropsFromRouteParams>
-            <SolveAssignment />
+            <SolveAssignment back="/" />
           </PropsFromRouteParams>
         </Route>
         <Route path="/eq" exact>
-          <SolveAssignment level={1} n={1} />
+          <SolveAssignment level={1} n={1} back="/" />
         </Route>
         <Route path="/about">
           <p>This is a simple app for practicing equations.</p>

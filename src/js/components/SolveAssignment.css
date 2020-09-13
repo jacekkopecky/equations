@@ -28,9 +28,10 @@
   padding: 0.3em;
 }
 
-#solve-equation button.check-answers {
+#solve-equation button {
   font-size: 1em;
   padding: 1em;
+  margin-right: 1em;
 }
 
 #solve-equation .equations-text {

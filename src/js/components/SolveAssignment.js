@@ -71,7 +71,6 @@ export default function SolveAssignment(props) {
       { varNames.map(answerInput) }
 
       <button
-        className="check-answers"
         type="button"
         onClick={checkAnswers}
         disabled={!Equations.areAllVariablesAnswered(assignment.equations, answers)}
@@ -84,8 +83,6 @@ export default function SolveAssignment(props) {
           { correctness ? 'Correct' : 'Sorry, not right' }
         </p>
       ) }
-
-      <p><Link to={`/eq/${level}/${Number(n) + 1}`}>next</Link></p>
     </main>
   );
 }
