@@ -21,6 +21,7 @@ export default class AppState {
     if (!assignment) {
       const rng = new Random(`${level}/${n}`);
       assignment = levels[level](rng);
+      assignment.created = Date.now();
       assignment.level = level;
       assignment.n = n;
     }

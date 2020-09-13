@@ -18,6 +18,10 @@ todo:
 - let kid write, remember it in local storage
 - let overview allow the user to make a normal level a challenge, if the assignment (n) hasn't been attempted yet
 
+- add tutorial levels that don't get randomly selected when we're above this level, and get played before the first challenge of a given level, and any level has a link to its tutorial level
+
+- look at attempt counts in history, look at times
+
 
 ### Levels
 

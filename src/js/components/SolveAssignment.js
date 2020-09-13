@@ -35,6 +35,7 @@ export default function SolveAssignment(props) {
   ] = useLocalStorage(`currentEquation/${level}/${n}`, '');
 
   const [askedToCheckAnswers, setAskedToCheckAnswers] = useState(false);
+  const [askedToShowAnswers, setAskedToShowAnswers] = useState(false);
 
   if (assignment.level !== level) {
     return <Redirect to={`/eq/${assignment.level}/${n}`} />;
@@ -83,6 +84,11 @@ export default function SolveAssignment(props) {
             { correctness ? 'Correct' : 'Sorry, not right' }
           </div>
         ) }
+        { (finished && askedToShowAnswers) && (
+          <div className="correctness">
+            Next one may be easier
+          </div>
+        ) }
       </div>
 
       <button
@@ -92,7 +98,15 @@ export default function SolveAssignment(props) {
       >
         Check answers
       </button>
-      <button type="button" disabled>Show me the answers</button>
+
+      <button
+        type="button"
+        onClick={showAnswers}
+        disabled={finished}
+      >
+        Show me the answers
+      </button>
+
       { props.back && (
         <Link to={props.back}><button type="button">Back</button></Link>
       ) }
@@ -118,13 +132,24 @@ export default function SolveAssignment(props) {
       assignment.attemptText = attemptText;
       assignment.answeredCorrectly = true;
       assignment.done = true;
+      assignment.doneTime = Date.now();
       assignment.save();
-      setStoredAttemptText(null);
+      deleteStoredAttemptText();
       setAskedToCheckAnswers(true);
     } else {
       assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
       assignment.save();
     }
+  }
+
+  function showAnswers() {
+    assignment.attemptText = attemptText;
+    assignment.answeredCorrectly = false;
+    assignment.done = true;
+    assignment.doneTime = Date.now();
+    assignment.save();
+    deleteStoredAttemptText();
+    setAskedToShowAnswers(true);
   }
 
   function saveAttemptText(e) {
