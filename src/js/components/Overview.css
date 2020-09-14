@@ -83,7 +83,7 @@
   text-shadow: var(--assignment-n-dis-shadow);
 }
 
-#overview .assignment.challenge::before {
+#overview .assignment.challenge::after {
   content: '⭐️';
   font-size: 2em;
   position: absolute;
