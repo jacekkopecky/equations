@@ -17,7 +17,14 @@ export default function Overview({ appState }) {
     <main id="overview">
       <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
       <p>Score: { appState.score }</p>
-      <p>Level: { userLevel } (progress to next level { appState.progressIndicator })</p>
+      <p>
+        Level:
+        { ' ' }
+        { userLevel }
+        { userLevel < appState.topLevel
+          ? ` (progress to next level ${appState.progressIndicator})`
+          : ' (top level)' }
+      </p>
       <div className="assignments">
         { batch.map(renderAssignment) }
       </div>

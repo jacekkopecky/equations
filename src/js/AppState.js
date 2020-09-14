@@ -13,6 +13,8 @@ export default class AppState {
     if (!Array.isArray(this.state.assignments)) {
       this.state.assignments = [];
     }
+
+    this.topLevel = levels.length - 1;
   }
 
   getAssignment(level, n) {
@@ -30,6 +32,7 @@ export default class AppState {
       assignment.save = () => {
         this._duplicateState();
         this.state.assignments[n] = assignment;
+        this._recomputeUserLevel();
         this._saveState();
       };
     }
@@ -38,7 +41,7 @@ export default class AppState {
   }
 
   getAssignmentInformation(userLevel, n) {
-    const challenge = n % BATCH_SIZE === 0;
+    const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel),
       n,
@@ -92,7 +95,28 @@ export default class AppState {
   }
 
   get level() {
-    return 1 || this.todo;
+    return this.state.level || 1;
+  }
+
+  _recomputeUserLevel() {
+    let level = 1;
+    let progress = 0;
+    let target = challengesRequired(level + 1);
+
+    for (const assignment of this.state.assignments) {
+      if (assignment == null) continue;
+
+      if (assignment.level > level) {
+        progress += 1;
+        if (progress >= target) {
+          level += 1;
+          target = challengesRequired(level + 1);
+          progress = 0;
+        }
+      }
+    }
+
+    this.state.level = level;
   }
 
   get progressIndicator() {
@@ -105,4 +129,9 @@ export default class AppState {
 function chooseLevel(l) {
   return l;
   // todo give lower-level assignments too?
+}
+
+// how many challenges at the given level are required to reach this level
+function challengesRequired() {
+  return 5; // might be variable at some point
 }

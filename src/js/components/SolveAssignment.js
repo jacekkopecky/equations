@@ -128,13 +128,12 @@ export default function SolveAssignment(props) {
     } else {
       copy.set(variable, value);
     }
+    clearState();
     setAnswers(copy);
-    setCorrectness(null);
   }
 
   function checkAnswers() {
     const correct = Equations.checkAnswers(assignment.equations, answers);
-    setCorrectness(correct);
     assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
       assignment.attemptText = attemptText;
@@ -142,8 +141,10 @@ export default function SolveAssignment(props) {
       assignment.done = true;
       assignment.doneTime = Date.now();
       deleteStoredAttemptText();
+      clearState();
       setAskedToCheckAnswers(true);
     }
+    setCorrectness(correct);
     assignment.save();
   }
 
@@ -154,6 +155,7 @@ export default function SolveAssignment(props) {
     assignment.doneTime = Date.now();
     assignment.save();
     deleteStoredAttemptText();
+    clearState();
     setAskedToShowAnswers(true);
   }
 
@@ -178,6 +180,13 @@ export default function SolveAssignment(props) {
     return (
       <div key={index}>{ Equations.formatEquation(eq, index + 1) }</div>
     );
+  }
+
+  function clearState() {
+    setAskedToShowAnswers(false);
+    setAskedToCheckAnswers(false);
+    setAnswers(new Map());
+    setCorrectness(null);
   }
 }
 
