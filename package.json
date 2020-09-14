@@ -5,7 +5,7 @@
   "scripts": {
     "build": "npm run build:grammars && npm run build:react",
     "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js && nearley-railroad src/grammars/equation.ne -o src/grammars/equation.html",
-    "build:react": "parcel build --no-cache --dist-dir dist/ src/index.html",
+    "build:react": "parcel build --no-cache --dist-dir dist/ src/index.html src/404.html",
     "serve": "NODE_ENV=development PORT=8080 parcel serve --no-cache --dist-dir dist/ src/index.html",
     "test": "npm run lint && echo run tests && jest",
     "coverage": "jest --coverage --collectCoverageFrom=src/**/*.js",
