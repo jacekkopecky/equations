@@ -42,11 +42,11 @@
 #solve-equation button {
   font-size: 1em;
   padding: 1em;
-  margin-right: 1em;
 }
 
-#solve-equation a > button {
-  margin: 0;
+#solve-equation .buttons > * {
+  margin-right: 1em;
+  margin-bottom: 1em;
 }
 
 #solve-equation .equations-text {

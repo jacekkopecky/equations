@@ -30,7 +30,7 @@ export default function Overview({ appState }) {
         key={a.n}
         level={a.level}
         n={a.n}
-        isChallenge={a.level > userLevel}
+        isChallenge={a.challenge}
         disabled={a.disabled}
         done={a.done}
         answeredCorrectly={a.answeredCorrectly}

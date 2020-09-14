@@ -15,6 +15,7 @@ export default function SolveAssignment(props) {
 
   const appState = props.appState;
   const assignment = appState.getAssignment(level, n);
+  const nextAssignment = appState.getNextAssignment(n);
 
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
 
@@ -91,25 +92,31 @@ export default function SolveAssignment(props) {
         ) }
       </div>
 
-      <button
-        type="button"
-        onClick={checkAnswers}
-        disabled={finished || !Equations.areAllVariablesAnswered(assignment.equations, answers)}
-      >
-        Check answers
-      </button>
+      <div className="buttons">
+        <button
+          type="button"
+          onClick={checkAnswers}
+          disabled={finished || !Equations.areAllVariablesAnswered(assignment.equations, answers)}
+        >
+          Check answers
+        </button>
 
-      <button
-        type="button"
-        onClick={showAnswers}
-        disabled={finished}
-      >
-        Show me the answers
-      </button>
+        <button
+          type="button"
+          onClick={showAnswers}
+          disabled={finished}
+        >
+          Show me the answers
+        </button>
 
-      { props.back && (
-        <Link to={props.back}><button tabIndex={-1} type="button">Back</button></Link>
-      ) }
+        { props.back && (
+          <Link to={props.back}><button tabIndex={-1} type="button">Back to overview</button></Link>
+        ) }
+
+        { nextAssignment && (
+          <Link to={`/eq/${nextAssignment.level}/${nextAssignment.n}`}><button tabIndex={-1} type="button">Next assignment</button></Link>
+        ) }
+      </div>
 
     </main>
   );

@@ -37,6 +37,31 @@ export default class AppState {
     return assignment;
   }
 
+  getAssignmentInformation(userLevel, n) {
+    const challenge = n % BATCH_SIZE === 0;
+    const assignmentInfo = {
+      level: challenge ? userLevel + 1 : chooseLevel(userLevel),
+      n,
+      challenge,
+    };
+
+    const attempted = this.state.assignments[n];
+    if (attempted) {
+      assignmentInfo.level = attempted.level;
+      assignmentInfo.done = attempted.done;
+      assignmentInfo.answeredCorrectly = attempted.answeredCorrectly;
+    }
+
+    return assignmentInfo;
+  }
+
+  getNextAssignment(n) {
+    const assignmentN = this.getAssignmentInformation(0, n);
+    if (!assignmentN.done) return null; // there should be no "next" link
+
+    return this.getAssignmentInformation(this.level, n + 1);
+  }
+
   getUpcomingAssignments() {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
@@ -46,21 +71,8 @@ export default class AppState {
     const level = this.level;
 
     for (let i = 0; i < BATCH_SIZE; i += 1) {
-      const attempted = this.state.assignments[first + i];
-      const challenge = i === BATCH_SIZE - 1;
-      if (attempted) {
-        assignments[i] = {
-          level: attempted.level,
-          n: attempted.n,
-          done: attempted.done,
-          answeredCorrectly: attempted.answeredCorrectly,
-        };
-      } else {
-        assignments[i] = {
-          level: challenge ? level + 1 : chooseLevel(level),
-          n: first + i,
-        };
-      }
+      const assignment = this.getAssignmentInformation(level, first + i);
+      assignments[i] = assignment;
     }
 
     return assignments;

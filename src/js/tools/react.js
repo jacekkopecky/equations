@@ -25,11 +25,10 @@ export function PropsFromRouteParams(props) {
  * useLocalStorage hook from https://usehooks.com/useLocalStorage/ 2020-09-13
  *
  * extended to add deleteValue() (does not affect the state)
+ * extended to detect stale state
  */
 export function useLocalStorage(key, initialValue) {
-  // State to store our value
-  // Pass initial state function to useState so logic is only executed once
-  const [storedValue, setStoredValue] = useState(() => {
+  const getCurrentValue = () => {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
@@ -40,7 +39,22 @@ export function useLocalStorage(key, initialValue) {
       console.log(error);
       return initialValue;
     }
-  });
+  };
+
+  // State to store our value
+  // Pass initial state function to useState so logic is only executed once
+  const [storedValue, setStoredValue] = useState(getCurrentValue);
+
+  // remember the key so we can find out when state gets stale
+  const [storedKey, setStoredKey] = useState(key);
+
+  if (storedKey !== key) {
+    const currentRaw = window.localStorage.getItem(key);
+    if (JSON.stringify(storedValue) !== currentRaw) {
+      setStoredValue(getCurrentValue());
+    }
+    setStoredKey(key);
+  }
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
