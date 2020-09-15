@@ -26,6 +26,7 @@ export default class AppState {
       assignment.created = Date.now();
       assignment.level = level;
       assignment.n = n;
+      if (level > this.level) assignment.challenge = true;
     }
 
     if (!assignment.save) {
@@ -53,6 +54,7 @@ export default class AppState {
       assignmentInfo.level = attempted.level;
       assignmentInfo.done = attempted.done;
       assignmentInfo.answeredCorrectly = attempted.answeredCorrectly;
+      assignmentInfo.challenge = attempted.challenge;
     }
 
     return assignmentInfo;
