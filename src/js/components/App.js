@@ -20,7 +20,7 @@ export default function App() {
   return (
     <Router>
       <header id="app-header">
-        <h1><Link to="/">Equations</Link></h1>
+        <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
         <Link to="/about">(About)</Link>
       </header>
 
