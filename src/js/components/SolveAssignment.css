@@ -1,3 +1,7 @@
+#solve-equation {
+  position: relative;
+}
+
 #solve-equation .equation,
 #solve-equation .answer {
   font-family: "Times New Roman", serif;
@@ -58,6 +62,24 @@
   max-height: 5em;
   margin-left: 1em;
   float: right;
+}
+
+#solve-equation.challenge::before {
+  content: '⭐️';
+  font-size: 1em;
+  position: absolute;
+  top: 0em;
+  right: 1em;
+}
+
+#solve-equation.challenge.won::before {
+  animation: 1s ease-out infinite pulse;
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1); }
+  90%  { transform: scale(1.5); }
+  100% { transform: scale(1); }
 }
 
 #solve-equation .answers {

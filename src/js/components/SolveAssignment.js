@@ -51,10 +51,19 @@ export default function SolveAssignment(props) {
   const finished = assignment.done != null;
   const attemptText = assignment.attemptText ?? storedAttemptText;
 
+  const classes = [];
+  if (assignment.challenge) classes.push('challenge');
+  if (askedToCheckAnswers && correctness === true) classes.push('won');
+
   return (
-    <main id="solve-equation">
+    <main id="solve-equation" className={classes.join(' ')}>
       { assignment.image && (
-        <img src={assignment.image} className="assignment-icon" alt="assignment icon" />
+        <img
+          src={assignment.image}
+          className="assignment-icon"
+          alt="assignment icon"
+          title={assignment.challenge ? 'challenge assignment' : ''}
+        />
       ) }
 
       { assignment.text && Equations.formatEquationsText(assignment.text) }
