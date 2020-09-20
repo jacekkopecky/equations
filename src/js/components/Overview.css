@@ -70,11 +70,11 @@
 
 #overview .assignment.done.correctly::before {
   content: '✓';
-  color: green;
+  color: var(--assignment-tick-correct);
 }
 
 #overview .assignment.done.asked::before {
-  color: gray;
+  color: var(--assignment-tick-failed);
   content: '—';
 }
 

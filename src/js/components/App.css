@@ -10,6 +10,8 @@
   --assignment-n-dis-shadow: none;
   --assignment-bg: #cdf;
   --assignment-challenge-bg: #ffa;
+  --assignment-tick-correct: green;
+  --assignment-tick-failed: gray;
 }
 
 html,
