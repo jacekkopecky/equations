@@ -17,13 +17,13 @@ export default class AppState {
     this.topLevel = levels.length - 1;
   }
 
-  getAssignment(level, n) {
+  getAssignment(level, n, startTime) {
     let assignment = this.state.assignments[n];
 
     if (!assignment) {
       const rng = new Random(`${level}/${n}`);
       assignment = levels[level](rng);
-      assignment.created = Date.now();
+      assignment.startTime = startTime;
       assignment.level = level;
       assignment.n = n;
       if (level > this.level) assignment.challenge = true;

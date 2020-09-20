@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 
 import './SolveAssignment.css';
 
@@ -12,9 +12,12 @@ export default function SolveAssignment(props) {
 
   const [answers, setAnswers] = useState(new Map());
   const [correctness, setCorrectness] = useState(null);
+  const [startTime, setStartTime] = useState(Date.now());
+
+  const history = useHistory();
 
   const appState = props.appState;
-  const assignment = appState.getAssignment(level, n);
+  const assignment = appState.getAssignment(level, n, startTime);
   const nextAssignment = appState.getNextAssignment(n);
 
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
@@ -123,12 +126,23 @@ export default function SolveAssignment(props) {
         ) }
 
         { nextAssignment && (
-          <Link to={`/eq/${nextAssignment.level}/${nextAssignment.n}`}><button tabIndex={-1} type="button">Next assignment</button></Link>
+          <button
+            type="button"
+            onClick={goToNext}
+          >
+            Next assignment
+          </button>
         ) }
       </div>
 
     </main>
   );
+
+  function goToNext() {
+    clearState();
+    setStartTime(Date.now());
+    history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
+  }
 
   function setAnswer(variable, value) {
     const copy = new Map(answers);
