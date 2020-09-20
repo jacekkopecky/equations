@@ -126,6 +126,10 @@ export default class AppState {
     const progress = this.state.assignments.filter((a) => Number(a?.level) > level).length;
     return `${progress}/5`;
   }
+
+  get doneAssignments() {
+    return this.state.assignments.filter((a) => a?.done);
+  }
 }
 
 function chooseLevel(l) {

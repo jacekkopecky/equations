@@ -1,0 +1,86 @@
+#statistics .assignments {
+  border-collapse: collapse;
+}
+
+#statistics .assignments th {
+  padding: 0 1em;
+}
+
+#statistics .assignments th.date {
+  font-weight: normal;
+  padding: 1em 1em 1em 0;
+  font-size: 1.2em;
+}
+
+#statistics .assignments td {
+  position: relative;
+  padding: 1em;
+  text-align: center;
+  z-index: auto;
+}
+
+#statistics .assignments td:not(:last-child) {
+  border-right: thin solid var(--border);
+}
+
+#statistics .assignments td:first-child {
+  border-top-left-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
+  min-width: 4em;
+}
+
+#statistics .assignments td:last-child {
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  min-width: 4em;
+}
+
+#statistics .assignment .n {
+  font-family: sans-serif;
+  font-size: 1.3em;
+  font-weight: bold;
+  text-decoration: none;
+  z-index: 2;
+  position: relative;
+  color: var(--assignment-n-fg);
+  text-shadow: var(--assignment-n-shadow);
+}
+
+#statistics .assignments tr.assignment:nth-of-type(2n) td {
+  background: var(--assignment-bg);
+}
+
+#statistics .assignments .icon {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  max-height: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  opacity: 0.6;
+  margin: auto;
+  padding: 0.3em;
+  z-index: 1;
+}
+
+#statistics .assignments .answered-correctly::before {
+  content: '—';
+  display: inline;
+  font-size: 1.5em;
+  color: var(--assignment-tick-failed);
+}
+
+#statistics .assignments .assignment.correct .answered-correctly::before {
+  content: '✓';
+  color: var(--assignment-tick-correct);
+}
+
+#statistics .assignments .date {
+  text-align: left;
+}
+
+#statistics .duration {
+  padding-left: 1em;
+}

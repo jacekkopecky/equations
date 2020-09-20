@@ -6,8 +6,10 @@ import {
   Route,
 } from 'react-router-dom';
 
-import SolveAssignment from './SolveAssignment';
 import Overview from './Overview';
+import SolveAssignment from './SolveAssignment';
+import Statistics from './Statistics';
+
 import { PropsFromRouteParams } from '../tools/react';
 
 import './App.css';
@@ -21,7 +23,11 @@ export default function App() {
     <Router>
       <header id="app-header">
         <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
-        <Link to="/about">(About)</Link>
+        (
+        <Link to="/stats">Stats</Link>
+        { ', ' }
+        <Link to="/about">About</Link>
+        )
       </header>
 
       <Switch>
@@ -35,6 +41,9 @@ export default function App() {
         </Route>
         <Route path="/eq" exact>
           <SolveAssignment level={1} n={1} appState={appState} back="/" />
+        </Route>
+        <Route path="/stats" exact>
+          <Statistics appState={appState} back="/" />
         </Route>
         <Route path="/about">
           <main>This is a simple app for practicing equations.</main>
