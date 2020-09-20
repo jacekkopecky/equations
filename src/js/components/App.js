@@ -23,11 +23,9 @@ export default function App() {
     <Router>
       <header id="app-header">
         <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
-        (
-        <Link to="/stats">Stats</Link>
-        { ', ' }
-        <Link to="/about">About</Link>
-        )
+        <div>
+          <Link to="/stats">Stats</Link> | <Link to="/about">About</Link>
+        </div>
       </header>
 
       <Switch>
