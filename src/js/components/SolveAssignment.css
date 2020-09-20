@@ -68,7 +68,7 @@
   content: '⭐️';
   font-size: 1em;
   position: absolute;
-  top: 0em;
+  top: 0;
   right: 1em;
 }
 
@@ -77,8 +77,8 @@
 }
 
 @keyframes pulse {
-  0%   { transform: scale(1); }
-  90%  { transform: scale(1.5); }
+  0% { transform: scale(1); }
+  90% { transform: scale(1.5); }
   100% { transform: scale(1); }
 }
 
