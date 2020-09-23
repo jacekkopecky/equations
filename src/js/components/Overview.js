@@ -14,17 +14,13 @@ export default function Overview({ appState }) {
   const userLevel = appState.level;
   disableAfterFirstUnsolved(batch);
 
-  const doneAssignments = appState.doneAssignments;
-  const lastDate = dateToString(doneAssignments[doneAssignments.length - 1]);
-  const todayDate = dateToString(Date.now());
-  const dateString = todayDate === lastDate ? 'today' : `on ${lastDate}`;
-  const duration = countDurationOnSameDay(doneAssignments);
+  const duration = renderDuration(appState.doneAssignments);
 
   return (
     <main id="overview">
       <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
       <p>Score: { appState.score }</p>
-      { duration && <p>Time { dateString }: { duration }</p> }
+      { duration }
       <p>
         Level:
         { ' ' }
@@ -53,6 +49,19 @@ export default function Overview({ appState }) {
       />
     );
   }
+}
+
+function renderDuration(doneAssignments) {
+  if (doneAssignments.length === 0) return null;
+
+  const duration = countDurationOnSameDay(doneAssignments);
+  if (!duration) return null;
+
+  const lastDate = dateToString(doneAssignments[doneAssignments.length - 1]);
+  const todayDate = dateToString(Date.now());
+  const dateString = todayDate === lastDate ? 'today' : `on ${lastDate}`;
+
+  return <p>Time { dateString }: { duration }</p>;
 }
 
 function disableAfterFirstUnsolved(assignments) {
