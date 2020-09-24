@@ -5,8 +5,9 @@ import './Overview.css';
 
 import levels from '../levels/index';
 import Random from '../tools/random';
-import { sumDuration, dateToString } from '../tools/durations';
+
 import LevelIndicator from './LevelIndicator';
+import Duration from './Duration';
 
 const rng = new Random();
 export default function Overview({ appState }) {
@@ -14,14 +15,12 @@ export default function Overview({ appState }) {
   const newcomer = batch[0].n === 1 && !batch[0].done;
   disableAfterFirstUnsolved(batch);
 
-  const duration = renderDuration(appState.lastDayAssignments);
-
   return (
     <main id="overview">
       <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
       <p>Score: { appState.score }</p>
-      { duration }
       <LevelIndicator appState={appState} />
+      <Duration appState={appState} />
       <div className="assignments">
         { batch.map(renderAssignment) }
       </div>
@@ -42,19 +41,6 @@ export default function Overview({ appState }) {
       />
     );
   }
-}
-
-function renderDuration(lastDaysAssignments) {
-  if (lastDaysAssignments.length === 0) return null;
-
-  const duration = sumDuration(lastDaysAssignments);
-  if (!duration) return null;
-
-  const lastDate = dateToString(lastDaysAssignments[0]);
-  const todayDate = dateToString(Date.now());
-  const dateString = todayDate === lastDate ? 'today' : `on ${lastDate}`;
-
-  return <p>Time { dateString }: { duration }</p>;
 }
 
 function disableAfterFirstUnsolved(assignments) {
