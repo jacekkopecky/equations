@@ -6,6 +6,9 @@ import './SolveAssignment.css';
 import * as Equations from '../tools/equations';
 import { useAutofocusRef, useLocalStorage } from '../tools/react';
 
+import LevelIndicator from './LevelIndicator';
+import Duration from './Duration';
+
 export default function SolveAssignment(props) {
   const level = Number(props.level);
   const n = Number(props.n);
@@ -53,94 +56,104 @@ export default function SolveAssignment(props) {
 
   const finished = assignment.done != null;
   const attemptText = assignment.attemptText ?? storedAttemptText;
+  const justWon = askedToCheckAnswers && correctness === true;
 
   const classes = [];
   if (assignment.challenge) classes.push('challenge');
-  if (askedToCheckAnswers && correctness === true) classes.push('won');
+  if (justWon) classes.push('won');
 
   return (
-    <main id="solve-equation" className={classes.join(' ')}>
-      <div className="info">
-        { assignment.image && (
-          <img
-            src={assignment.image}
-            className="assignment-icon"
-            alt="assignment icon"
-            title={assignment.challenge ? 'challenge assignment' : ''}
-          />
-        ) }
-        <span className="n">{ n }</span>
-      </div>
-
-      <span className="difficulty">Difficulty level { level }{ assignment.challenge && ' (challenge)' }, assignment { n }:</span>
-
-      { assignment.text && Equations.formatEquationsText(assignment.text) }
-      { assignment.onlyText || (
-        assignment.equations.map(renderEquation)
-      ) }
-
-      {
-        finished ? <pre className="equation">{ attemptText }</pre> : (
-          <textarea
-            className="equation"
-            onChange={saveAttemptText}
-            autoFocus
-            ref={textAreaRef}
-            value={attemptText}
-            disabled={finished}
-          />
-        )
-      }
-
-      <div className="answers">
-        <div>
-          { varNames.map(renderAnswerInput) }
+    <>
+      <main id="solve-equation" className={classes.join(' ')}>
+        <div className="info">
+          { assignment.image && (
+            <img
+              src={assignment.image}
+              className="assignment-icon"
+              alt="assignment icon"
+              title={assignment.challenge ? 'challenge assignment' : ''}
+            />
+          ) }
+          <span className="n">{ n }</span>
         </div>
 
-        { (!finished || askedToCheckAnswers) && correctness != null && (
-          <div className="correctness">
-            { correctness ? 'Correct' : 'Sorry, not right' }
+        <span className="difficulty">Difficulty level { level }{ assignment.challenge && ' (challenge)' }, assignment { n }:</span>
+
+        { assignment.text && Equations.formatEquationsText(assignment.text) }
+        { assignment.onlyText || (
+          assignment.equations.map(renderEquation)
+        ) }
+
+        {
+          finished ? <pre className="equation">{ attemptText }</pre> : (
+            <textarea
+              className="equation"
+              onChange={saveAttemptText}
+              autoFocus
+              ref={textAreaRef}
+              value={attemptText}
+              disabled={finished}
+            />
+          )
+        }
+
+        <div className="answers">
+          <div>
+            { varNames.map(renderAnswerInput) }
           </div>
-        ) }
-        { (finished && askedToShowAnswers) && (
-          <div className="correctness">
-            Next one may be easier
-          </div>
-        ) }
-      </div>
 
-      <div className="buttons">
-        <button
-          type="button"
-          onClick={checkAnswers}
-          disabled={finished || !Equations.areAllVariablesAnswered(assignment.equations, answers)}
-        >
-          Check answers
-        </button>
+          { (!finished || askedToCheckAnswers) && correctness != null && (
+            <div className="correctness">
+              { correctness ? 'Correct' : 'Sorry, not right' }
+            </div>
+          ) }
+          { (finished && askedToShowAnswers) && (
+            <div className="correctness">
+              Next one may be easier
+            </div>
+          ) }
+        </div>
 
-        <button
-          type="button"
-          onClick={showAnswers}
-          disabled={finished}
-        >
-          Show me the answers
-        </button>
-
-        { props.back && (
-          <Link to={props.back}><button tabIndex={-1} type="button">Back to overview</button></Link>
-        ) }
-
-        { nextAssignment && (
+        <div className="buttons">
           <button
             type="button"
-            onClick={goToNext}
+            onClick={checkAnswers}
+            disabled={finished || !Equations.areAllVariablesAnswered(assignment.equations, answers)}
           >
-            Next assignment
+            Check answers
           </button>
-        ) }
-      </div>
 
-    </main>
+          <button
+            type="button"
+            onClick={showAnswers}
+            disabled={finished}
+          >
+            Show me the answers
+          </button>
+
+          { props.back && (
+            <Link to={props.back}><button tabIndex={-1} type="button">Back to overview</button></Link>
+          ) }
+
+          { nextAssignment && (
+            <button
+              type="button"
+              onClick={goToNext}
+            >
+              Next assignment
+            </button>
+          ) }
+        </div>
+      </main>
+      <footer>
+        <p>Score: { appState.score }</p>
+        <LevelIndicator
+          appState={appState}
+          justWonAStar={justWon && assignment.challenge}
+        />
+        <Duration appState={appState} onlyToday />
+      </footer>
+    </>
   );
 
   function goToNext() {
