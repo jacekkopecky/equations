@@ -23,6 +23,7 @@ export default function App() {
     <Router>
       <header id="app-header">
         <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
+        { /* when changing the title above, also change it in index.html and 404.html */ }
         <div>
           <Link to="/stats">Stats</Link> | <Link to="/about">About</Link>
         </div>
