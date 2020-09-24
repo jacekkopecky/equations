@@ -8,7 +8,6 @@ The program creates equations, lets the user solve them and check their answers,
 
 todo:
 
-- put "time today" on SolveEquation page
 - semi-randomly select assignments simpler than current userLevel?
   - maybe, in a batch: extra easy, normal, easy, normal, challenge?
 
@@ -31,7 +30,7 @@ todo:
 
 - move it to bananas.jacek.cz
 
-- back to stats instead of back to overview when coming from stats
+- say "back to stats" instead of "back to overview" when coming from stats
 - assignment page needs to show entered answers? (when wrong)
   - maybe keep record of all attempts?
 - move to next needs to have a visible transition

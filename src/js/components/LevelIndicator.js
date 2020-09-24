@@ -2,19 +2,22 @@ import React from 'react';
 
 import './LevelIndicator.css';
 
-export default function LevelIndicator({ appState }) {
+export default function LevelIndicator({ appState, justWonAStar }) {
   const userLevel = appState.level;
 
+  const classes = ['level-indicator'];
+  if (justWonAStar && appState.progress === 0) classes.push('won');
+
   return (
-    <p className="level-indicator">
+    <p className={classes.join(' ')}>
       <span className="label">Level </span>
       <span className="level">{ userLevel }</span>
-      { renderProgress(appState) }
+      { renderProgress(appState, justWonAStar) }
     </p>
   );
 }
 
-function renderProgress(appState) {
+function renderProgress(appState, justWonAStar) {
   const userLevel = appState.level;
 
   if (userLevel === appState.topLevel) {
@@ -30,7 +33,9 @@ function renderProgress(appState) {
 
   for (let i = 0; i < required; i += 1) {
     if (i < progress) {
-      stars.push(<span key={i} className="star achieved" />);
+      const classes = ['star', 'achieved'];
+      if (i === progress - 1 && justWonAStar) classes.push('won');
+      stars.push(<span key={i} className={classes.join(' ')} />);
     } else {
       stars.push(<span key={i} className="star needed" />);
     }

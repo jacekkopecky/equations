@@ -99,11 +99,15 @@
   right: 0;
 }
 
-#solve-equation.challenge.won::before {
-  animation: 1s ease-out infinite pulse;
+#solve-equation.challenge.won .info::before {
+  animation: 1s ease-out infinite solve-equation-pulse;
 }
 
-@keyframes pulse {
+#solve-equation + footer .level-indicator .star.won::after {
+  opacity: 0;
+}
+
+@keyframes solve-equation-pulse {
   0% { transform: scale(1); }
   90% { transform: scale(1.5); }
   100% { transform: scale(1); }
