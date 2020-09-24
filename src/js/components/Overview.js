@@ -125,6 +125,7 @@ function Assignment(props) {
             onClick={toggleChallenge}
             onKeyPress={toggleChallenge}
             ref={makeChallengeRef}
+            title="make this level a challenge"
           >
             <span role="img" aria-label="make a challenge">⭐️</span>
           </div>
