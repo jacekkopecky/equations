@@ -8,17 +8,33 @@ The program creates equations, lets the user solve them and check their answers,
 
 todo:
 
-- move-to-next button (if we have moveToNext: replace to={moveToNext})
+- put "time today" on SolveEquation page
+- semi-randomly select assignments simpler than current userLevel?
+  - maybe, in a batch: extra easy, normal, easy, normal, challenge?
+
+- give extra score for verified steps towards solution? (level is 10, step is 1?)
 - give 3-1 stars (score points) for first-third attempt? should score be given only if answered within a given number of attempts?
 
-- maybe keep record of each of the first 3 tries
-- keep time better? maybe later award extra type of point (not counted but showing) for being within some time.
+- keep time better?
+  - first, note how long users take between keystrokes?
+  - time counting only with keystrokes? pause after half a minute without a keystroke?
+  - maybe later award extra type of point (not counted but showing) for being within some time.
 
-- let overview allow the user to make a normal level a challenge, if the assignment (n) hasn't been attempted yet
+- add tutorial levels
+  - get played before the first challenge of a given level
+  - any level has a link to its tutorial level
+  - don't allow the user to make assignment 4 in a batch a challenge if winning it would lead to leveling up
+  - tutorial levels don't get selected (as easy) when we're above this level
+- initial tutorial
+  - explain level progress (gathering stars from doing challenges)
 
-- add tutorial levels that don't get randomly selected when we're above this level, and get played before the first challenge of a given level, and any level has a link to its tutorial level
 
-- look at attempt counts in history, look at times
+- move it to bananas.jacek.cz
+
+- back to stats instead of back to overview when coming from stats
+- assignment page needs to show entered answers? (when wrong)
+  - maybe keep record of all attempts?
+- move to next needs to have a visible transition
 
 
 ### Levels
@@ -39,3 +55,4 @@ When the program can check the reasoning, here are some allowed (and recognized)
 1. `simplify(1)`
 1. `split(1)`
 1. `reorg(1)`
+1. `flip(1)`
