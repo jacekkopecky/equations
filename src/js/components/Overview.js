@@ -5,7 +5,7 @@ import './Overview.css';
 
 import levels from '../levels/index';
 import Random from '../tools/random';
-import { countDurationOnSameDay, dateToString } from './Statistics';
+import { sumDuration, dateToString } from '../tools/durations';
 import LevelIndicator from './LevelIndicator';
 
 const rng = new Random();
@@ -14,7 +14,7 @@ export default function Overview({ appState }) {
   const newcomer = batch[0].n === 1 && !batch[0].done;
   disableAfterFirstUnsolved(batch);
 
-  const duration = renderDuration(appState.doneAssignments);
+  const duration = renderDuration(appState.lastDayAssignments);
 
   return (
     <main id="overview">
@@ -44,13 +44,13 @@ export default function Overview({ appState }) {
   }
 }
 
-function renderDuration(doneAssignments) {
-  if (doneAssignments.length === 0) return null;
+function renderDuration(lastDaysAssignments) {
+  if (lastDaysAssignments.length === 0) return null;
 
-  const duration = countDurationOnSameDay(doneAssignments);
+  const duration = sumDuration(lastDaysAssignments);
   if (!duration) return null;
 
-  const lastDate = dateToString(doneAssignments[doneAssignments.length - 1]);
+  const lastDate = dateToString(lastDaysAssignments[0]);
   const todayDate = dateToString(Date.now());
   const dateString = todayDate === lastDate ? 'today' : `on ${lastDate}`;
 

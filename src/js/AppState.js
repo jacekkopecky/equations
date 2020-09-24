@@ -1,6 +1,7 @@
-import Random from './tools/random';
 import levels from './levels/index';
+import Random from './tools/random';
 import { useLocalStorage } from './tools/react';
+import { dateToString } from './tools/durations';
 
 const BATCH_SIZE = 5;
 
@@ -133,6 +134,26 @@ export default class AppState {
 
   get doneAssignments() {
     return this.state.assignments.filter((a) => a?.done);
+  }
+
+  get lastDayAssignments() {
+    const done = this.doneAssignments;
+    if (done.length === 0) return done;
+
+    const lastAssignment = done[done.length - 1];
+    const lastDate = dateToString(lastAssignment);
+
+    // put all with the same date in assignmentsOnDay
+    const assignmentsOnLastDate = [lastAssignment];
+    for (let i = done.length - 2; i >= 0; i -= 1) {
+      if (dateToString(done[i]) === lastDate) {
+        assignmentsOnLastDate.push(done[i]);
+      } else {
+        break;
+      }
+    }
+
+    return assignmentsOnLastDate;
   }
 }
 
