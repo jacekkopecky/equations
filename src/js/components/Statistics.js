@@ -9,8 +9,6 @@ import LevelIndicator from './LevelIndicator';
 
 const rng = new Random();
 export default function Statistics({ appState }) {
-  const batch = appState.doneAssignments;
-
   return (
     <main id="statistics">
       <h1>Statistics</h1>
@@ -26,61 +24,71 @@ export default function Statistics({ appState }) {
             <th>time</th>
           </tr>
         </thead>
-        <tbody>
-          { batch.flatMap(renderAssignment).reverse() }
-        </tbody>
+        <Assignments appState={appState} />
       </table>
     </main>
   );
-
-  function renderAssignment(a, index, array) {
-    const sampleAssignment = levels[a.level](rng);
-    const image = sampleAssignment.image;
-
-    const date = renderAssignmentDate(a, index, array);
-
-    const classes = ['assignment'];
-    if (a.answeredCorrectly) classes.push('correct');
-    if (a.challenge) classes.push('challenge');
-
-    const time = timeDurationString(getDuration(a)) || '—';
-
-    return (
-      [
-        <tr className={classes.join(' ')} key={index}>
-          <td>
-            { image && (
-              <img className="icon" src={image} alt="level icon" draggable="false" />
-            ) }
-            <Link to={`/eq/${a.level}/${a.n}`} className="n">{ a.n }</Link>
-          </td>
-          <td>{ a.level }</td>
-          <td className="answered-correctly">{ /* filled in by CSS */ }</td>
-          <td>{ a.attemptCount }</td>
-          <td>{ time }</td>
-        </tr>,
-        date,
-      ]
-    );
-  }
 }
 
-function renderAssignmentDate(a, index, array) {
-  if (a.startTime == null) return null;
-  const dateOfA = dateToString(a);
+function Assignments({ appState }) {
+  // reverse() is safe because doneAssignments gives a new array
+  const assignments = appState.doneAssignments.reverse();
 
-  // return nothing (don't show date) if the next one has the same date
-  const dateOfNext = index < array.length - 1 ? dateToString(array[index + 1]) : '';
-  if (dateOfNext === dateOfA) return null;
+  // group assignments by their date
+  const assignmentsPerDay = new Map();
 
-  const duration = countDurationOnSameDay(array, index);
+  for (const assignment of assignments) {
+    const date = dateToString(assignment);
+    if (!assignmentsPerDay.has(date)) {
+      assignmentsPerDay.set(date, []);
+    }
+    const thisDay = assignmentsPerDay.get(date);
+    thisDay.push(assignment);
+  }
+
+  // put each day worth of assignments in a separate tbody
+  const tbodies = [];
+  for (const date of assignmentsPerDay.keys()) {
+    const thisDay = assignmentsPerDay.get(date);
+    const duration = sumDuration(thisDay);
+    tbodies.push((
+      <tbody key={date}>
+        <tr>
+          <th colSpan={5} className="date">
+            <span className="date">{ date }</span>
+            { duration ? <span className="duration"> ({ duration })</span> : null }
+          </th>
+        </tr>
+        { thisDay.map(renderAssignment) }
+      </tbody>
+    ));
+  }
+
+  return tbodies;
+}
+
+function renderAssignment(a) {
+  const sampleAssignment = levels[a.level](rng);
+  const image = sampleAssignment.image;
+
+  const classes = ['assignment'];
+  if (a.answeredCorrectly) classes.push('correct');
+  if (a.challenge) classes.push('challenge');
+
+  const time = timeDurationString(getDuration(a)) || '—';
 
   return (
-    <tr key={dateOfA}>
-      <th colSpan={5} className="date">
-        { dateOfA }
-        { duration ? <span className="duration"> ({ duration })</span> : null }
-      </th>
+    <tr className={classes.join(' ')} key={a.n}>
+      <td>
+        { image && (
+          <img className="icon" src={image} alt="level icon" draggable="false" />
+        ) }
+        <Link to={`/eq/${a.level}/${a.n}`} className="n">{ a.n }</Link>
+      </td>
+      <td>{ a.level }</td>
+      <td className="answered-correctly">{ /* filled in by CSS */ }</td>
+      <td>{ a.attemptCount }</td>
+      <td>{ time }</td>
     </tr>
   );
 }
@@ -112,14 +120,26 @@ function timeDurationString(duration) {
 }
 
 export function countDurationOnSameDay(array, index = array.length - 1) {
-  // count time of all those with the same date
+  // count time of all those with the same date as array[index]
   const date = dateToString(array[index]);
 
-  let sumTime = getDuration(array[index]);
+  // put all with the same date in assignmentsOnDay
+  const assignmentsOnDay = [array[index]];
   for (let i = index - 1; i >= 0; i -= 1) {
-    if (dateToString(array[i]) !== date) break;
-    sumTime += getDuration(array[i]) || 0;
+    if (dateToString(array[i]) === date) {
+      assignmentsOnDay.push(array[i]);
+    } else {
+      break;
+    }
   }
 
+  return sumDuration(assignmentsOnDay);
+}
+
+function sumDuration(assignments) {
+  let sumTime = 0;
+  for (const a of assignments) {
+    sumTime += getDuration(a) || 0;
+  }
   return timeDurationString(sumTime);
 }

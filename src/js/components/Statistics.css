@@ -8,8 +8,18 @@
 
 #statistics .assignments th.date {
   font-weight: normal;
-  padding: 1em 1em 1em 0;
+  padding: 1em 0;
+  text-align: left;
+}
+
+#statistics .assignments th.date .date {
   font-size: 1.2em;
+}
+
+#statistics .assignments th.date .duration {
+  display: inline-block;
+  float: right;
+  padding-left: 1em;
 }
 
 #statistics .assignments td {
@@ -75,12 +85,4 @@
 #statistics .assignments .assignment.correct .answered-correctly::before {
   content: '✓';
   color: var(--assignment-tick-correct);
-}
-
-#statistics .assignments .date {
-  text-align: left;
-}
-
-#statistics .duration {
-  padding-left: 1em;
 }
