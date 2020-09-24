@@ -43,7 +43,7 @@
   max-width: 100%;
   padding: 1em;
   box-sizing: border-box;
-  opacity: 0.4;
+  opacity: 0.5;
   margin: auto;
   z-index: -1;
 }
@@ -57,7 +57,10 @@
 }
 
 #overview .assignment.done .n {
-  display: none;
+  font-size: 2em;
+  position: absolute;
+  left: 0.4em;
+  top: 0.3em;
 }
 
 #overview .assignment.done::before {
@@ -71,6 +74,7 @@
 #overview .assignment.done.correctly::before {
   content: '✓';
   color: var(--assignment-tick-correct);
+  text-shadow: var(--assignment-tick-correct-shadow);
 }
 
 #overview .assignment.done.asked::before {
