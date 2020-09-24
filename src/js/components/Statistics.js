@@ -5,24 +5,17 @@ import './Statistics.css';
 
 import levels from '../levels/index';
 import Random from '../tools/random';
+import LevelIndicator from './LevelIndicator';
 
 const rng = new Random();
 export default function Statistics({ appState }) {
   const batch = appState.doneAssignments;
-  const userLevel = appState.level;
 
   return (
     <main id="statistics">
       <h1>Statistics</h1>
       <p>Score: { appState.score }</p>
-      <p>
-        Level:
-        { ' ' }
-        { userLevel }
-        { userLevel < appState.topLevel
-          ? ` (progress to next level ${appState.progressIndicator})`
-          : ' (top level)' }
-      </p>
+      <LevelIndicator appState={appState} />
       <table className="assignments">
         <thead>
           <tr>

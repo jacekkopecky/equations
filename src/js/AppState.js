@@ -121,10 +121,14 @@ export default class AppState {
     this.state.level = level;
   }
 
-  get progressIndicator() {
+  get progress() {
     const level = this.level;
     const progress = this.state.assignments.filter((a) => Number(a?.level) > level).length;
-    return `${progress}/5`;
+    return progress;
+  }
+
+  get progressRequired() {
+    return challengesRequired(this.level + 1);
   }
 
   get doneAssignments() {

@@ -1,0 +1,16 @@
+.level-indicator .stars {
+  border: solid thin var(--border);
+  border-radius: 0.5em;
+  padding: 0.3em;
+  margin-left: 1em;
+  line-height: 1em;
+}
+
+.level-indicator .star::after {
+  content: '⭐️';
+}
+
+.level-indicator .star.needed::after {
+  filter: grayscale(0.8);
+  opacity: 0.5;
+}

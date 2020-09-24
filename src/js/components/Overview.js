@@ -6,12 +6,12 @@ import './Overview.css';
 import levels from '../levels/index';
 import Random from '../tools/random';
 import { countDurationOnSameDay, dateToString } from './Statistics';
+import LevelIndicator from './LevelIndicator';
 
 const rng = new Random();
 export default function Overview({ appState }) {
   const batch = appState.getUpcomingAssignments();
   const newcomer = batch[0].n === 1 && !batch[0].done;
-  const userLevel = appState.level;
   disableAfterFirstUnsolved(batch);
 
   const duration = renderDuration(appState.doneAssignments);
@@ -21,14 +21,7 @@ export default function Overview({ appState }) {
       <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
       <p>Score: { appState.score }</p>
       { duration }
-      <p>
-        Level:
-        { ' ' }
-        { userLevel }
-        { userLevel < appState.topLevel
-          ? ` (progress to next level ${appState.progressIndicator})`
-          : ' (top level)' }
-      </p>
+      <LevelIndicator appState={appState} />
       <div className="assignments">
         { batch.map(renderAssignment) }
       </div>
