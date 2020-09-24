@@ -60,14 +60,17 @@ export default function SolveAssignment(props) {
 
   return (
     <main id="solve-equation" className={classes.join(' ')}>
-      { assignment.image && (
-        <img
-          src={assignment.image}
-          className="assignment-icon"
-          alt="assignment icon"
-          title={assignment.challenge ? 'challenge assignment' : ''}
-        />
-      ) }
+      <div className="info">
+        { assignment.image && (
+          <img
+            src={assignment.image}
+            className="assignment-icon"
+            alt="assignment icon"
+            title={assignment.challenge ? 'challenge assignment' : ''}
+          />
+        ) }
+        <span className="n">{ n }</span>
+      </div>
 
       { assignment.text && Equations.formatEquationsText(assignment.text) }
       { assignment.onlyText || (
