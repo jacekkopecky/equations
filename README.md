@@ -24,12 +24,10 @@ todo:
 - initial tutorial
   - explain level progress (gathering stars from doing challenges)
 
-
 - move it to bananas.jacek.cz
 
 - say "back to stats" instead of "back to overview" when coming from stats
-- assignment page needs to show entered answers? (when wrong)
-  - maybe keep record of all attempts?
+- assignment page can show incorrect attempts
 
 
 ### Levels

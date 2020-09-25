@@ -14,7 +14,6 @@ export default function SolveAssignment(props) {
   const n = Number(props.n);
 
   const [answers, setAnswers] = useState(new Map());
-  const [correctness, setCorrectness] = useState(null);
   const [startTime, setStartTime] = useState(Date.now());
 
   const history = useHistory();
@@ -41,8 +40,7 @@ export default function SolveAssignment(props) {
     deleteStoredAttemptText,
   ] = useLocalStorage(`currentEquation/${level}/${n}`, '');
 
-  const [askedToCheckAnswers, setAskedToCheckAnswers] = useState(false);
-  const [askedToShowAnswers, setAskedToShowAnswers] = useState(false);
+  const [justCheckedOrShowing, setAskedToCheckOrShowAnswers] = useState(false);
   const [transitioningTimeout, setTransitioning] = useState(null);
 
   const transitioning = transitioningTimeout != null;
@@ -53,13 +51,9 @@ export default function SolveAssignment(props) {
     // but it shouldn't be a problem because you should actually never go to the wrong level
   }
 
-  if (assignment.attemptText) {
-    deleteStoredAttemptText();
-  }
-
-  const finished = assignment.done != null;
-  const attemptText = assignment.attemptText ?? storedAttemptText;
-  const justWon = askedToCheckAnswers && correctness === true;
+  const finished = Boolean(assignment.done);
+  const justFinished = finished && justCheckedOrShowing;
+  const justWon = justFinished && assignment.answeredCorrectly;
   const canCheckAnswers = (
     !transitioning && !finished
     && Equations.areAllVariablesAnswered(assignment.equations, answers)
@@ -93,13 +87,13 @@ export default function SolveAssignment(props) {
         ) }
 
         {
-          finished ? <pre className="equation">{ attemptText }</pre> : (
+          finished ? <pre className="equation">{ assignment.attemptText }</pre> : (
             <textarea
               className="equation"
               onChange={saveAttemptText}
               autoFocus
               ref={textAreaRef}
-              value={attemptText}
+              value={storedAttemptText}
               disabled={finished}
             />
           )
@@ -110,14 +104,19 @@ export default function SolveAssignment(props) {
             { varNames.map(renderAnswerInput) }
           </div>
 
-          { (!finished || askedToCheckAnswers) && correctness != null && (
+          { (finished && assignment.answeredCorrectly) && (
             <div className="correctness">
-              { correctness ? 'Correct' : 'Sorry, not right' }
+              { justFinished ? 'Correct' : 'Solved correctly' }
             </div>
           ) }
-          { (finished && askedToShowAnswers) && (
+          { (finished && !assignment.answeredCorrectly) && (
             <div className="correctness">
-              Next one may be easier
+              { justFinished ? 'Next one may be easier' : 'Not solved, asked to show answers' }
+            </div>
+          ) }
+          { (!finished && justCheckedOrShowing) && (
+            <div className="correctness">
+              Sorry, not right, keep trying
             </div>
           ) }
         </div>
@@ -194,27 +193,29 @@ export default function SolveAssignment(props) {
     const correct = Equations.checkAnswers(assignment.equations, answers);
     assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
-      assignment.attemptText = attemptText;
+      assignment.attemptText = storedAttemptText;
       assignment.answeredCorrectly = true;
       assignment.done = true;
       assignment.doneTime = Date.now();
       deleteStoredAttemptText();
       clearState();
-      setAskedToCheckAnswers(true);
+    } else {
+      assignment.attemptAnswers = assignment.attemptAnswers ?? [];
+      assignment.attemptAnswers.push(mapToObject(answers));
     }
-    setCorrectness(correct);
+    setAskedToCheckOrShowAnswers(true);
     assignment.save();
   }
 
   function showAnswers() {
-    assignment.attemptText = attemptText;
+    assignment.attemptText = storedAttemptText;
     assignment.answeredCorrectly = false;
     assignment.done = true;
     assignment.doneTime = Date.now();
     assignment.save();
     deleteStoredAttemptText();
     clearState();
-    setAskedToShowAnswers(true);
+    setAskedToCheckOrShowAnswers(true);
   }
 
   function saveAttemptText(e) {
@@ -241,10 +242,8 @@ export default function SolveAssignment(props) {
   }
 
   function clearState() {
-    setAskedToShowAnswers(false);
-    setAskedToCheckAnswers(false);
+    setAskedToCheckOrShowAnswers(false);
     setAnswers(new Map());
-    setCorrectness(null);
     if (transitioning) clearTimeout(transitioningTimeout);
     setTransitioning(null);
   }
@@ -255,4 +254,12 @@ function resizeTextArea(el) {
   if (el.scrollHeight > el.clientHeight) {
     el.style.height = `${el.scrollHeight + textareaExtraSize}px`;
   }
+}
+
+function mapToObject(map) {
+  const retval = {};
+  for (const [key, value] of map.entries()) {
+    retval[key] = value;
+  }
+  return retval;
 }
