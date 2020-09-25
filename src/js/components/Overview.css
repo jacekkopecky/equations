@@ -20,6 +20,10 @@
   background-color: var(--assignment-challenge-bg);
 }
 
+#overview .assignment:not(.disabled):not(.done) {
+  border: solid thick var(--border-next-assignment);
+}
+
 #overview .assignment.disabled {
   cursor: default;
   filter: grayscale(0.8);
@@ -110,6 +114,14 @@
   right: 0.2em;
 }
 
+#overview .assignment .make-challenge:hover {
+  transform: scale(1.5);
+}
+
 #overview .assignment:not(.challenge):not(.made-challenge):not(:hover) .make-challenge {
+  filter: grayscale(1);
+}
+
+#overview .assignment.challenge.made-challenge .make-challenge:hover {
   filter: grayscale(1);
 }
