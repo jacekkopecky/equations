@@ -64,7 +64,7 @@ export default function SolveAssignment(props) {
 
   return (
     <>
-      <main id="solve-equation" className={classes.join(' ')}>
+      <main id="solve-assignment" className={classes.join(' ')}>
         <div className="info">
           { assignment.image && (
             <img

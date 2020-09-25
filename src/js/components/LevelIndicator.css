@@ -17,7 +17,7 @@
 .level-indicator .star.won::before {
   position: absolute;
   content: '⭐️';
-  animation: 1s ease-out infinite solve-equation-pulse;
+  animation: 1s ease-out infinite solve-assignment-pulse;
 }
 
 @keyframes level-indicator-pulse {

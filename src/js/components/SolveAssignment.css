@@ -1,16 +1,16 @@
-#solve-equation {
+#solve-assignment {
   position: relative;
 }
 
-#solve-equation .equation,
-#solve-equation .answer {
+#solve-assignment .equation,
+#solve-assignment .answer {
   font-family: "Times New Roman", serif;
   font-style: italic;
   font-size: 150%;
 }
 
-#solve-equation textarea.equation,
-#solve-equation pre.equation {
+#solve-assignment textarea.equation,
+#solve-assignment pre.equation {
   display: block;
   border: thin solid var(--border);
   outline: none;
@@ -21,19 +21,19 @@
   width: 100%;
 }
 
-#solve-equation pre.equation {
+#solve-assignment pre.equation {
   padding: 0.2rem;
   background: var(--disabled-bg);
 }
 
-#solve-equation .answer {
+#solve-assignment .answer {
   line-height: 2em;
   height: 2em;
   display: block;
   white-space: pre;
 }
 
-#solve-equation .answer input {
+#solve-assignment .answer input {
   font-size: inherit;
   font-family: inherit;
   font-style: inherit;
@@ -43,21 +43,21 @@
   box-sizing: border-box;
 }
 
-#solve-equation button {
+#solve-assignment button {
   font-size: 1em;
   padding: 1em;
 }
 
-#solve-equation .buttons > * {
+#solve-assignment .buttons > * {
   margin-right: 1em;
   margin-bottom: 1em;
 }
 
-#solve-equation .equations-text {
+#solve-assignment .equations-text {
   margin: 1em 6em 1em 0;
 }
 
-#solve-equation .info {
+#solve-assignment .info {
   width: 5em;
   height: 5em;
   padding: 1em 0;
@@ -69,7 +69,7 @@
   text-align: center;
 }
 
-#solve-equation .assignment-icon {
+#solve-assignment .assignment-icon {
   position: absolute;
   left: 0;
   right: 0;
@@ -82,7 +82,7 @@
   z-index: -1;
 }
 
-#solve-equation .n {
+#solve-assignment .n {
   font-family: sans-serif;
   font-size: 2.5em;
   display: block;
@@ -91,7 +91,7 @@
   font-weight: bold;
 }
 
-#solve-equation.challenge .info::before {
+#solve-assignment.challenge .info::before {
   content: '⭐️';
   font-size: 1em;
   position: absolute;
@@ -99,21 +99,21 @@
   right: 0;
 }
 
-#solve-equation.challenge.won .info::before {
-  animation: 1s ease-out infinite solve-equation-pulse;
+#solve-assignment.challenge.won .info::before {
+  animation: 1s ease-out infinite solve-assignment-pulse;
 }
 
-#solve-equation + footer .level-indicator .star.won::after {
+#solve-assignment + footer .level-indicator .star.won::after {
   opacity: 0;
 }
 
-@keyframes solve-equation-pulse {
+@keyframes solve-assignment-pulse {
   0% { transform: scale(1); }
   90% { transform: scale(1.5); }
   100% { transform: scale(1); }
 }
 
-#solve-equation .answers {
+#solve-assignment .answers {
   margin: 1rem 0;
   box-sizing: border-box;
   width: 100%;
@@ -121,15 +121,15 @@
   grid-template-columns: 1fr 1fr;
 }
 
-#solve-equation .answers .answer {
+#solve-assignment .answers .answer {
   margin-bottom: 1rem;
 }
 
-#solve-equation .answers .answer:last-child {
+#solve-assignment .answers .answer:last-child {
   margin-bottom: 0;
 }
 
-#solve-equation .answers .correctness {
+#solve-assignment .answers .correctness {
   font-size: 1.5em;
   margin-left: 2em;
   align-self: center;
