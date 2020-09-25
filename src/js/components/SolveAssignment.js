@@ -43,6 +43,9 @@ export default function SolveAssignment(props) {
 
   const [askedToCheckAnswers, setAskedToCheckAnswers] = useState(false);
   const [askedToShowAnswers, setAskedToShowAnswers] = useState(false);
+  const [transitioningTimeout, setTransitioning] = useState(null);
+
+  const transitioning = transitioningTimeout != null;
 
   if (assignment.level !== level) {
     return <Redirect to={`/eq/${assignment.level}/${n}`} />;
@@ -57,10 +60,15 @@ export default function SolveAssignment(props) {
   const finished = assignment.done != null;
   const attemptText = assignment.attemptText ?? storedAttemptText;
   const justWon = askedToCheckAnswers && correctness === true;
+  const canCheckAnswers = (
+    !transitioning && !finished
+    && Equations.areAllVariablesAnswered(assignment.equations, answers)
+  );
 
   const classes = [];
   if (assignment.challenge) classes.push('challenge');
   if (justWon) classes.push('won');
+  if (transitioning) classes.push('transitioning');
 
   return (
     <>
@@ -118,7 +126,7 @@ export default function SolveAssignment(props) {
           <button
             type="button"
             onClick={checkAnswers}
-            disabled={finished || !Equations.areAllVariablesAnswered(assignment.equations, answers)}
+            disabled={!canCheckAnswers}
           >
             Check answers
           </button>
@@ -126,19 +134,22 @@ export default function SolveAssignment(props) {
           <button
             type="button"
             onClick={showAnswers}
-            disabled={finished}
+            disabled={transitioning || finished}
           >
             Show me the answers
           </button>
 
           { props.back && (
-            <Link to={props.back}><button tabIndex={-1} type="button">Back to overview</button></Link>
+            <Link to={props.back} onClick={clearState}>
+              <button tabIndex={-1} type="button">Back to overview</button>
+            </Link>
           ) }
 
           { nextAssignment && (
             <button
               type="button"
               onClick={goToNext}
+              disabled={transitioning}
             >
               Next assignment
             </button>
@@ -157,6 +168,12 @@ export default function SolveAssignment(props) {
   );
 
   function goToNext() {
+    if (!transitioning) {
+      setTransitioning(setTimeout(doGoToNext, 150));
+    }
+  }
+
+  function doGoToNext() {
     clearState();
     setStartTime(Date.now());
     history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
@@ -228,6 +245,8 @@ export default function SolveAssignment(props) {
     setAskedToCheckAnswers(false);
     setAnswers(new Map());
     setCorrectness(null);
+    if (transitioning) clearTimeout(transitioningTimeout);
+    setTransitioning(null);
   }
 }
 

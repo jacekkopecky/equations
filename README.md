@@ -8,8 +8,6 @@ The program creates equations, lets the user solve them and check their answers,
 
 todo:
 
-- move to next needs to have a visible transition
-
 - give extra score for verified steps towards solution? (level is 10, step is 1?)
 - give 3-1 stars (score points) for first-third attempt? should score be given only if answered within a given number of attempts?
 
