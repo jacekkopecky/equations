@@ -17,6 +17,7 @@
     0 0 0 #000,
     0.01em 0.02em 0.15em #fff;
   --assignment-bg: #cdf;
+  --assignment-level-fg: #00f;
   --assignment-challenge-bg: #ffa;
   --assignment-tick-correct: #0808;
   --assignment-tick-correct-shadow:

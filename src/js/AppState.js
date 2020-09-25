@@ -45,7 +45,7 @@ export default class AppState {
   getAssignmentInformation(userLevel, n) {
     const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
-      level: challenge ? userLevel + 1 : chooseLevel(userLevel),
+      level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
       n,
       challenge,
     };
@@ -157,9 +157,16 @@ export default class AppState {
   }
 }
 
-function chooseLevel(l) {
-  return l;
-  // todo give lower-level assignments too?
+function chooseLevel(l, n) {
+  const inBatch = n % BATCH_SIZE;
+  switch (inBatch) {
+  case 1:
+    return Math.max(1, Math.floor(l / 2));
+  case 3:
+    return Math.max(1, Math.floor(l * 0.8));
+  default:
+    return l;
+  }
 }
 
 // how many challenges at the given level are required to reach this level

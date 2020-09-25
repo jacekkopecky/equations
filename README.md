@@ -8,8 +8,7 @@ The program creates equations, lets the user solve them and check their answers,
 
 todo:
 
-- semi-randomly select assignments simpler than current userLevel?
-  - maybe, in a batch: extra easy, normal, easy, normal, challenge?
+- move to next needs to have a visible transition
 
 - give extra score for verified steps towards solution? (level is 10, step is 1?)
 - give 3-1 stars (score points) for first-third attempt? should score be given only if answered within a given number of attempts?
@@ -33,7 +32,6 @@ todo:
 - say "back to stats" instead of "back to overview" when coming from stats
 - assignment page needs to show entered answers? (when wrong)
   - maybe keep record of all attempts?
-- move to next needs to have a visible transition
 
 
 ### Levels

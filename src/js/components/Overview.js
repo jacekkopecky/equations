@@ -71,7 +71,7 @@ function Assignment(props) {
 
   const canMakeChallenge = !isChallenge && !done && level < appState.topLevel;
 
-  const realLevel = makeChallenge ? level + 1 : level;
+  const realLevel = makeChallenge ? appState.level + 1 : level;
 
   const classes = ['assignment'];
   if (isChallenge || makeChallenge) classes.push('challenge');
@@ -88,6 +88,7 @@ function Assignment(props) {
         <img className="icon" src={image} alt="level icon" draggable="false" />
       ) }
       <span className="n">{ n }</span>
+      <span className="level">level { realLevel }</span>
     </>
   );
 
