@@ -16,6 +16,8 @@ export default function SolveAssignment(props) {
   const [answers, setAnswers] = useState(new Map());
   const [startTime, setStartTime] = useState(Date.now());
 
+  const [noteInteractionPause, resetInteractionPauses] = useInteractionPauses();
+
   const history = useHistory();
 
   const appState = props.appState;
@@ -174,11 +176,13 @@ export default function SolveAssignment(props) {
 
   function doGoToNext() {
     clearState();
+    resetInteractionPauses();
     setStartTime(Date.now());
     history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
   }
 
   function setAnswer(variable, value) {
+    noteInteractionPause();
     const copy = new Map(answers);
     if (Number.isNaN(value)) {
       delete copy.delete(variable);
@@ -190,6 +194,7 @@ export default function SolveAssignment(props) {
   }
 
   function checkAnswers() {
+    const pauses = noteInteractionPause();
     const correct = Equations.checkAnswers(assignment.equations, answers);
     assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
@@ -197,21 +202,25 @@ export default function SolveAssignment(props) {
       assignment.answeredCorrectly = true;
       assignment.done = true;
       assignment.doneTime = Date.now();
+      assignment.interactionPauses = pauses;
       deleteStoredAttemptText();
       clearState();
     } else {
       assignment.attemptAnswers = assignment.attemptAnswers ?? [];
       assignment.attemptAnswers.push(mapToObject(answers));
+      assignment.interactionPauses = pauses;
     }
     setAskedToCheckOrShowAnswers(true);
     assignment.save();
   }
 
   function showAnswers() {
+    const pauses = noteInteractionPause();
     assignment.attemptText = storedAttemptText;
     assignment.answeredCorrectly = false;
     assignment.done = true;
     assignment.doneTime = Date.now();
+    assignment.interactionPauses = pauses;
     assignment.save();
     deleteStoredAttemptText();
     clearState();
@@ -219,6 +228,7 @@ export default function SolveAssignment(props) {
   }
 
   function saveAttemptText(e) {
+    noteInteractionPause();
     resizeTextArea(e.target);
     setStoredAttemptText(e.target.value);
   }
@@ -249,6 +259,10 @@ export default function SolveAssignment(props) {
   }
 }
 
+function reverseComparator(a, b) {
+  return b - a;
+}
+
 const textareaExtraSize = 10;
 function resizeTextArea(el) {
   if (el.scrollHeight > el.clientHeight) {
@@ -262,4 +276,34 @@ function mapToObject(map) {
     retval[key] = value;
   }
   return retval;
+}
+
+function useInteractionPauses() {
+  const PAUSE_COUNT = 10;
+
+  const [pauses, setPauses] = useState(new Array(PAUSE_COUNT).fill(0));
+  const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
+
+  function noteInteractionPause() {
+    const now = Date.now();
+    setLastInteractionTime(now);
+    const currentPause = Math.floor((now - lastInteractionTime) / 1000);
+    if (currentPause > pauses[PAUSE_COUNT - 1]) {
+      const newPauses = Array.from(pauses);
+      newPauses[PAUSE_COUNT - 1] = currentPause;
+      newPauses.sort(reverseComparator);
+      setPauses(newPauses);
+      console.log(newPauses);
+      return newPauses;
+    } else {
+      return pauses;
+    }
+  }
+
+  function resetInteractionPauses() {
+    setLastInteractionTime(Date.now());
+    setPauses(new Array(PAUSE_COUNT).fill(0));
+  }
+
+  return [noteInteractionPause, resetInteractionPauses];
 }

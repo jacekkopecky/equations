@@ -12,7 +12,7 @@ todo:
 - give 3-1 stars (score points) for first-third attempt? should score be given only if answered within a given number of attempts?
 
 - keep time better?
-  - first, note how long users take between keystrokes?
+  - first, evaluate how long measured pauses are
   - time counting only with keystrokes? pause after half a minute without a keystroke?
   - maybe later award extra type of point (not counted but showing) for being within some time.
 
