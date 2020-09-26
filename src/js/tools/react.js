@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 
 // This hook returns a ref.
 // If the dependencies have changed and the ref has an element, it will focus.
@@ -77,4 +77,9 @@ export function useLocalStorage(key, initialValue) {
   };
 
   return [storedValue, setValue, deleteValue];
+}
+
+// adopted from https://reactrouter.com/web/example/query-parameters
+export function useQuery() {
+  return new URLSearchParams(useLocation().search);
 }
