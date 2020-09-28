@@ -198,7 +198,7 @@ export default function SolveAssignment(props) {
     const correct = Equations.checkAnswers(assignment.equations, answers);
     assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
-      assignment.attemptText = storedAttemptText;
+      assignment.attemptText = storedAttemptText.trim();
       assignment.answeredCorrectly = true;
       assignment.done = true;
       assignment.doneTime = Date.now();
@@ -216,7 +216,7 @@ export default function SolveAssignment(props) {
 
   function showAnswers() {
     const pauses = noteInteractionPause();
-    assignment.attemptText = storedAttemptText;
+    assignment.attemptText = storedAttemptText.trim();
     assignment.answeredCorrectly = false;
     assignment.done = true;
     assignment.doneTime = Date.now();
