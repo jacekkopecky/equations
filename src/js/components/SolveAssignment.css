@@ -19,6 +19,8 @@
   margin-top: 0.5em;
   margin-bottom: 0;
   width: 100%;
+  white-space: pre-line;
+  overflow-wrap: break-word;
 }
 
 #solve-assignment pre.equation {
