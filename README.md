@@ -29,6 +29,10 @@ todo:
 - say "back to stats" instead of "back to overview" when coming from stats
 - assignment page can show incorrect attempts
 
+- more levels?
+  - negative numbers
+  - a,b,c...  Alex, Bobby, Cass, ... - each run x,y,z,... meters, totaling N seconds; what's the speed of each runner? – e.g. backstory - a relay race game  (also practices converting speed, time, and distance)
+
 
 ### Levels
 
