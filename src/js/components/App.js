@@ -9,6 +9,7 @@ import {
 import Overview from './Overview';
 import SolveAssignment from './SolveAssignment';
 import Statistics from './Statistics';
+import About from './About';
 
 import { PropsFromRouteParams } from '../tools/react';
 
@@ -45,7 +46,7 @@ export default function App() {
           <Statistics appState={appState} back="/" />
         </Route>
         <Route path="/about">
-          <main>This is a simple app for practicing equations.</main>
+          <About />
         </Route>
         <Route path="*">
           <NotFound />
