@@ -132,14 +132,6 @@ export default function SolveAssignment(props) {
             Check answers
           </button>
 
-          <button
-            type="button"
-            onClick={showAnswers}
-            disabled={transitioning || finished}
-          >
-            Show me the answers
-          </button>
-
           { props.back && (
             <Link to={props.back} onClick={clearState}>
               <button tabIndex={-1} type="button">Back to overview</button>
@@ -155,6 +147,15 @@ export default function SolveAssignment(props) {
               Next assignment
             </button>
           ) }
+
+          <button
+            id="show-answers"
+            type="button"
+            onClick={showAnswers}
+            disabled={transitioning || finished}
+          >
+            Show me the answers
+          </button>
         </div>
       </main>
       <footer>

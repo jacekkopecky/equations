@@ -50,9 +50,21 @@
   padding: 1em;
 }
 
+#solve-assignment .buttons {
+  display: flex;
+}
+
 #solve-assignment .buttons > * {
   margin-right: 1em;
   margin-bottom: 1em;
+}
+
+#solve-assignment .buttons > #show-answers {
+  margin-left: auto;
+}
+
+#solve-assignment .buttons > :last-child {
+  margin-right: 0;
 }
 
 #solve-assignment .equations-text {
