@@ -5,7 +5,7 @@ import { dateToString } from './tools/durations';
 
 const BATCH_SIZE = 5;
 
-export default class AppState {
+export class AppState {
   constructor() {
     const [state, setState] = useLocalStorage('equationsState', {});
     this.state = state;
@@ -155,6 +155,12 @@ export default class AppState {
 
     return assignmentsOnLastDate;
   }
+}
+
+// hook function wrapper for AppState because its constructor uses hooks too
+// this way linters can enforce hook rules
+export default function useAppState() {
+  return new AppState();
 }
 
 function chooseLevel(l, n) {

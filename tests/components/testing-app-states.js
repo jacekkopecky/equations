@@ -1,4 +1,4 @@
-import AppState from '../../src/js/AppState';
+import { AppState } from '../../src/js/AppState';
 
 import * as reactTools from '../../src/js/tools/react';
 

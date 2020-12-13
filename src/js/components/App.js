@@ -15,10 +15,10 @@ import { PropsFromRouteParams } from '../tools/react';
 
 import './App.css';
 
-import AppState from '../AppState';
+import useAppState from '../AppState';
 
 export default function App() {
-  const appState = new AppState();
+  const appState = useAppState();
 
   return (
     <Router>
