@@ -6,7 +6,13 @@ The program creates equations, lets the user solve them and check their answers,
 
 ## Development notes
 
-todo:
+Development happens on branch `main`. Commits there that pass CI are built and deployed in branch `production` by GitHub Actions.
+
+To add new levels, go to `src/js/levels`.
+
+
+
+## todo:
 
 - give extra score for verified steps towards solution? (level is 10, step is 1?)
 - give 3-1 stars (score points) for first-third attempt? should score be given only if answered within a given number of attempts?
