@@ -1,6 +1,8 @@
 import Random from '../src/js/tools/random';
 import levels from '../src/js/levels/index';
-import applesAndBananas from '../src/js/levels/apples-and-bananas';
+import applesAndBananas, * as ab from '../src/js/levels/apples-and-bananas';
+import cherries, * as c from '../src/js/levels/cherries';
+import { challengeNoText } from '../src/js/levels/tools';
 
 describe('levels', () => {
   test('export is an array', () => {
@@ -61,8 +63,44 @@ describe('apples and bananas levels', () => {
     expect(applesAndBananas[0]).not.toBe(null);
   });
 
-  test('all have text', () => {
+  test('extras1 is an array', () => {
+    expect(Array.isArray(ab.extras1)).toBe(true);
+    expect(ab.extras1.length).toBeGreaterThan(0);
+    expect(ab.extras1[0]).not.toBe(null);
+  });
+
+  test('first batch all have text', () => {
     for (const level of applesAndBananas) {
+      const rng = new Random('foo');
+      const eq = level(rng);
+      expect(Array.isArray(eq.text)).toBe(true);
+    }
+  });
+
+  test('extras1 text effectively says "no text"', () => {
+    for (const level of ab.extras1) {
+      const rng = new Random('foo');
+      const eq = level(rng);
+      expect(eq.text).toEqual([challengeNoText]);
+    }
+  });
+});
+
+describe('cherries levels', () => {
+  test('export is an array', () => {
+    expect(Array.isArray(cherries)).toBe(true);
+    expect(cherries.length).toBeGreaterThan(0);
+    expect(cherries[0]).not.toBe(null);
+  });
+
+  test('extras1 is an array', () => {
+    expect(Array.isArray(c.extras1)).toBe(true);
+    expect(c.extras1.length).toBeGreaterThan(0);
+    expect(c.extras1[0]).not.toBe(null);
+  });
+
+  test('first batch and extras1 all have text', () => {
+    for (const level of [...cherries, ...c.extras1]) {
       const rng = new Random('foo');
       const eq = level(rng);
       expect(Array.isArray(eq.text)).toBe(true);

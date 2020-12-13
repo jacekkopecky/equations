@@ -1,4 +1,9 @@
+/*
+ * simple 2-variable sets of two equations
+ */
+
 import image from '../../../images/apples-and-bananas.png';
+import { onlyText, onlyEquations } from './tools';
 
 /*
  * Max buys x1 apples and y1 bananas and pays n1,
@@ -65,15 +70,6 @@ function s(n) {
 
 function twoDecimalPoints(n) {
   return n.toFixed(2);
-}
-
-function onlyText(f) {
-  return (...args) => {
-    const retval = f(...args);
-    retval.onlyText = true;
-    retval.text.push('', 'Part of the challenge is to write the first two equations.');
-    return retval;
-  };
 }
 
 /* levels
@@ -200,4 +196,9 @@ export default [
   onlyText(applesAndBananas4),
   applesAndBananas5,
   onlyText(applesAndBananas5),
+];
+
+export const extras1 = [
+  onlyEquations(applesAndBananas2),
+  onlyEquations(applesAndBananas5),
 ];

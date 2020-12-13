@@ -84,7 +84,7 @@ export default function SolveAssignment(props) {
         <span className="difficulty">Difficulty level { level }{ assignment.challenge && ' (challenge)' }, assignment { n }:</span>
 
         { assignment.text && Equations.formatEquationsText(assignment.text) }
-        { assignment.onlyText || (
+        { !assignment.onlyText && (
           assignment.equations.map(renderEquation)
         ) }
 

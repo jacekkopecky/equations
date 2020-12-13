@@ -1,5 +1,38 @@
 import React from 'react';
 
+/*
+ * The structure of an assignment - a set of equations - is like this:
+ *
+ * {
+ *   equations: [
+ *     {
+ *       lhs: [
+ *         { n: x1, var: 'a' },
+ *         { n: y1, var: 'b' },
+ *       ],
+ *       rhs: [
+ *         { n: n1 },
+ *       ],
+ *     },
+ *     {
+ *       lhs: [
+ *         { n: x2, var: 'a' },
+ *         { n: y2, var: 'b' },
+ *       ],
+ *       rhs: [
+ *         { n: n2 },
+ *       ],
+ *     },
+ *   ],
+ *   solution: {
+ *     a: number,
+ *     b: number,
+ *   },
+ *   text: [ strings ],
+ *   image: string,
+ * };
+ */
+
 // equations is an array of equations, or a single equation
 // answers is a Map from variable name to numerical value
 export function checkAnswers(equations, answers) {
@@ -95,6 +128,7 @@ function abs(n) {
   }
 }
 
+// return a string representing the number with precision up to 8 digits
 function round8(n) {
   // expect strings to be pre-formatted
   if (typeof n === 'string') return n;

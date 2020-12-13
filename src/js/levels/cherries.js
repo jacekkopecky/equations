@@ -1,4 +1,9 @@
+/*
+ * 3-variable sets of two equations
+ */
+
 import image from '../../../images/cherries.png';
+import { onlyText, onlyEquations } from './tools';
 
 /*
  * Max buys x1 apples, y1 bananas, and z1 cherries and pays n1,
@@ -87,15 +92,6 @@ function twoDecimalPoints(n) {
   return n.toFixed(2);
 }
 
-function onlyText(f) {
-  return (...args) => {
-    const retval = f(...args);
-    retval.onlyText = true;
-    retval.text.push('', 'Part of the challenge is to write the first two equations.');
-    return retval;
-  };
-}
-
 /* levels
  *
  *
@@ -154,4 +150,8 @@ export default [
   onlyText(cherries1),
   cherries2,
   onlyText(cherries2),
+];
+
+export const extras1 = [
+  onlyEquations(cherries1),
 ];
