@@ -30,6 +30,8 @@ export class AppState {
       if (level > this.level) assignment.challenge = true;
     }
 
+    // todo what to do if we already have the assignment, it's not done, and startTime differs?
+
     if (!assignment.save) {
       assignment.save = () => {
         this._duplicateState();
