@@ -3,7 +3,7 @@ import seedrandom, { prng } from 'seedrandom';
 export default class Random {
   rng: prng;
 
-  constructor(seed: string) {
+  constructor(seed?: string) {
     this.rng = seedrandom(seed);
   }
 

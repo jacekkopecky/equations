@@ -26,7 +26,7 @@ describe('levels', () => {
       expect(eq1).toEqual(eq2);
       expect(eq1).not.toEqual(eq3);
 
-      if (eq1.text == null) expect(eq1.onlyText).toBeFalsey();
+      if (eq1.text == null) expect(eq1.onlyText).toBeFalsy();
     }
   });
 
@@ -47,7 +47,7 @@ describe('levels', () => {
       }
 
       // record that we have found equations with/out onlyText
-      foundOnlyText[Boolean(eq.onlyText)] = true;
+      foundOnlyText[String(Boolean(eq.onlyText))] = true;
     }
 
     // assert that some have .onlyText and that some don't
