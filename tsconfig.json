@@ -3,7 +3,8 @@
     "outDir": "./dist-ts/",
     "sourceMap": true,
     "strictNullChecks": true,
-    "module": "es6",
+    "module": "es2020",
+    "target": "es2019",
     "moduleResolution": "node",
     "jsx": "react",
     "allowJs": true
