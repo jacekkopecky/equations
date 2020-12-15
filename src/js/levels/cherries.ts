@@ -155,7 +155,26 @@ function cherries2(rng: Random): AssignmentDefinition {
   return cherries(rng, x, x, x, y1, y1, y2, z1, z2, z3, a, b, c);
 }
 
-// cherries2
+function cherries3(rng) {
+  // like above, but make second equation with different x
+  // x1 a + y1 b + z1 c = n1
+  // x2 a + y1 b + z2 c = n2
+  // x1 a + y2 b + z3 c = n3
+  // prices in steps of 0.1 up to 1
+
+  const x1 = rng.int(1, 3);
+  const x2 = x1 + rng.int(1, 3);
+  const y1 = rng.int(1, 3);
+  const y2 = y1 + rng.int(1, 3);
+  const z1 = rng.int(1, 3);
+  const z2 = z1 + rng.int(1, 2);
+  const z3 = z2 + rng.int(1, 2);
+  const a = rng.int(1, 10) * 0.1;
+  const b = rng.int(1, 10) * 0.1;
+  const c = rng.int(1, 10) * 0.1;
+
+  return cherries(rng, x1, x2, x1, y1, y1, y2, z1, z2, z3, a, b, c);
+}
 
 const levels: LevelFunction[] = [
   cherries1,
@@ -167,4 +186,7 @@ export default levels;
 
 export const extras1 = [
   onlyEquations(cherries1),
+  cherries3,
+  onlyText(cherries3),
+  onlyEquations(cherries3),
 ];

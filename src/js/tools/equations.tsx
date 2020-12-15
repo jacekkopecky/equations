@@ -166,3 +166,135 @@ function formatTextLine(line: string, i: number) {
     return <br key={i.toString()} />;
   }
 }
+
+class EquationMatrix {
+  constructor(n) {
+    this.rows = new Array(n);
+    for (let i = 0; i < n; i += 1) {
+      this.rows[i] = new Array(n + 1).fill(0);
+    }
+  }
+
+  static fromEquations(eqs, varOrder) {
+    const retval = new EquationMatrix(varOrder.length);
+    for (let i = 0; i < eqs.length; i += 1) {
+      const equation = eqs[i];
+      for (const part of equation.lhs) {
+        addPart(i, part);
+      }
+      for (const part of equation.rhs) {
+        addPart(i, {
+          var: part.var,
+          n: -part.n,
+        });
+      }
+    }
+    return retval;
+
+    function addPart(row, part) {
+      if (part.var) {
+        const varIndex = varOrder.indexOf(part.var);
+        if (varIndex === -1) throw new TypeError(`variable ${part.var} not in varOrder`);
+
+        retval.add(row, varIndex, Number(part.n));
+      } else {
+        // constant part, not variable
+        // adding negative because constants on LHS are like negative constants on RHS
+        retval.add(row, varOrder.length, -Number(part.n));
+      }
+    }
+  }
+
+  ensureDiagonalNonZero(i) {
+    // return true if we found non-zero, false otherwise
+
+    if (this.rows[i][i] !== 0) return true;
+
+    const nonZeroRow = this.rows.findIndex((row, j) => j > i && row[i] !== 0);
+
+    if (nonZeroRow === -1) return false; // no such row found
+
+    // swap the rows
+    [this.rows[i], this.rows[nonZeroRow]] = [this.rows[nonZeroRow], this.rows[i]];
+    return true;
+  }
+
+  get(row, col) {
+    return this.rows[row][col];
+  }
+
+  set(row, col, val) {
+    this.rows[row][col] = val;
+  }
+
+  add(row, col, val) {
+    this.rows[row][col] += val;
+  }
+
+  get length() {
+    return this.rows.length;
+  }
+
+  multiplyRow(n, s) {
+    const row = this.rows[n];
+    for (let i = 0; i < row.length; i += 1) {
+      row[i] *= s;
+    }
+  }
+
+  addMultipleOfRow(target, other, multiplier) {
+    const targetRow = this.rows[target];
+    const otherRow = this.rows[other];
+    for (let i = 0; i < targetRow.length; i += 1) {
+      targetRow[i] += multiplier * otherRow[i];
+    }
+  }
+
+  getColumn(n) {
+    return this.rows.map((row) => row[n]);
+  }
+}
+
+// use Gaussian elimination to solve the given equations
+// returns a map from variable to value
+export function solve(equations) {
+  const vars = Array.from(extractVariables(equations));
+
+  // matrix is an array of rows, each row an array of numbers
+  // for n variables the matrix size is n+1 x n
+  // each row represents the variables in order and the constant they need to equal
+  // in other words, the equal sign if between column n and n+1
+  const m = EquationMatrix.fromEquations(equations, vars);
+
+  // for each column, put 1 in the diagonal and zeros below
+  for (let i = 0; i < m.length; i += 1) {
+    // if we cannot find a non-zero for the diagonal, there is no solution
+    if (!m.ensureDiagonalNonZero(i)) return null;
+
+    // reduce diagonal to 1
+    m.multiplyRow(i, 1 / m.get(i, i));
+    m.set(i, i, 1); // ensure 1 in face of unexact computation
+
+    // remove non-zeros under diagonal
+    for (let j = i + 1; j < m.length; j += 1) {
+      m.addMultipleOfRow(j, i, -m.get(j, i));
+    }
+  }
+
+  // propagate solutions from lower rows upwards
+  for (let i = m.length - 1; i > 0; i -= 1) {
+    for (let j = i - 1; j >= 0; j -= 1) {
+      m.addMultipleOfRow(j, i, -m.get(j, i));
+    }
+  }
+
+  const solutions = m.getColumn(vars.length);
+  const retval = new Map();
+
+  // extract variable bindings, rounded to step around inaccurate arithmetic
+  for (let i = 0; i < vars.length; i += 1) {
+    retval.set(vars[i], round8(solutions[i]));
+  }
+
+  return retval;
+}

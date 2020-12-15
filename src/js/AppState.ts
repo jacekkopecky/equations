@@ -226,3 +226,8 @@ function chooseLevel(l: number, n: number): number {
 function challengesRequired(level?: number) {
   return 5; // might be variable at some point
 }
+
+export function makeLevelRng(level, n) {
+  const rng = new Random(`${level}/${n}`);
+  return rng;
+}

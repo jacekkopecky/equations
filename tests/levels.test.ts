@@ -1,8 +1,12 @@
 import Random from '../src/js/tools/random';
 import * as levels from '../src/js/levels/index';
+import * as equations from '../src/js/tools/equations';
+import { makeLevelRng } from '../src/js/AppState';
 import applesAndBananas, * as ab from '../src/js/levels/apples-and-bananas';
 import cherries, * as c from '../src/js/levels/cherries';
 import { challengeNoText } from '../src/js/levels/tools';
+
+const SOLVABILITY_ITERATIONS = 1000;
 
 describe('levels', () => {
   test('there is at least one level', () => {
@@ -49,6 +53,23 @@ describe('levels', () => {
     // assert that some have .onlyText and that some don't
     expect(foundOnlyText.has(true)).toBe(true);
     expect(foundOnlyText.has(false)).toBe(true);
+  });
+
+  test('every level is solvable', () => {
+    // skip level 0, it does not exist
+    for (let i = 1; i < levels.length; i += 1) {
+      const level = levels[i];
+      for (let n = 0; n < SOLVABILITY_ITERATIONS; n += 1) {
+        const rng = makeLevelRng(i, n);
+        const assignment = level(rng);
+        const solution = equations.solve(assignment.equations);
+        if (!solution) console.log(i, n, assignment);
+        expect(solution).toEqual(expect.anything()); // a solution should exist
+        for (const variable of solution.keys()) {
+          expect(Number(solution.get(variable))).toBe(Number(assignment.solution[variable]));
+        }
+      }
+    }
   });
 });
 
