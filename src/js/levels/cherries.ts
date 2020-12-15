@@ -3,7 +3,14 @@
  */
 
 import image from '../../../images/cherries.png';
-import { onlyText, onlyEquations } from './tools';
+import {
+  onlyText,
+  onlyEquations,
+  twoDecimalPoints,
+  s,
+} from './tools';
+import { AssignmentDescription } from '../types';
+import Random from '../tools/random';
 
 /*
  * Max buys x1 apples, y1 bananas, and z1 cherries and pays n1,
@@ -11,7 +18,21 @@ import { onlyText, onlyEquations } from './tools';
  * Alex buys x3 apples, y3 bananas, and z3 cherries and pays n3.
  * How much do the apples, bananas and cherries cost?
  */
-function cherries(rng, x1, x2, x3, y1, y2, y3, z1, z2, z3, a, b, c) {
+function cherries(
+  rng: Random,
+  x1: number,
+  x2: number,
+  x3: number,
+  y1: number,
+  y2: number,
+  y3: number,
+  z1: number,
+  z2: number,
+  z3: number,
+  a: number,
+  b: number,
+  c: number,
+): AssignmentDescription {
   // randomly permute x/y/z
   [[x1, x2, x3], [y1, y2, y3], [z1, z2, z3]] = rng.permute(
     [[x1, x2, x3], [y1, y2, y3], [z1, z2, z3]],
@@ -83,15 +104,6 @@ function cherries(rng, x1, x2, x3, y1, y2, y3, z1, z2, z3, a, b, c) {
   };
 }
 
-// plural suffix 's' if n is more than 1
-function s(n) {
-  return n > 1 ? 's' : '';
-}
-
-function twoDecimalPoints(n) {
-  return n.toFixed(2);
-}
-
 /* levels
  *
  *
@@ -105,7 +117,7 @@ function twoDecimalPoints(n) {
  *
  */
 
-function cherries1(rng) {
+function cherries1(rng: Random): AssignmentDescription {
   // x a + y1 b + z1 c = n1
   // x a + y1 b + z2 c = n2
   // x a + y2 b + z2 c = n3
@@ -123,7 +135,7 @@ function cherries1(rng) {
   return cherries(rng, x, x, x, y1, y1, y2, z1, z2, z2, a, b, c);
 }
 
-function cherries2(rng) {
+function cherries2(rng: Random): AssignmentDescription {
   // like above, but make third equation with different z
   // x a + y1 b + z1 c = n1
   // x a + y1 b + z2 c = n2

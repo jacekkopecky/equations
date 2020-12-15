@@ -3,22 +3,38 @@
  */
 
 import image from '../../../images/apples-and-bananas.png';
-import { onlyText, onlyEquations } from './tools';
+import {
+  onlyText,
+  onlyEquations,
+  twoDecimalPoints,
+  s,
+  nthNonMultiple,
+} from './tools';
+import { AssignmentDescription } from '../types';
+import Random from '../tools/random';
 
 /*
  * Max buys x1 apples and y1 bananas and pays n1,
  * Jamie buys x2 apples and y2 bananas and pays n2.
  * How much do the apples and bananas cost?
  */
-function applesAndBananas(rng, x1, x2, y1, y2, a, b) {
+function applesAndBananas(
+  rng: Random,
+  x1: number | string,
+  x2: number | string,
+  y1: number | string,
+  y2: number | string,
+  a: number,
+  b: number,
+): AssignmentDescription {
   // randomly switch x/y
   if (rng.bool()) [x1, x2, y1, y2] = [y1, y2, x1, x2];
 
   // randomly switch 1/2
   if (rng.bool()) [x1, x2, y1, y2] = [x2, x1, y2, y1];
 
-  const n1 = twoDecimalPoints(x1 * a + y1 * b);
-  const n2 = twoDecimalPoints(x2 * a + y2 * b);
+  const n1 = twoDecimalPoints(Number(x1) * a + Number(y1) * b);
+  const n2 = twoDecimalPoints(Number(x2) * a + Number(y2) * b);
 
   const equations = [
     {
@@ -63,15 +79,6 @@ function applesAndBananas(rng, x1, x2, y1, y2, a, b) {
   };
 }
 
-// plural suffix 's' if n is more than 1
-function s(n) {
-  return n > 1 ? 's' : '';
-}
-
-function twoDecimalPoints(n) {
-  return n.toFixed(2);
-}
-
 /* levels
  *
  *
@@ -85,7 +92,7 @@ function twoDecimalPoints(n) {
  *
  */
 
-function applesAndBananas1(rng) {
+function applesAndBananas1(rng: Random): AssignmentDescription {
   // x a + y1 b = n1
   // x a + y2 b = n2
   // prices in steps of 0.1 up to 1
@@ -101,7 +108,7 @@ function applesAndBananas1(rng) {
   return applesAndBananas(rng, String(x), String(x), String(y1), String(y2), a, b);
 }
 
-function applesAndBananas2(rng) {
+function applesAndBananas2(rng: Random): AssignmentDescription {
   // pick random small x2
   // pick x1 a small multiple of x2
   // pick random small y2
@@ -122,7 +129,7 @@ function applesAndBananas2(rng) {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-function applesAndBananas3(rng) {
+function applesAndBananas3(rng: Random): AssignmentDescription {
   // like the above but with prices between 0.05 and 1.1 in steps of 0.05
 
   const x2 = rng.int(1, 3);
@@ -136,7 +143,7 @@ function applesAndBananas3(rng) {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-function applesAndBananas4(rng) {
+function applesAndBananas4(rng: Random): AssignmentDescription {
   // Like 2 but
   //
   // - x1 not divisible by x2; x1 and x2 have a low multiple M
@@ -152,27 +159,8 @@ function applesAndBananas4(rng) {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-// return nth number in the sequence x+1, x+2... excluding multiples of x
-function nthNonMultiple(x, n) {
-  const generator = nonMultiples(x);
-  for (const nonMultiple of generator) {
-    if (n === 1) return nonMultiple;
-    n -= 1;
-  }
-  return null; // this line will never be reached
-}
-
-function* nonMultiples(start) {
-  if (start < 2 || !Number.isInteger(start)) throw new TypeError('nonMultiples only works with integers > 1');
-  let x = start + 1;
-  while (true) {
-    if (x % start !== 0) yield x;
-    x += 1;
-  }
-}
-
 // 5: where subtracting one from the other leads to a negative?
-function applesAndBananas5(rng) {
+function applesAndBananas5(rng: Random): AssignmentDescription {
   // simply x1 > x2, y1 < y2, with prices in 5p increments
 
   const x2 = rng.int(1, 3);

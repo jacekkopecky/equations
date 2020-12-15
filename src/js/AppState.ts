@@ -2,20 +2,9 @@ import levels from './levels/index';
 import Random from './tools/random';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
+import { Assignment, AssignmentInformation } from './types';
 
 const BATCH_SIZE = 5;
-
-interface Assignment {
-  level: number,
-  n: number,
-  challenge: boolean,
-
-  startTime?: number,
-  answeredCorrectly: boolean,
-  done: boolean,
-
-  save?: () => void,
-}
 
 interface AppStateInternalState {
   level: number,
@@ -71,7 +60,7 @@ export class AppState {
     return assignment;
   }
 
-  getAssignmentInformation(userLevel: number, n: number): Assignment {
+  getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
     const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
@@ -92,19 +81,19 @@ export class AppState {
     return assignmentInfo;
   }
 
-  getNextAssignment(n: number): Assignment | null {
+  getNextAssignment(n: number): AssignmentInformation | null {
     const assignmentN = this.getAssignmentInformation(0, n);
     if (!assignmentN.done) return null; // there should be no "next" link
 
     return this.getAssignmentInformation(this.level, n + 1);
   }
 
-  getUpcomingAssignments(): Assignment[] {
+  getUpcomingAssignments(): AssignmentInformation[] {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
 
     const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
-    const assignments: Assignment[] = [];
+    const assignments: AssignmentInformation[] = [];
     const level = this.level;
 
     for (let i = 0; i < BATCH_SIZE; i += 1) {
