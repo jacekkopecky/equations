@@ -1,8 +1,22 @@
 import Random from './tools/random';
 
+interface EquationPart {
+  n: number | string,
+  var?: string,
+}
+
+interface Equation {
+  lhs: EquationPart[],
+  rhs: EquationPart[],
+}
+
+interface Solutions {
+  [index: string]: number | string,
+}
+
 export interface AssignmentDescription {
-  equations: any,
-  solution: any,
+  equations: Equation[],
+  solution: Solutions,
 
   onlyText?: boolean,
   text?: string[],
