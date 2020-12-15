@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import {
   BrowserRouter as Router,
   Link,
@@ -17,7 +17,7 @@ import './App.css';
 
 import useAppState from '../AppState';
 
-export default function App() {
+export default function App(): JSX.Element {
   const appState = useAppState();
 
   return (
@@ -43,7 +43,7 @@ export default function App() {
           <SolveAssignment level={1} n={1} appState={appState} back="/" />
         </Route>
         <Route path="/stats" exact>
-          <Statistics appState={appState} back="/" />
+          <Statistics appState={appState} />
         </Route>
         <Route path="/about">
           <About />

@@ -1,9 +1,18 @@
-import React from 'react';
+import * as React from 'react';
+
+import type { AppState } from '../AppState';
 
 import './LevelIndicator.css';
 
-export default function LevelIndicator({ appState, justWonAStar }) {
-  const userLevel = appState.level;
+interface LevelIndicatorProps {
+  appState: AppState,
+  justWonAStar: boolean,
+}
+
+export default function LevelIndicator(
+  { appState, justWonAStar }: LevelIndicatorProps,
+): JSX.Element {
+  const userLevel: number = appState.level;
 
   const classes = ['level-indicator'];
   if (justWonAStar && appState.progress === 0) classes.push('won');
@@ -17,7 +26,7 @@ export default function LevelIndicator({ appState, justWonAStar }) {
   );
 }
 
-function renderProgress(appState, justWonAStar) {
+function renderProgress(appState: AppState, justWonAStar: boolean) {
   const userLevel = appState.level;
 
   if (userLevel === appState.topLevel) {
@@ -29,7 +38,7 @@ function renderProgress(appState, justWonAStar) {
   const progress = appState.progress;
   const required = appState.progressRequired;
 
-  const stars = [];
+  const stars:JSX.Element[] = [];
 
   for (let i = 0; i < required; i += 1) {
     if (i < progress) {

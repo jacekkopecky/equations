@@ -5,25 +5,52 @@ import { dateToString } from './tools/durations';
 
 const BATCH_SIZE = 5;
 
+interface Assignment {
+  level: number,
+  n: number,
+  challenge: boolean,
+
+  startTime?: number,
+  answeredCorrectly: boolean,
+  done: boolean,
+
+  save?: () => void,
+}
+
+interface AppStateInternalState {
+  level: number,
+  assignments: Assignment[],
+}
+
+function defaultInternalState(): AppStateInternalState {
+  return {
+    level: 1,
+    assignments: [],
+  };
+}
+
 export class AppState {
+  topLevel: number;
+  state: AppStateInternalState;
+  setState: (state: AppStateInternalState) => void;
+
   constructor() {
-    const [state, setState] = useLocalStorage('equationsState', {});
+    const [state, setState] = useLocalStorage('equationsState', defaultInternalState());
     this.state = state;
     this.setState = setState;
-
-    if (!Array.isArray(this.state.assignments)) {
-      this.state.assignments = [];
-    }
 
     this.topLevel = levels.length - 1;
   }
 
-  getAssignment(level, n, startTime) {
+  getAssignment(level: number, n: number, startTime: number): Assignment {
     let assignment = this.state.assignments[n];
+
+    const levelFunction = levels[level];
+    if (levelFunction == null) throw new TypeError('level does not exist');
 
     if (!assignment) {
       const rng = new Random(`${level}/${n}`);
-      assignment = levels[level](rng);
+      assignment = levelFunction(rng) as Assignment;
       assignment.startTime = startTime;
       assignment.level = level;
       assignment.n = n;
@@ -44,12 +71,14 @@ export class AppState {
     return assignment;
   }
 
-  getAssignmentInformation(userLevel, n) {
+  getAssignmentInformation(userLevel: number, n: number): Assignment {
     const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
       n,
       challenge,
+      done: false,
+      answeredCorrectly: false,
     };
 
     const attempted = this.state.assignments[n];
@@ -63,19 +92,19 @@ export class AppState {
     return assignmentInfo;
   }
 
-  getNextAssignment(n) {
+  getNextAssignment(n: number): Assignment | null {
     const assignmentN = this.getAssignmentInformation(0, n);
     if (!assignmentN.done) return null; // there should be no "next" link
 
     return this.getAssignmentInformation(this.level, n + 1);
   }
 
-  getUpcomingAssignments() {
+  getUpcomingAssignments(): Assignment[] {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
 
     const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
-    const assignments = [];
+    const assignments: Assignment[] = [];
     const level = this.level;
 
     for (let i = 0; i < BATCH_SIZE; i += 1) {
@@ -86,24 +115,24 @@ export class AppState {
     return assignments;
   }
 
-  _duplicateState() {
+  _duplicateState(): void {
     this.state = { ...this.state };
   }
 
   // use this after _duplicateState and then changing some values there
-  _saveState() {
+  _saveState(): void {
     this.setState(this.state);
   }
 
-  get score() {
+  get score(): number {
     return this.state.assignments.filter((a) => a?.answeredCorrectly).length;
   }
 
-  get level() {
-    return this.state.level || 1;
+  get level(): number {
+    return this.state.level;
   }
 
-  _recomputeUserLevel() {
+  _recomputeUserLevel(): void {
     let level = 1;
     let progress = 0;
     let target = challengesRequired(level + 1);
@@ -124,21 +153,21 @@ export class AppState {
     this.state.level = level;
   }
 
-  get progress() {
+  get progress(): number {
     const level = this.level;
     const progress = this.state.assignments.filter((a) => Number(a?.level) > level).length;
     return progress;
   }
 
-  get progressRequired() {
+  get progressRequired(): number {
     return challengesRequired(this.level + 1);
   }
 
-  get doneAssignments() {
+  get doneAssignments(): Assignment[] {
     return this.state.assignments.filter((a) => a?.done);
   }
 
-  get lastDayAssignments() {
+  get lastDayAssignments(): Assignment[] {
     const done = this.doneAssignments;
     if (done.length === 0) return done;
 
@@ -161,11 +190,11 @@ export class AppState {
 
 // hook function wrapper for AppState because its constructor uses hooks too
 // this way linters can enforce hook rules
-export default function useAppState() {
+export default function useAppState(): AppState {
   return new AppState();
 }
 
-function chooseLevel(l, n) {
+function chooseLevel(l: number, n: number): number {
   const inBatch = n % BATCH_SIZE;
   switch (inBatch) {
   case 1:
@@ -178,6 +207,7 @@ function chooseLevel(l, n) {
 }
 
 // how many challenges at the given level are required to reach this level
-function challengesRequired() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function challengesRequired(level?: number) {
   return 5; // might be variable at some point
 }
