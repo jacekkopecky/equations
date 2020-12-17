@@ -1,4 +1,6 @@
-import React from 'react';
+import * as React from 'react';
+
+import * as t from '../types';
 
 /*
  * The structure of an assignment - a set of equations - is like this:
@@ -35,7 +37,7 @@ import React from 'react';
 
 // equations is an array of equations, or a single equation
 // answers is a Map from variable name to numerical value
-export function checkAnswers(equations, answers) {
+export function checkAnswers(equations: t.Equation[], answers: t.AnswersMap): boolean {
   // call with a single equation or an array of them
   if (!Array.isArray(equations)) equations = [equations];
 
@@ -48,10 +50,10 @@ export function checkAnswers(equations, answers) {
   return true;
 }
 
-export function areAllVariablesAnswered(equations, answers) {
-  // call with a single equation or an array of them
-  if (!Array.isArray(equations)) equations = [equations];
-
+export function areAllVariablesAnswered(
+  equations: t.Equation | t.Equation[],
+  answers: t.AnswersMap,
+): boolean {
   const usedVariables = extractVariables(equations);
 
   // check all variables in equations are answered
@@ -62,7 +64,7 @@ export function areAllVariablesAnswered(equations, answers) {
   return true;
 }
 
-function evaluateAdditions(parts, answers) {
+function evaluateAdditions(parts: t.EquationParts, answers: t.AnswersMap) {
   let sum = 0;
   for (const part of parts) {
     sum += evaluatePart(part, answers);
@@ -70,17 +72,16 @@ function evaluateAdditions(parts, answers) {
   return sum;
 }
 
-function evaluatePart(part, answers) {
+function evaluatePart(part: t.EquationPart, answers: t.AnswersMap) {
   const n = Number(part.n);
-
-  return part.var ? n * answers.get(part.var) : n;
+  return part.var ? n * (answers.get(part.var) ?? NaN) : n;
 }
 
-export function extractVariables(equations) {
+export function extractVariables(equations: t.Equation | t.Equation[]): Set<string> {
   // call with a single equation or an array of them
   if (!Array.isArray(equations)) equations = [equations];
 
-  const vars = new Set();
+  const vars = new Set<string>();
 
   for (const eq of equations) {
     for (const additions of [...eq.lhs, ...eq.rhs]) {
@@ -91,7 +92,7 @@ export function extractVariables(equations) {
   return vars;
 }
 
-export function formatEquation(e, n) {
+export function formatEquation(e: t.Equation, n: number): JSX.Element {
   return (
     <span className="equation">
       { formatAddition(e.lhs) }
@@ -102,7 +103,7 @@ export function formatEquation(e, n) {
   );
 }
 
-function formatAddition(arr) {
+function formatAddition(arr: t.EquationParts) {
   const partStrings = [];
   for (const part of arr) {
     partStrings.push(Number(part.n) < 0 ? '-' : '+');
@@ -117,7 +118,7 @@ function formatAddition(arr) {
 }
 
 // return the absolute number, given possibly a string (just strip the leading -)
-function abs(n) {
+function abs(n: number | string) {
   if (typeof n === 'number') return Math.abs(n);
 
   const str = String(n);
@@ -129,11 +130,11 @@ function abs(n) {
 }
 
 // return a string representing the number with precision up to 8 digits
-function round8(n) {
+function round8(n: string | number) {
   // expect strings to be pre-formatted
   if (typeof n === 'string') return n;
 
-  let retval = Number.parseFloat(n).toFixed(8);
+  let retval = n.toFixed(8);
   // trim trailing zeros
   while (retval.endsWith('0')) {
     retval = retval.substring(0, retval.length - 1);
@@ -147,7 +148,7 @@ function round8(n) {
 
 // takes a string, or an array of strings to be displayed on separate lines
 // empty string shows as an empty line
-export function formatEquationsText(text) {
+export function formatEquationsText(text: string | string[]): JSX.Element {
   if (!Array.isArray(text)) text = [text];
 
   return (
@@ -157,7 +158,7 @@ export function formatEquationsText(text) {
   );
 }
 
-function formatTextLine(line, i) {
+function formatTextLine(line: string, i: number) {
   // using index for react.js key because there's nothing better
   if (line) {
     return <div key={i.toString()}>{ line }</div>;

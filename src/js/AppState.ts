@@ -18,13 +18,42 @@ function defaultInternalState(): AppStateInternalState {
   };
 }
 
+// unverified AppStateInternalState
+interface UnverifiedASIS {
+  level?: number,
+  assignments?: Array<{ created?: number, startTime: number }>,
+}
+
+function migrateCreatedToStartTime(data?: UnverifiedASIS): AppStateInternalState {
+  if (data == null || typeof data !== 'object' || Array.isArray(data)) {
+    data = {};
+  }
+  if (data.assignments == null) data.assignments = [];
+  if (typeof data.level !== 'number') data.level = 1;
+
+  // assignments[0] is to be ignored
+  for (let i = 1; i < data.assignments.length; i += 1) {
+    const a = data.assignments[i];
+    if (a.created != null) {
+      a.startTime = a.created;
+      delete a.created;
+    }
+  }
+  // todo we could also verify the structure of assignments
+  return data as AppStateInternalState;
+}
+
 export class AppState {
   topLevel: number;
   state: AppStateInternalState;
   setState: (state: AppStateInternalState) => void;
 
   constructor() {
-    const [state, setState] = useLocalStorage('equationsState', defaultInternalState());
+    const [state, setState] = useLocalStorage(
+      'equationsState',
+      defaultInternalState(),
+      migrateCreatedToStartTime,
+    );
     this.state = state;
     this.setState = setState;
 

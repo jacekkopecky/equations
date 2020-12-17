@@ -33,13 +33,19 @@ export function PropsFromRouteParams({ children }: {children: React.ReactElement
 export function useLocalStorage<T>(
   key: string,
   initialValue: T,
+  migration?: (data: unknown) => T,
 ): [T, (t: T) => void, () => void] {
   const getCurrentValue = () => {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) as T : initialValue;
+
+      if (!item) return initialValue;
+
+      // Parse stored json and possibly migrate
+      let parsed: unknown = JSON.parse(item);
+      if (migration) parsed = migration(parsed);
+      return parsed as T;
     } catch (error) {
       // If error also return initialValue
       console.log(error);

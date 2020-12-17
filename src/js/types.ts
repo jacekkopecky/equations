@@ -1,18 +1,22 @@
 import Random from './tools/random';
 
-interface EquationPart {
+export interface EquationPart {
   n: number | string,
   var?: string,
 }
 
-interface Equation {
-  lhs: ReadonlyArray<EquationPart>,
-  rhs: ReadonlyArray<EquationPart>,
+export type EquationParts = ReadonlyArray<EquationPart>;
+
+export interface Equation {
+  lhs: EquationParts,
+  rhs: EquationParts,
 }
 
-interface Solutions {
+export interface Solutions {
   [index: string]: number | string,
 }
+
+export type AnswersMap = Map<string, number>;
 
 export interface AssignmentDescription {
   equations: Equation[],
@@ -28,13 +32,14 @@ export interface AssignmentInformation {
   n: number,
   challenge: boolean,
 
-  startTime?: number,
   answeredCorrectly: boolean,
   done: boolean,
 }
 
 export interface Assignment extends AssignmentDescription, AssignmentInformation {
   save: () => void,
+  startTime: number,
+  doneTime?: number,
 }
 
 export type LevelFunction = (rng: Random) => AssignmentDescription;
