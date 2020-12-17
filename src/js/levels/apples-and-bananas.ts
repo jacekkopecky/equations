@@ -10,7 +10,7 @@ import {
   s,
   nthNonMultiple,
 } from './tools';
-import { AssignmentDescription } from '../types';
+import { AssignmentDefinition, LevelFunction } from '../types';
 import Random from '../tools/random';
 
 /*
@@ -26,7 +26,7 @@ function applesAndBananas(
   y2: number | string,
   a: number,
   b: number,
-): AssignmentDescription {
+): AssignmentDefinition {
   // randomly switch x/y
   if (rng.bool()) [x1, x2, y1, y2] = [y1, y2, x1, x2];
 
@@ -92,7 +92,7 @@ function applesAndBananas(
  *
  */
 
-function applesAndBananas1(rng: Random): AssignmentDescription {
+function applesAndBananas1(rng: Random): AssignmentDefinition {
   // x a + y1 b = n1
   // x a + y2 b = n2
   // prices in steps of 0.1 up to 1
@@ -108,7 +108,7 @@ function applesAndBananas1(rng: Random): AssignmentDescription {
   return applesAndBananas(rng, String(x), String(x), String(y1), String(y2), a, b);
 }
 
-function applesAndBananas2(rng: Random): AssignmentDescription {
+function applesAndBananas2(rng: Random): AssignmentDefinition {
   // pick random small x2
   // pick x1 a small multiple of x2
   // pick random small y2
@@ -129,7 +129,7 @@ function applesAndBananas2(rng: Random): AssignmentDescription {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-function applesAndBananas3(rng: Random): AssignmentDescription {
+function applesAndBananas3(rng: Random): AssignmentDefinition {
   // like the above but with prices between 0.05 and 1.1 in steps of 0.05
 
   const x2 = rng.int(1, 3);
@@ -143,7 +143,7 @@ function applesAndBananas3(rng: Random): AssignmentDescription {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-function applesAndBananas4(rng: Random): AssignmentDescription {
+function applesAndBananas4(rng: Random): AssignmentDefinition {
   // Like 2 but
   //
   // - x1 not divisible by x2; x1 and x2 have a low multiple M
@@ -160,7 +160,7 @@ function applesAndBananas4(rng: Random): AssignmentDescription {
 }
 
 // 5: where subtracting one from the other leads to a negative?
-function applesAndBananas5(rng: Random): AssignmentDescription {
+function applesAndBananas5(rng: Random): AssignmentDefinition {
   // simply x1 > x2, y1 < y2, with prices in 5p increments
 
   const x2 = rng.int(1, 3);
@@ -173,7 +173,7 @@ function applesAndBananas5(rng: Random): AssignmentDescription {
   return applesAndBananas(rng, x1, x2, y1, y2, a, b);
 }
 
-export default [
+const levels: LevelFunction[] = [
   applesAndBananas1,
   onlyText(applesAndBananas1),
   applesAndBananas2,
@@ -185,6 +185,7 @@ export default [
   applesAndBananas5,
   onlyText(applesAndBananas5),
 ];
+export default levels;
 
 export const extras1 = [
   onlyEquations(applesAndBananas2),

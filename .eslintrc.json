@@ -126,7 +126,8 @@
         "react/destructuring-assignment": [0],
         "no-underscore-dangle": [0],
         "no-mixed-operators": [0],
-        "lines-between-class-members": ["error", "always", {"exceptAfterSingleLine": true}]
+        "lines-between-class-members": ["error", "always", {"exceptAfterSingleLine": true}],
+        "react/require-default-props": [0]
       }
     }
   ]

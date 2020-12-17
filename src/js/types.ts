@@ -18,7 +18,7 @@ export interface Solutions {
 
 export type AnswersMap = Map<string, number>;
 
-export interface AssignmentDescription {
+export interface AssignmentDefinition {
   equations: Equation[],
   solution: Solutions,
 
@@ -34,12 +34,19 @@ export interface AssignmentInformation {
 
   answeredCorrectly: boolean,
   done: boolean,
+  disabled?: boolean,
 }
 
-export interface Assignment extends AssignmentDescription, AssignmentInformation {
+export interface Assignment extends AssignmentDefinition, AssignmentInformation {
   save: () => void,
   startTime: number,
   doneTime?: number,
+
+  attemptCount?: number,
+  interactionPauses?: number[],
+
+  attemptText?: string,
+  attemptAnswers?: Solutions[],
 }
 
-export type LevelFunction = (rng: Random) => AssignmentDescription;
+export type LevelFunction = (rng: Random) => AssignmentDefinition;

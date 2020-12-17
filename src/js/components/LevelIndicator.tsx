@@ -1,18 +1,19 @@
 import * as React from 'react';
 
-import type { AppState } from '../AppState';
+import { AppState } from '../AppState';
 
 import './LevelIndicator.css';
 
 interface LevelIndicatorProps {
   appState: AppState,
-  justWonAStar: boolean,
+  justWonAStar?: boolean,
 }
 
 export default function LevelIndicator(
   { appState, justWonAStar }: LevelIndicatorProps,
 ): JSX.Element {
   const userLevel: number = appState.level;
+  justWonAStar = Boolean(justWonAStar);
 
   const classes = ['level-indicator'];
   if (justWonAStar && appState.progress === 0) classes.push('won');

@@ -14,7 +14,7 @@ export function dateToString(a: Assignment | number): string {
   return new Date(time).toLocaleDateString(undefined, dateOptions);
 }
 
-export function sumDuration(assignments: Assignment[]): string | null {
+export function sumDuration(assignments: Assignment | Assignment[]): string | null {
   if (!Array.isArray(assignments)) assignments = [assignments];
 
   let sumTime = 0;

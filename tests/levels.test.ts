@@ -1,30 +1,32 @@
 import Random from '../src/js/tools/random';
-import levels from '../src/js/levels/index';
+import * as levels from '../src/js/levels/index';
 import applesAndBananas, * as ab from '../src/js/levels/apples-and-bananas';
 import cherries, * as c from '../src/js/levels/cherries';
 import { challengeNoText } from '../src/js/levels/tools';
 
 describe('levels', () => {
-  test('export is an array', () => {
-    expect(Array.isArray(levels)).toBe(true);
-    expect(levels.length).toBeGreaterThan(1); // there must be at least one real level
-    expect(levels[0]).toBe(null); // level 0 isn't counted
+  test('there is at least one level', () => {
+    expect(levels.topLevel).toBeGreaterThan(0);
   });
 
-  test('same Random gives same equations', () => {
-    for (const level of levels) {
-      if (level == null) continue;
+  test('level 0 does not exist', () => {
+    expect(() => levels.make(0, 1)).toThrow();
+  });
 
-      const rng1 = new Random('foo');
-      const rng2 = new Random('foo');
-      const rng3 = new Random('bar');
-
-      const eq1 = level(rng1);
-      const eq2 = level(rng2);
-      const eq3 = level(rng3);
+  test('same level/n gives same equations', () => {
+    for (let level = 1; level < levels.topLevel; level += 1) {
+      const eq1 = levels.make(level, level * 10);
+      const eq2 = levels.make(level, level * 10);
+      const eq3 = levels.make(level, level * 10 + 1);
 
       expect(eq1).toEqual(eq2);
       expect(eq1).not.toEqual(eq3);
+    }
+  });
+
+  test('levels without text do not have onlyText', () => {
+    for (let level = 1; level < levels.topLevel; level += 1) {
+      const eq1 = levels.make(level, level * 10);
 
       if (eq1.text == null) expect(eq1.onlyText).toBeFalsy();
     }
@@ -33,11 +35,8 @@ describe('levels', () => {
   test('onlyText is used (but only if there is a text)', () => {
     const foundOnlyText = new Set<boolean>();
 
-    for (const level of levels) {
-      if (level == null) continue;
-
-      const rng = new Random('foo');
-      const eq = level(rng);
+    for (let level = 1; level < levels.topLevel; level += 1) {
+      const eq = levels.make(level, level * 10);
 
       if (eq.onlyText) {
         expect(Array.isArray(eq.text)).toBe(true);

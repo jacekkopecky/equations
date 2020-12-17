@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { render, shallow } from 'enzyme';
 
 import LevelIndicator from '../../src/js/components/LevelIndicator';

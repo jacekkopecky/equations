@@ -9,7 +9,7 @@ import {
   twoDecimalPoints,
   s,
 } from './tools';
-import { AssignmentDescription } from '../types';
+import { AssignmentDefinition, LevelFunction } from '../types';
 import Random from '../tools/random';
 
 /*
@@ -32,7 +32,7 @@ function cherries(
   a: number,
   b: number,
   c: number,
-): AssignmentDescription {
+): AssignmentDefinition {
   // randomly permute x/y/z
   [[x1, x2, x3], [y1, y2, y3], [z1, z2, z3]] = rng.permute(
     [[x1, x2, x3], [y1, y2, y3], [z1, z2, z3]],
@@ -117,7 +117,7 @@ function cherries(
  *
  */
 
-function cherries1(rng: Random): AssignmentDescription {
+function cherries1(rng: Random): AssignmentDefinition {
   // x a + y1 b + z1 c = n1
   // x a + y1 b + z2 c = n2
   // x a + y2 b + z2 c = n3
@@ -135,7 +135,7 @@ function cherries1(rng: Random): AssignmentDescription {
   return cherries(rng, x, x, x, y1, y1, y2, z1, z2, z2, a, b, c);
 }
 
-function cherries2(rng: Random): AssignmentDescription {
+function cherries2(rng: Random): AssignmentDefinition {
   // like above, but make third equation with different z
   // x a + y1 b + z1 c = n1
   // x a + y1 b + z2 c = n2
@@ -157,12 +157,13 @@ function cherries2(rng: Random): AssignmentDescription {
 
 // cherries2
 
-export default [
+const levels: LevelFunction[] = [
   cherries1,
   onlyText(cherries1),
   cherries2,
   onlyText(cherries2),
 ];
+export default levels;
 
 export const extras1 = [
   onlyEquations(cherries1),

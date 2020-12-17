@@ -4,14 +4,13 @@ import {
   Link,
   Switch,
   Route,
+  useParams,
 } from 'react-router-dom';
 
 import Overview from './Overview';
-import SolveAssignment from './SolveAssignment';
+import SolveAssignment, { SolveAssignmentProps } from './SolveAssignment';
 import Statistics from './Statistics';
 import About from './About';
-
-import { PropsFromRouteParams } from '../tools/react';
 
 import './App.css';
 
@@ -35,9 +34,7 @@ export default function App(): JSX.Element {
           <Overview appState={appState} />
         </Route>
         <Route exact path="/eq/:level(\d+)/:n(\d+)">
-          <PropsFromRouteParams>
-            <SolveAssignment appState={appState} back="/" />
-          </PropsFromRouteParams>
+          <SolveAssignmentWithParams appState={appState} back="/" />
         </Route>
         <Route path="/eq" exact>
           <SolveAssignment level={1} n={1} appState={appState} back="/" />
@@ -53,6 +50,19 @@ export default function App(): JSX.Element {
         </Route>
       </Switch>
     </Router>
+  );
+}
+
+function SolveAssignmentWithParams(props: Pick<SolveAssignmentProps, 'appState'|'back'>): JSX.Element {
+  const params = useParams<Record<'n'|'level', string>>();
+
+  return (
+    <SolveAssignment
+      level={Number(params.level)}
+      n={Number(params.n)}
+      appState={props.appState}
+      back={props.back}
+    />
   );
 }
 

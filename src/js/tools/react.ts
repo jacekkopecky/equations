@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { useRef, useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 // This hook returns a ref.
 // If the dependencies have changed and the ref has an element, it will focus.
-export function useAutofocusRef(
+export function useAutofocusRef<T extends HTMLInputElement|HTMLTextAreaElement>(
   dependencies: React.DependencyList,
-): React.RefObject<HTMLInputElement> {
-  const inputElRef = useRef<HTMLInputElement>(null);
+): React.RefObject<T> {
+  const inputElRef = useRef<T>(null);
 
   useEffect(() => {
     if (inputElRef.current && inputElRef.current.focus) {
@@ -16,12 +16,6 @@ export function useAutofocusRef(
   }, dependencies);
 
   return inputElRef;
-}
-
-export function PropsFromRouteParams({ children }: {children: React.ReactElement}): JSX.Element {
-  const params = useParams();
-
-  return React.cloneElement(children, params);
 }
 
 /*

@@ -1,5 +1,4 @@
-import levels from './levels/index';
-import Random from './tools/random';
+import * as levels from './levels/index';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
 import { Assignment, AssignmentInformation } from './types';
@@ -57,34 +56,35 @@ export class AppState {
     this.state = state;
     this.setState = setState;
 
-    this.topLevel = levels.length - 1;
+    this.topLevel = levels.topLevel;
   }
 
   getAssignment(level: number, n: number, startTime: number): Assignment {
     let assignment = this.state.assignments[n];
 
-    const levelFunction = levels[level];
-    if (levelFunction == null) throw new TypeError('level does not exist');
+    const save = () => {
+      this._duplicateState();
+      this.state.assignments[n] = assignment;
+      this._recomputeUserLevel();
+      this._saveState();
+    };
 
     if (!assignment) {
-      const rng = new Random(`${level}/${n}`);
-      assignment = levelFunction(rng) as Assignment;
-      assignment.startTime = startTime;
-      assignment.level = level;
-      assignment.n = n;
-      if (level > this.level) assignment.challenge = true;
+      assignment = {
+        ...levels.make(level, n),
+        startTime,
+        level,
+        n,
+        challenge: level > this.level,
+        save,
+        done: false,
+        answeredCorrectly: false,
+      };
+    } else if (!assignment.save) {
+      assignment.save = save;
     }
 
     // todo what to do if we already have the assignment, it's not done, and startTime differs?
-
-    if (!assignment.save) {
-      assignment.save = () => {
-        this._duplicateState();
-        this.state.assignments[n] = assignment;
-        this._recomputeUserLevel();
-        this._saveState();
-      };
-    }
 
     return assignment;
   }

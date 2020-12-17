@@ -20,7 +20,8 @@ test('basic contents', () => {
   const wrapper = shallow(<App />);
 
   expect(wrapper.find('header')).toHaveLength(1);
-  expect(wrapper.find('SolveAssignment')).toHaveLength(2);
+  expect(wrapper.find('SolveAssignment')).toHaveLength(1);
+  expect(wrapper.find('SolveAssignmentWithParams')).toHaveLength(1);
 });
 
 test.todo('more routes');
