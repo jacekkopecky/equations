@@ -1,15 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 import { MemoryRouter } from 'react-router';
 import { render } from 'enzyme';
 
-import Overview from '../../src/js/components/Overview';
+import Statistics from '../../src/js/components/Statistics';
 
 import * as states from './testing-app-states';
 
 test('renders without exception', () => {
   expect(() => render((
     <MemoryRouter>
-      <Overview appState={states.empty()} />
+      <Statistics appState={states.empty()} />
     </MemoryRouter>
   ))).not.toThrow();
 });

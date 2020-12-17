@@ -1,18 +1,25 @@
-import React from 'react';
+import * as React from 'react';
 import { MemoryRouter } from 'react-router';
 import { render, shallow } from 'enzyme';
 
 import App from '../../src/js/components/App';
 
 test('renders 404 without exception', () => {
-  let rendered;
   expect(() => {
-    rendered = render((
+    render((
       <MemoryRouter initialEntries={['/not-here']}>
         <App />
       </MemoryRouter>
     ));
   }).not.toThrow();
+});
+
+test('renders 404 with the text 404', () => {
+  const rendered = render((
+    <MemoryRouter initialEntries={['/not-here']}>
+      <App />
+    </MemoryRouter>
+  ));
   expect(rendered.html()).toContain('404');
 });
 
