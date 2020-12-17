@@ -31,10 +31,7 @@ describe('levels', () => {
   });
 
   test('onlyText is used (but only if there is a text)', () => {
-    const foundOnlyText = {
-      true: false,
-      false: false,
-    };
+    const foundOnlyText = new Set<boolean>();
 
     for (const level of levels) {
       if (level == null) continue;
@@ -47,12 +44,12 @@ describe('levels', () => {
       }
 
       // record that we have found equations with/out onlyText
-      foundOnlyText[String(Boolean(eq.onlyText))] = true;
+      foundOnlyText.add(Boolean(eq.onlyText));
     }
 
     // assert that some have .onlyText and that some don't
-    expect(foundOnlyText.true).toBe(true);
-    expect(foundOnlyText.false).toBe(true);
+    expect(foundOnlyText.has(true)).toBe(true);
+    expect(foundOnlyText.has(false)).toBe(true);
   });
 });
 

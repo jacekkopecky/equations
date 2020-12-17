@@ -6,8 +6,8 @@ interface EquationPart {
 }
 
 interface Equation {
-  lhs: EquationPart[],
-  rhs: EquationPart[],
+  lhs: ReadonlyArray<EquationPart>,
+  rhs: ReadonlyArray<EquationPart>,
 }
 
 interface Solutions {
@@ -20,7 +20,7 @@ export interface AssignmentDescription {
 
   onlyText?: boolean,
   text?: string[],
-  image?: string,
+  image: string,
 }
 
 export interface AssignmentInformation {
@@ -34,7 +34,7 @@ export interface AssignmentInformation {
 }
 
 export interface Assignment extends AssignmentDescription, AssignmentInformation {
-  save?: () => void,
+  save: () => void,
 }
 
 export type LevelFunction = (rng: Random) => AssignmentDescription;
