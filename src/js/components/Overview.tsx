@@ -6,7 +6,7 @@ import './Overview.css';
 
 import * as levels from '../levels/index';
 import { AppState } from '../AppState';
-import { Assignment, AssignmentInformation } from '../types';
+import { AssignmentInformation } from '../types';
 
 import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
@@ -28,7 +28,7 @@ export default function Overview({ appState }: { appState: AppState }): JSX.Elem
     </main>
   );
 
-  function renderAssignment(a: Assignment) {
+  function renderAssignment(a: AssignmentInformation) {
     return (
       <AssignmentBox
         key={a.n}

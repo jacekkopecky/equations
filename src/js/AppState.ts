@@ -23,10 +23,12 @@ interface UnverifiedASIS {
   assignments?: Array<{ created?: number, startTime: number }>,
 }
 
-function migrateCreatedToStartTime(data?: UnverifiedASIS): AppStateInternalState {
-  if (data == null || typeof data !== 'object' || Array.isArray(data)) {
-    data = {};
+function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
+  if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
+    obj = {};
   }
+
+  const data = obj as UnverifiedASIS;
   if (data.assignments == null) data.assignments = [];
   if (typeof data.level !== 'number') data.level = 1;
 
