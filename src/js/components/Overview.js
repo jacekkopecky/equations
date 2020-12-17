@@ -17,7 +17,7 @@ export default function Overview({ appState }) {
 
   return (
     <main id="overview">
-      <h1>Hello { newcomer ? 'newcomer' : 'back' }</h1>
+      <h1>Hello { newcomer ? 'newcomer' : 'again' }</h1>
       <p>Score: { appState.score }</p>
       <LevelIndicator appState={appState} />
       <Duration appState={appState} />
