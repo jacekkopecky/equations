@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "a little program for practicing equations",
   "scripts": {
-    "build": "npm run --silent build:grammars && npm run --silent build:react && npm run --silent build:ts",
+    "build": "npm run --silent build:grammars && npm run --silent build:ts && npm run --silent build:react",
     "build:grammars": "nearleyc src/grammars/equation.ne -o src/grammars/equation.js && nearley-railroad src/grammars/equation.ne -o src/grammars/equation.html",
     "build:react": "parcel build --no-cache --dist-dir dist/ src/index.html src/404.html",
     "build:ts": "tsc",
