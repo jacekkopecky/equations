@@ -92,13 +92,13 @@ export function extractVariables(equations: t.Equation | t.Equation[]): Set<stri
   return vars;
 }
 
-export function formatEquation(e: t.Equation, n: number): JSX.Element {
-  return (
+export function formatEquation(e: t.Equation, n: number, onlyText?: false): JSX.Element;
+export function formatEquation(e: t.Equation, n: number, onlyText: true): string;
+export function formatEquation(e: t.Equation, n: number, onlyText?: boolean): JSX.Element | string {
+  const text = `${formatAddition(e.lhs)}\u00a0=\u00a0${formatAddition(e.rhs)} (${n})`;
+  return onlyText ? text : (
     <span className="equation">
-      { formatAddition(e.lhs) }
-      &nbsp;=&nbsp;
-      { formatAddition(e.rhs) }
-      { ` (${n})` }
+      { text }
     </span>
   );
 }
@@ -167,15 +167,19 @@ function formatTextLine(line: string, i: number) {
   }
 }
 
+const NEAR_ZERO = 1e-10;
+
 class EquationMatrix {
-  constructor(n) {
-    this.rows = new Array(n);
+  private rows: Array<Array<number>>;
+
+  constructor(n: number) {
+    this.rows = new Array<Array<number>>(n);
     for (let i = 0; i < n; i += 1) {
-      this.rows[i] = new Array(n + 1).fill(0);
+      this.rows[i] = new Array<number>(n + 1).fill(0);
     }
   }
 
-  static fromEquations(eqs, varOrder) {
+  static fromEquations(eqs: t.Equation[], varOrder: string[]) {
     const retval = new EquationMatrix(varOrder.length);
     for (let i = 0; i < eqs.length; i += 1) {
       const equation = eqs[i];
@@ -191,7 +195,7 @@ class EquationMatrix {
     }
     return retval;
 
-    function addPart(row, part) {
+    function addPart(row: number, part: t.EquationPart) {
       if (part.var) {
         const varIndex = varOrder.indexOf(part.var);
         if (varIndex === -1) throw new TypeError(`variable ${part.var} not in varOrder`);
@@ -205,12 +209,12 @@ class EquationMatrix {
     }
   }
 
-  ensureDiagonalNonZero(i) {
+  ensureDiagonalNonZero(i: number) {
     // return true if we found non-zero, false otherwise
 
-    if (this.rows[i][i] !== 0) return true;
+    if (Math.abs(this.rows[i][i]) > NEAR_ZERO) return true;
 
-    const nonZeroRow = this.rows.findIndex((row, j) => j > i && row[i] !== 0);
+    const nonZeroRow = this.rows.findIndex((row, j) => j > i && Math.abs(row[i]) > NEAR_ZERO);
 
     if (nonZeroRow === -1) return false; // no such row found
 
@@ -219,15 +223,15 @@ class EquationMatrix {
     return true;
   }
 
-  get(row, col) {
+  get(row: number, col: number) {
     return this.rows[row][col];
   }
 
-  set(row, col, val) {
+  set(row: number, col: number, val: number) {
     this.rows[row][col] = val;
   }
 
-  add(row, col, val) {
+  add(row: number, col: number, val: number) {
     this.rows[row][col] += val;
   }
 
@@ -235,14 +239,14 @@ class EquationMatrix {
     return this.rows.length;
   }
 
-  multiplyRow(n, s) {
+  multiplyRow(n: number, s: number) {
     const row = this.rows[n];
     for (let i = 0; i < row.length; i += 1) {
       row[i] *= s;
     }
   }
 
-  addMultipleOfRow(target, other, multiplier) {
+  addMultipleOfRow(target: number, other: number, multiplier: number) {
     const targetRow = this.rows[target];
     const otherRow = this.rows[other];
     for (let i = 0; i < targetRow.length; i += 1) {
@@ -250,14 +254,14 @@ class EquationMatrix {
     }
   }
 
-  getColumn(n) {
+  getColumn(n: number) {
     return this.rows.map((row) => row[n]);
   }
 }
 
 // use Gaussian elimination to solve the given equations
 // returns a map from variable to value
-export function solve(equations) {
+export function solve(equations: t.Equation[]): Map<string, number> | null {
   const vars = Array.from(extractVariables(equations));
 
   // matrix is an array of rows, each row an array of numbers
