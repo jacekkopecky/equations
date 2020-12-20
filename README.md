@@ -8,7 +8,11 @@ The program creates equations, lets the user solve them and check their answers,
 
 Development happens on branch `main`. Commits there that pass CI are built and deployed in branch `production` by GitHub Actions.
 
-To add new levels, go to `src/js/levels`.
+To add new levels, go to `src/js/levels`. Levels are tested for solvability in `levels.test.ts`; by default we test the first 500 assignments for each level; to test more, run something like this:
+
+```
+SOLVABILITY_ITERATIONS=10000 jest tests/levels.test.ts
+```
 
 
 

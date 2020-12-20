@@ -155,7 +155,43 @@ function cherries2(rng: Random): AssignmentDefinition {
   return cherries(rng, x, x, x, y1, y1, y2, z1, z2, z3, a, b, c);
 }
 
-// cherries2
+function cherries3(rng: Random): AssignmentDefinition {
+  // like above, but multiply second equation
+  // x   a + y1   b + z1   c = n1
+  // x*w a + y1*w b + z2*w c = n2
+  // x   a + y2   b + z3   c = n3
+  // prices in steps of 0.1 up to 1
+
+  const x = rng.int(1, 3);
+  const y1 = rng.int(1, 3);
+  const y2 = y1 + rng.int(1, 3);
+  const z1 = rng.int(1, 3);
+  const z2 = z1 + rng.int(1, 2);
+  const z3 = z2 + rng.int(1, 2);
+  const w = rng.int(2, 3);
+  const a = rng.int(1, 10) * 0.1;
+  const b = rng.int(1, 10) * 0.1;
+  const c = rng.int(1, 10) * 0.1;
+
+  return cherries(rng, x, x * w, x, y1, y1 * w, y2, z1, z2 * w, z3, a, b, c);
+}
+
+function cherries4(rng: Random): AssignmentDefinition {
+  // like above, but add first equation to third
+
+  const x = rng.int(1, 3);
+  const y1 = rng.int(1, 3);
+  const y2 = y1 + rng.int(1, 3);
+  const z1 = rng.int(1, 3);
+  const z2 = z1 + rng.int(1, 2);
+  const z3 = z2 + rng.int(1, 2);
+  const w = rng.int(2, 3);
+  const a = rng.int(1, 10) * 0.1;
+  const b = rng.int(1, 10) * 0.1;
+  const c = rng.int(1, 10) * 0.1;
+
+  return cherries(rng, x, x * w, x + x, y1, y1 * w, y2 + y1, z1, z2 * w, z3 + z1, a, b, c);
+}
 
 const levels: LevelFunction[] = [
   cherries1,
@@ -167,4 +203,10 @@ export default levels;
 
 export const extras1 = [
   onlyEquations(cherries1),
+  cherries3,
+  onlyText(cherries3),
+  onlyEquations(cherries3),
+  cherries4,
+  onlyText(cherries4),
+  onlyEquations(cherries4),
 ];

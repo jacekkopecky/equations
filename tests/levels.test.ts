@@ -1,8 +1,11 @@
 import Random from '../src/js/tools/random';
 import * as levels from '../src/js/levels/index';
+import * as equations from '../src/js/tools/equations';
 import applesAndBananas, * as ab from '../src/js/levels/apples-and-bananas';
 import cherries, * as c from '../src/js/levels/cherries';
 import { challengeNoText } from '../src/js/levels/tools';
+
+const SOLVABILITY_ITERATIONS = Number(process.env.SOLVABILITY_ITERATIONS) || 500;
 
 describe('levels', () => {
   test('there is at least one level', () => {
@@ -49,6 +52,30 @@ describe('levels', () => {
     // assert that some have .onlyText and that some don't
     expect(foundOnlyText.has(true)).toBe(true);
     expect(foundOnlyText.has(false)).toBe(true);
+  });
+
+  // numbers from 1 to levels.topLevel
+  const levelNums = (new Array(levels.topLevel).fill(0).map((x, i) => i + 1));
+
+  test.each(levelNums)('level %d is solvable', (level) => {
+    for (let n = 1; n <= SOLVABILITY_ITERATIONS; n += 1) {
+      const assignment = levels.make(level, n);
+      const solution = equations.solve(assignment.equations);
+      if (!solution) {
+        const formatted = assignment.equations.map((e, i) => equations.formatEquation(e, i + 1, true)).join('\n');
+        console.log(`level: ${level}, n: ${n}\n${formatted}`);
+      }
+      expect(solution).toEqual(expect.anything()); // a solution should exist
+
+      for (const variable of solution!.keys()) {
+        if (Number(solution!.get(variable)) !== Number(assignment.solution[variable])) {
+          const formatted = assignment.equations.map((e, i) => equations.formatEquation(e, i + 1, true)).join('\n');
+          console.log(`level: ${level}, n: ${n}\n${formatted}`, solution);
+          console.log(JSON.stringify(assignment.equations, null, 2));
+        }
+        expect(Number(solution!.get(variable))).toBe(Number(assignment.solution[variable]));
+      }
+    }
   });
 });
 
