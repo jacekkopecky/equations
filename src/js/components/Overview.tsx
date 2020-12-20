@@ -79,7 +79,7 @@ function AssignmentBox(props: AssignmentBoxProps) {
 
   const [makeChallenge, setMakeChallenge] = useState(false);
 
-  const canMakeChallenge = !isChallenge && !done && level < appState.topLevel;
+  const canMakeChallenge = !isChallenge && !done && level < levels.topLevel;
 
   const realLevel = makeChallenge ? appState.level + 1 : level;
 

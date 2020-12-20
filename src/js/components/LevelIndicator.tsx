@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { AppState } from '../AppState';
+import * as levels from '../levels/index';
 
 import './LevelIndicator.css';
 
@@ -30,7 +31,7 @@ export default function LevelIndicator(
 function renderProgress(appState: AppState, justWonAStar: boolean) {
   const userLevel = appState.level;
 
-  if (userLevel === appState.topLevel) {
+  if (userLevel === levels.topLevel) {
     return (
       <span className="progress">(top level)</span>
     );

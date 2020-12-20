@@ -10,12 +10,10 @@ interface AppStateInternalState {
   assignments: Assignment[],
 }
 
-function defaultInternalState(): AppStateInternalState {
-  return {
-    level: 1,
-    assignments: [],
-  };
-}
+const DEFAULT_INTERNAL_STATE: AppStateInternalState = {
+  level: 1,
+  assignments: [],
+};
 
 // unverified AppStateInternalState
 interface UnverifiedASIS {
@@ -45,20 +43,17 @@ function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
 }
 
 export class AppState {
-  topLevel: number;
-  state: AppStateInternalState;
-  setState: (state: AppStateInternalState) => void;
+  private state: AppStateInternalState;
+  private setState: (state: AppStateInternalState) => void;
 
   constructor() {
     const [state, setState] = useLocalStorage(
       'equationsState',
-      defaultInternalState(),
+      DEFAULT_INTERNAL_STATE,
       migrateCreatedToStartTime,
     );
     this.state = state;
     this.setState = setState;
-
-    this.topLevel = levels.topLevel;
   }
 
   getAssignment(level: number, n: number, startTime: number): Assignment {
@@ -92,7 +87,7 @@ export class AppState {
   }
 
   getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
-    const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
+    const challenge = (userLevel < levels.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
       n,
@@ -135,12 +130,12 @@ export class AppState {
     return assignments;
   }
 
-  _duplicateState(): void {
+  private _duplicateState(): void {
     this.state = { ...this.state };
   }
 
   // use this after _duplicateState and then changing some values there
-  _saveState(): void {
+  private _saveState(): void {
     this.setState(this.state);
   }
 
@@ -152,7 +147,7 @@ export class AppState {
     return this.state.level;
   }
 
-  _recomputeUserLevel(): void {
+  private _recomputeUserLevel(): void {
     let level = 1;
     let progress = 0;
     let target = challengesRequired(level + 1);
