@@ -13,8 +13,8 @@ interface LevelIndicatorProps {
 export default function LevelIndicator(
   { appState, justWonAStar }: LevelIndicatorProps,
 ): JSX.Element {
-  const userLevel: number = appState.level;
-  justWonAStar = Boolean(justWonAStar);
+  const userLevel = appState.level;
+  justWonAStar = justWonAStar ?? false;
 
   const classes = ['level-indicator'];
   if (justWonAStar && appState.progress === 0) classes.push('won');
