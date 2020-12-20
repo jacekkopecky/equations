@@ -34,7 +34,7 @@ describe('equations library', () => {
     expect(solution!.get('b')).toBe('0.3');
   });
 
-  test('exists', () => {
+  test('finds an unsolvable 3-variable set to be unsolvable', () => {
     expect(equations).toEqual(expect.anything());
 
     const testEqs = [
