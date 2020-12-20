@@ -1,7 +1,13 @@
-import React from 'react';
+import * as React from 'react';
 import { sumDuration, dateToString } from '../tools/durations';
+import { AppState } from '../AppState';
 
-export default function Duration({ appState, onlyToday }) {
+interface DurationProps {
+  appState: AppState,
+  onlyToday?: boolean,
+}
+
+export default function Duration({ appState, onlyToday }: DurationProps): JSX.Element | null {
   const lastDayAssignments = appState.lastDayAssignments;
   if (lastDayAssignments.length === 0) return null;
 

@@ -1,55 +1,99 @@
-import levels from './levels/index';
-import Random from './tools/random';
+import * as levels from './levels/index';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
+import { Assignment, AssignmentInformation } from './types';
 
 const BATCH_SIZE = 5;
 
-export class AppState {
-  constructor() {
-    const [state, setState] = useLocalStorage('equationsState', {});
-    this.state = state;
-    this.setState = setState;
+interface AppStateInternalState {
+  level: number,
+  assignments: Assignment[],
+}
 
-    if (!Array.isArray(this.state.assignments)) {
-      this.state.assignments = [];
-    }
+const DEFAULT_INTERNAL_STATE: AppStateInternalState = {
+  level: 1,
+  assignments: [],
+};
 
-    this.topLevel = levels.length - 1;
+// unverified AppStateInternalState
+interface UnverifiedASIS {
+  level?: number,
+  assignments?: Array<{ created?: number, startTime: number }>,
+}
+
+function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
+  if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
+    obj = {};
   }
 
-  getAssignment(level, n, startTime) {
+  const data = obj as UnverifiedASIS;
+  if (data.assignments == null) data.assignments = [];
+  if (typeof data.level !== 'number') data.level = 1;
+
+  // assignments[0] is to be ignored
+  for (let i = 1; i < data.assignments.length; i += 1) {
+    const a = data.assignments[i];
+    if (a.created != null) {
+      a.startTime = a.created;
+      delete a.created;
+    }
+  }
+  // todo we could also verify the structure of assignments
+  return data as AppStateInternalState;
+}
+
+export class AppState {
+  private state: AppStateInternalState;
+  private setState: (state: AppStateInternalState) => void;
+
+  constructor() {
+    const [state, setState] = useLocalStorage(
+      'equationsState',
+      DEFAULT_INTERNAL_STATE,
+      migrateCreatedToStartTime,
+    );
+    this.state = state;
+    this.setState = setState;
+  }
+
+  getAssignment(level: number, n: number, startTime: number): Assignment {
     let assignment = this.state.assignments[n];
 
+    const save = () => {
+      this._duplicateState();
+      this.state.assignments[n] = assignment;
+      this._recomputeUserLevel();
+      this._saveState();
+    };
+
     if (!assignment) {
-      const rng = new Random(`${level}/${n}`);
-      assignment = levels[level](rng);
-      assignment.startTime = startTime;
-      assignment.level = level;
-      assignment.n = n;
-      if (level > this.level) assignment.challenge = true;
+      assignment = {
+        ...levels.make(level, n),
+        startTime,
+        level,
+        n,
+        challenge: level > this.level,
+        save,
+        done: false,
+        answeredCorrectly: false,
+      };
+    } else if (!assignment.save) {
+      assignment.save = save;
     }
 
     // todo what to do if we already have the assignment, it's not done, and startTime differs?
 
-    if (!assignment.save) {
-      assignment.save = () => {
-        this._duplicateState();
-        this.state.assignments[n] = assignment;
-        this._recomputeUserLevel();
-        this._saveState();
-      };
-    }
-
     return assignment;
   }
 
-  getAssignmentInformation(userLevel, n) {
-    const challenge = (userLevel < this.topLevel) && (n % BATCH_SIZE === 0);
+  getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
+    const challenge = (userLevel < levels.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
       n,
       challenge,
+      done: false,
+      answeredCorrectly: false,
     };
 
     const attempted = this.state.assignments[n];
@@ -63,19 +107,19 @@ export class AppState {
     return assignmentInfo;
   }
 
-  getNextAssignment(n) {
+  getNextAssignment(n: number): AssignmentInformation | null {
     const assignmentN = this.getAssignmentInformation(0, n);
     if (!assignmentN.done) return null; // there should be no "next" link
 
     return this.getAssignmentInformation(this.level, n + 1);
   }
 
-  getUpcomingAssignments() {
+  getUpcomingAssignments(): AssignmentInformation[] {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
 
     const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
-    const assignments = [];
+    const assignments: AssignmentInformation[] = [];
     const level = this.level;
 
     for (let i = 0; i < BATCH_SIZE; i += 1) {
@@ -86,24 +130,24 @@ export class AppState {
     return assignments;
   }
 
-  _duplicateState() {
+  private _duplicateState(): void {
     this.state = { ...this.state };
   }
 
   // use this after _duplicateState and then changing some values there
-  _saveState() {
+  private _saveState(): void {
     this.setState(this.state);
   }
 
-  get score() {
+  get score(): number {
     return this.state.assignments.filter((a) => a?.answeredCorrectly).length;
   }
 
-  get level() {
-    return this.state.level || 1;
+  get level(): number {
+    return this.state.level;
   }
 
-  _recomputeUserLevel() {
+  private _recomputeUserLevel(): void {
     let level = 1;
     let progress = 0;
     let target = challengesRequired(level + 1);
@@ -124,21 +168,21 @@ export class AppState {
     this.state.level = level;
   }
 
-  get progress() {
+  get progress(): number {
     const level = this.level;
     const progress = this.state.assignments.filter((a) => Number(a?.level) > level).length;
     return progress;
   }
 
-  get progressRequired() {
+  get progressRequired(): number {
     return challengesRequired(this.level + 1);
   }
 
-  get doneAssignments() {
+  get doneAssignments(): Assignment[] {
     return this.state.assignments.filter((a) => a?.done);
   }
 
-  get lastDayAssignments() {
+  get lastDayAssignments(): Assignment[] {
     const done = this.doneAssignments;
     if (done.length === 0) return done;
 
@@ -161,11 +205,11 @@ export class AppState {
 
 // hook function wrapper for AppState because its constructor uses hooks too
 // this way linters can enforce hook rules
-export default function useAppState() {
+export default function useAppState(): AppState {
   return new AppState();
 }
 
-function chooseLevel(l, n) {
+function chooseLevel(l: number, n: number): number {
   const inBatch = n % BATCH_SIZE;
   switch (inBatch) {
   case 1:
@@ -178,6 +222,7 @@ function chooseLevel(l, n) {
 }
 
 // how many challenges at the given level are required to reach this level
-function challengesRequired() {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function challengesRequired(level?: number) {
   return 5; // might be variable at some point
 }

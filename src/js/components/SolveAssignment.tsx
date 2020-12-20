@@ -1,5 +1,10 @@
-import React, { useState, useLayoutEffect } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import * as React from 'react';
+import { useState, useLayoutEffect } from 'react';
+import {
+  Link,
+  Redirect,
+  useHistory,
+} from 'react-router-dom';
 
 import './SolveAssignment.css';
 
@@ -9,11 +14,21 @@ import { useAutofocusRef, useLocalStorage } from '../tools/react';
 import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
 
-export default function SolveAssignment(props) {
+import { AppState } from '../AppState';
+import { Equation, Solutions } from '../types';
+
+export interface SolveAssignmentProps {
+  n: number,
+  level: number,
+  appState: AppState,
+  back: string,
+}
+
+export default function SolveAssignment(props: SolveAssignmentProps): JSX.Element {
   const level = Number(props.level);
   const n = Number(props.n);
 
-  const [answers, setAnswers] = useState(new Map());
+  const [answers, setAnswers] = useState(new Map<string, number>());
   const [startTime, setStartTime] = useState(Date.now());
 
   const [noteInteractionPause, resetInteractionPauses] = useInteractionPauses();
@@ -27,7 +42,7 @@ export default function SolveAssignment(props) {
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
 
   // autofocus when moving to a new assignment
-  const textAreaRef = useAutofocusRef([level, n]);
+  const textAreaRef = useAutofocusRef<HTMLTextAreaElement>([level, n]);
 
   // resize text area after render to fit content
   useLayoutEffect(() => {
@@ -43,7 +58,7 @@ export default function SolveAssignment(props) {
   ] = useLocalStorage(`currentEquation/${level}/${n}`, '');
 
   const [justCheckedOrShowing, setAskedToCheckOrShowAnswers] = useState(false);
-  const [transitioningTimeout, setTransitioning] = useState(null);
+  const [transitioningTimeout, setTransitioning] = useState<number|null>(null);
 
   const transitioning = transitioningTimeout != null;
 
@@ -53,11 +68,10 @@ export default function SolveAssignment(props) {
     // but it shouldn't be a problem because you should actually never go to the wrong level
   }
 
-  const finished = Boolean(assignment.done);
-  const justFinished = finished && justCheckedOrShowing;
+  const justFinished = assignment.done && justCheckedOrShowing;
   const justWon = justFinished && assignment.answeredCorrectly;
   const canCheckAnswers = (
-    !transitioning && !finished
+    !transitioning && !assignment.done
     && Equations.areAllVariablesAnswered(assignment.equations, answers)
   );
 
@@ -89,14 +103,14 @@ export default function SolveAssignment(props) {
         ) }
 
         {
-          finished ? <pre className="equation">{ assignment.attemptText }</pre> : (
+          assignment.done ? <pre className="equation">{ assignment.attemptText }</pre> : (
             <textarea
               className="equation"
               onChange={saveAttemptText}
               autoFocus
               ref={textAreaRef}
               value={storedAttemptText}
-              disabled={finished}
+              disabled={assignment.done}
             />
           )
         }
@@ -106,17 +120,17 @@ export default function SolveAssignment(props) {
             { varNames.map(renderAnswerInput) }
           </div>
 
-          { (finished && assignment.answeredCorrectly) && (
+          { (assignment.done && assignment.answeredCorrectly) && (
             <div className="correctness">
               { justFinished ? 'Correct' : 'Solved correctly' }
             </div>
           ) }
-          { (finished && !assignment.answeredCorrectly) && (
+          { (assignment.done && !assignment.answeredCorrectly) && (
             <div className="correctness">
               { justFinished ? 'Next one may be easier' : 'Not solved, asked to show answers' }
             </div>
           ) }
-          { (!finished && justCheckedOrShowing) && (
+          { (!assignment.done && justCheckedOrShowing) && (
             <div className="correctness">
               Sorry, not right, keep trying
             </div>
@@ -152,7 +166,7 @@ export default function SolveAssignment(props) {
             id="show-answers"
             type="button"
             onClick={showAnswers}
-            disabled={transitioning || finished}
+            disabled={transitioning || assignment.done}
           >
             Show me the answers
           </button>
@@ -171,22 +185,24 @@ export default function SolveAssignment(props) {
 
   function goToNext() {
     if (!transitioning) {
-      setTransitioning(setTimeout(doGoToNext, 150));
+      setTransitioning(window.setTimeout(doGoToNext, 150));
     }
   }
 
   function doGoToNext() {
+    if (!nextAssignment) return;
+
     clearState();
     resetInteractionPauses();
     setStartTime(Date.now());
     history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
   }
 
-  function setAnswer(variable, value) {
+  function setAnswer(variable: string, value: number) {
     noteInteractionPause();
     const copy = new Map(answers);
     if (Number.isNaN(value)) {
-      delete copy.delete(variable);
+      copy.delete(variable);
     } else {
       copy.set(variable, value);
     }
@@ -199,9 +215,9 @@ export default function SolveAssignment(props) {
     const correct = Equations.checkAnswers(assignment.equations, answers);
     assignment.attemptCount = (assignment.attemptCount ?? 0) + 1;
     if (correct) {
+      assignment.done = true;
       assignment.attemptText = storedAttemptText.trim();
       assignment.answeredCorrectly = true;
-      assignment.done = true;
       assignment.doneTime = Date.now();
       assignment.interactionPauses = pauses;
       deleteStoredAttemptText();
@@ -228,25 +244,25 @@ export default function SolveAssignment(props) {
     setAskedToCheckOrShowAnswers(true);
   }
 
-  function saveAttemptText(e) {
+  function saveAttemptText(e: React.ChangeEvent<HTMLTextAreaElement>) {
     noteInteractionPause();
     resizeTextArea(e.target);
     setStoredAttemptText(e.target.value);
   }
 
-  function renderAnswerInput(varName) {
+  function renderAnswerInput(varName: string) {
     return (
       <div className="answer" key={varName}>
         { varName }
         { ' = ' }
-        { finished ? assignment.solution[varName] : (
+        { assignment.done ? assignment.solution[varName] : (
           <input type="number" onChange={(e) => setAnswer(varName, e.target.valueAsNumber)} />
         ) }
       </div>
     );
   }
 
-  function renderEquation(eq, index) {
+  function renderEquation(eq: Equation, index: number) {
     return (
       <div key={index}>{ Equations.formatEquation(eq, index + 1) }</div>
     );
@@ -255,34 +271,34 @@ export default function SolveAssignment(props) {
   function clearState() {
     setAskedToCheckOrShowAnswers(false);
     setAnswers(new Map());
-    if (transitioning) clearTimeout(transitioningTimeout);
+    if (transitioningTimeout != null) window.clearTimeout(transitioningTimeout);
     setTransitioning(null);
   }
 }
 
-function reverseComparator(a, b) {
+function reverseComparator(a: number, b: number) {
   return b - a;
 }
 
 const textareaExtraSize = 10;
-function resizeTextArea(el) {
+function resizeTextArea(el: HTMLTextAreaElement) {
   if (el.scrollHeight > el.clientHeight) {
     el.style.height = `${el.scrollHeight + textareaExtraSize}px`;
   }
 }
 
-function mapToObject(map) {
-  const retval = {};
+function mapToObject(map: Map<string, number>) {
+  const retval: Solutions = {};
   for (const [key, value] of map.entries()) {
     retval[key] = value;
   }
   return retval;
 }
 
-function useInteractionPauses() {
+function useInteractionPauses(): [() => number[], () => void] {
   const PAUSE_COUNT = 10;
 
-  const [pauses, setPauses] = useState(new Array(PAUSE_COUNT).fill(0));
+  const [pauses, setPauses] = useState(new Array<number>(PAUSE_COUNT).fill(0));
   const [lastInteractionTime, setLastInteractionTime] = useState(Date.now());
 
   function noteInteractionPause() {
@@ -294,7 +310,6 @@ function useInteractionPauses() {
       newPauses[PAUSE_COUNT - 1] = currentPause;
       newPauses.sort(reverseComparator);
       setPauses(newPauses);
-      console.log(newPauses);
       return newPauses;
     } else {
       return pauses;

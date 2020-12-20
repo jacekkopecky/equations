@@ -1,10 +1,13 @@
-import React, { useRef, useEffect, useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import * as React from 'react';
+import { useRef, useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 // This hook returns a ref.
 // If the dependencies have changed and the ref has an element, it will focus.
-export function useAutofocusRef(dependencies) {
-  const inputElRef = useRef(null);
+export function useAutofocusRef<T extends HTMLInputElement|HTMLTextAreaElement>(
+  dependencies: React.DependencyList,
+): React.RefObject<T> {
+  const inputElRef = useRef<T>(null);
 
   useEffect(() => {
     if (inputElRef.current && inputElRef.current.focus) {
@@ -15,25 +18,28 @@ export function useAutofocusRef(dependencies) {
   return inputElRef;
 }
 
-export function PropsFromRouteParams(props) {
-  const params = useParams();
-
-  return React.cloneElement(props.children, params);
-}
-
 /*
  * useLocalStorage hook from https://usehooks.com/useLocalStorage/ 2020-09-13
  *
  * extended to add deleteValue() (does not affect the state)
  * extended to detect stale state
  */
-export function useLocalStorage(key, initialValue) {
+export function useLocalStorage<T>(
+  key: string,
+  initialValue: T,
+  migration?: (data: unknown) => T,
+): [T, (t: T) => void, () => void] {
   const getCurrentValue = () => {
     try {
       // Get from local storage by key
       const item = window.localStorage.getItem(key);
-      // Parse stored json or if none return initialValue
-      return item ? JSON.parse(item) : initialValue;
+
+      if (!item) return initialValue;
+
+      // Parse stored json and possibly migrate
+      let parsed: unknown = JSON.parse(item);
+      if (migration) parsed = migration(parsed);
+      return parsed as T;
     } catch (error) {
       // If error also return initialValue
       console.log(error);
@@ -58,7 +64,7 @@ export function useLocalStorage(key, initialValue) {
 
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
-  const setValue = (value) => {
+  const setValue = (value: T | ((t: T) => T)) => {
     try {
       // Allow value to be a function so we have same API as useState
       const valueToStore = value instanceof Function ? value(storedValue) : value;
@@ -80,6 +86,6 @@ export function useLocalStorage(key, initialValue) {
 }
 
 // adopted from https://reactrouter.com/web/example/query-parameters
-export function useQuery() {
+export function useQuery(): URLSearchParams {
   return new URLSearchParams(useLocation().search);
 }

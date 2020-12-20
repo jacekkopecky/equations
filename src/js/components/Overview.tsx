@@ -1,16 +1,17 @@
-import React, { useState, useRef } from 'react';
+import * as React from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 import './Overview.css';
 
-import levels from '../levels/index';
-import Random from '../tools/random';
+import * as levels from '../levels/index';
+import { AppState } from '../AppState';
+import { AssignmentInformation } from '../types';
 
 import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
 
-const rng = new Random();
-export default function Overview({ appState }) {
+export default function Overview({ appState }: { appState: AppState }): JSX.Element {
   const batch = appState.getUpcomingAssignments();
   const newcomer = batch[0].n === 1 && !batch[0].done;
   disableAfterFirstUnsolved(batch);
@@ -27,14 +28,14 @@ export default function Overview({ appState }) {
     </main>
   );
 
-  function renderAssignment(a) {
+  function renderAssignment(a: AssignmentInformation) {
     return (
-      <Assignment
+      <AssignmentBox
         key={a.n}
         level={a.level}
         n={a.n}
         isChallenge={a.challenge}
-        disabled={a.disabled}
+        disabled={a.disabled ?? false}
         done={a.done}
         answeredCorrectly={a.answeredCorrectly}
         appState={appState}
@@ -43,7 +44,7 @@ export default function Overview({ appState }) {
   }
 }
 
-function disableAfterFirstUnsolved(assignments) {
+function disableAfterFirstUnsolved(assignments: AssignmentInformation[]) {
   let foundUnsolved = false;
   for (const a of assignments) {
     if (foundUnsolved) a.disabled = true;
@@ -51,7 +52,17 @@ function disableAfterFirstUnsolved(assignments) {
   }
 }
 
-function Assignment(props) {
+interface AssignmentBoxProps {
+  level: number,
+  n: number,
+  isChallenge: boolean,
+  disabled: boolean,
+  done: boolean,
+  answeredCorrectly: boolean,
+  appState: AppState,
+}
+
+function AssignmentBox(props: AssignmentBoxProps) {
   const {
     level,
     n,
@@ -63,13 +74,12 @@ function Assignment(props) {
   } = props;
 
   // create a sample assignment at given level
-  // todo use `n` for rng; this should be in levels/index.js anyway
-  const sampleAssignment = levels[level](rng);
+  const sampleAssignment = levels.make(level, n);
   const image = sampleAssignment.image;
 
   const [makeChallenge, setMakeChallenge] = useState(false);
 
-  const canMakeChallenge = !isChallenge && !done && level < appState.topLevel;
+  const canMakeChallenge = !isChallenge && !done && level < levels.topLevel;
 
   const realLevel = makeChallenge ? appState.level + 1 : level;
 
@@ -92,7 +102,7 @@ function Assignment(props) {
     </>
   );
 
-  const makeChallengeRef = useRef();
+  const makeChallengeRef = useRef<HTMLDivElement>(null);
 
   if (disabled) {
     return (
@@ -121,10 +131,10 @@ function Assignment(props) {
     );
   }
 
-  function toggleChallenge(e) {
+  function toggleChallenge(e: React.MouseEvent | React.KeyboardEvent) {
     setMakeChallenge(!makeChallenge);
     e.stopPropagation();
     e.preventDefault();
-    makeChallengeRef.current.blur();
+    makeChallengeRef.current?.blur();
   }
 }

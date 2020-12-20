@@ -1,19 +1,15 @@
-import React from 'react';
+import * as React from 'react';
 import { MemoryRouter } from 'react-router';
 import { render } from 'enzyme';
 
-import SolveAssignment from '../../src/js/components/SolveAssignment';
+import Overview from '../../src/js/components/Overview';
 
 import * as states from './testing-app-states';
 
 test('renders without exception', () => {
   expect(() => render((
     <MemoryRouter>
-      <SolveAssignment
-        level={1}
-        n={1}
-        appState={states.empty()}
-      />
+      <Overview appState={states.empty()} />
     </MemoryRouter>
   ))).not.toThrow();
 });

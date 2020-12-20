@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist-ts/",
+    "sourceMap": true,
+    "strictNullChecks": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "module": "es2020",
+    "target": "es2019",
+    "moduleResolution": "node",
+    "jsx": "react",
+    "allowJs": true
+  },
+  "include": [
+    "./src/",
+    "./tests/"
+  ]
+}

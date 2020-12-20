@@ -2,9 +2,9 @@ import { AppState } from '../../src/js/AppState';
 
 import * as reactTools from '../../src/js/tools/react';
 
-export function empty() {
+export function empty(): AppState {
   const spy = jest.spyOn(reactTools, 'useLocalStorage');
-  spy.mockImplementation((key, initialValue) => [initialValue, () => {}]);
+  spy.mockImplementation((key, initialValue) => [initialValue, () => {}, () => {}]);
 
   return new AppState();
 }

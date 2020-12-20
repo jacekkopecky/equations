@@ -1,16 +1,17 @@
-import React from 'react';
+import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import './Statistics.css';
 
-import levels from '../levels/index';
+import * as levels from '../levels/index';
 import { useQuery } from '../tools/react';
-import Random from '../tools/random';
 import { dateToString, sumDuration } from '../tools/durations';
 import LevelIndicator from './LevelIndicator';
 
-const rng = new Random();
-export default function Statistics({ appState }) {
+import { AppState } from '../AppState';
+import { Assignment } from '../types';
+
+export default function Statistics({ appState }: { appState: AppState }): JSX.Element {
   const query = useQuery();
   return (
     <main id="statistics">
@@ -27,32 +28,37 @@ export default function Statistics({ appState }) {
             <th>time</th>
           </tr>
         </thead>
-        <Assignments appState={appState} allInformation={query.get('all') != null} />
+        <Assignments appState={appState} showAll={query.get('all') != null} />
       </table>
     </main>
   );
 }
 
-function Assignments({ appState, allInformation }) {
+interface AssignmentsProps {
+  appState: AppState,
+  showAll: boolean,
+}
+
+function Assignments({ appState, showAll }: AssignmentsProps): JSX.Element {
   // reverse() is safe because doneAssignments gives a new array
   const assignments = appState.doneAssignments.reverse();
 
   // group assignments by their date
-  const assignmentsPerDay = new Map();
+  const assignmentsPerDay = new Map<string, Assignment[]>();
 
   for (const assignment of assignments) {
     const date = dateToString(assignment);
-    if (!assignmentsPerDay.has(date)) {
-      assignmentsPerDay.set(date, []);
+    let thisDay = assignmentsPerDay.get(date);
+    if (thisDay == null) {
+      thisDay = [];
+      assignmentsPerDay.set(date, thisDay);
     }
-    const thisDay = assignmentsPerDay.get(date);
     thisDay.push(assignment);
   }
 
   // put each day worth of assignments in a separate tbody
   const tbodies = [];
-  for (const date of assignmentsPerDay.keys()) {
-    const thisDay = assignmentsPerDay.get(date);
+  for (const [date, thisDay] of assignmentsPerDay.entries()) {
     const duration = sumDuration(thisDay);
     tbodies.push((
       <tbody key={date}>
@@ -67,10 +73,14 @@ function Assignments({ appState, allInformation }) {
     ));
   }
 
-  return tbodies;
+  return (
+    <>
+      { tbodies }
+    </>
+  );
 
-  function renderAssignment(a) {
-    const sampleAssignment = levels[a.level](rng);
+  function renderAssignment(a: Assignment) {
+    const sampleAssignment = levels.make(a.level, a.n);
     const image = sampleAssignment.image;
 
     const classes = ['assignment'];
@@ -93,7 +103,7 @@ function Assignments({ appState, allInformation }) {
         <td>{ a.attemptCount }</td>
         <td>
           { time }
-          { allInformation && pauses.length > 0 && (
+          { showAll && pauses.length > 0 && (
             <div className="pauses">
               pauses: { pauses.join(', ') }
             </div>

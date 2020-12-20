@@ -1,6 +1,6 @@
-import React from 'react';
+import * as React from 'react';
 
-export default function About() {
+export default function About(): JSX.Element {
   return (
     <main>
       <p>This is a simple app for practicing equations.</p>
