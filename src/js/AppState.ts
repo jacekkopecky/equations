@@ -5,28 +5,28 @@ import { Assignment, AssignmentInformation, Saveable } from './types';
 
 const BATCH_SIZE = 5;
 
-interface AppStateInternalState {
+interface InternalState {
   level: number,
   assignments: Assignment[],
 }
 
-const DEFAULT_INTERNAL_STATE: AppStateInternalState = {
+const DEFAULT_INTERNAL_STATE: InternalState = {
   level: 1,
   assignments: [],
 };
 
-// unverified AppStateInternalState
-interface UnverifiedASIS {
+// unverified InternalState
+interface UnverifiedState {
   level?: number,
   assignments?: Array<{ created?: number, startTime: number }>,
 }
 
-function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
+function migrateCreatedToStartTime(obj: unknown): InternalState {
   if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
     obj = {};
   }
 
-  const data = obj as UnverifiedASIS;
+  const data = obj as UnverifiedState;
   if (data.assignments == null) data.assignments = [];
   if (typeof data.level !== 'number') data.level = 1;
 
@@ -39,12 +39,12 @@ function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
     }
   }
   // todo we could also verify the structure of assignments
-  return data as AppStateInternalState;
+  return data as InternalState;
 }
 
 export class AppState {
-  private state: AppStateInternalState;
-  private setState: (state: AppStateInternalState) => void;
+  private readonly state: InternalState;
+  private readonly setState: (state: InternalState) => void;
 
   constructor() {
     const [state, setState] = useLocalStorage(
