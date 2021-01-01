@@ -1,7 +1,7 @@
 import * as levels from './levels/index';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
-import { Assignment, AssignmentInformation } from './types';
+import { Assignment, AssignmentInformation, Saveable } from './types';
 
 const BATCH_SIZE = 5;
 
@@ -56,15 +56,9 @@ export class AppState {
     this.setState = setState;
   }
 
-  getAssignment(level: number, n: number, startTime: number): Assignment {
-    let assignment = this.state.assignments[n];
 
-    const save = () => {
-      this._duplicateState();
-      this.state.assignments[n] = assignment;
-      this._recomputeUserLevel();
-      this._saveState();
-    };
+  getAssignment(level: number, n: number, startTime: number): Assignment & Saveable {
+    let assignment = this.state.assignments[n];
 
     if (!assignment) {
       assignment = {
@@ -73,17 +67,20 @@ export class AppState {
         level,
         n,
         challenge: level > this.level,
-        save,
         done: false,
         answeredCorrectly: false,
       };
-    } else if (!assignment.save) {
-      assignment.save = save;
     }
+
+    const save = () => {
+      this.state.assignments[n] = assignment;
+      this._recomputeUserLevel();
+      this.setState({ ...this.state });
+    };
 
     // todo what to do if we already have the assignment, it's not done, and startTime differs?
 
-    return assignment;
+    return { ...assignment, save };
   }
 
   getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
@@ -128,15 +125,6 @@ export class AppState {
     }
 
     return assignments;
-  }
-
-  private _duplicateState(): void {
-    this.state = { ...this.state };
-  }
-
-  // use this after _duplicateState and then changing some values there
-  private _saveState(): void {
-    this.setState(this.state);
   }
 
   get score(): number {

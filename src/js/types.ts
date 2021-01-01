@@ -38,7 +38,6 @@ export interface AssignmentInformation {
 }
 
 export interface Assignment extends AssignmentDefinition, AssignmentInformation {
-  save: () => void,
   startTime: number,
   doneTime?: number,
 
@@ -47,6 +46,10 @@ export interface Assignment extends AssignmentDefinition, AssignmentInformation 
 
   attemptText?: string,
   attemptAnswers?: Solutions[],
+}
+
+export interface Saveable {
+  save: () => void,
 }
 
 export type LevelFunction = (rng: Random) => AssignmentDefinition;
