@@ -1,6 +1,7 @@
 :root {
   --bg: white;
   --fg: black;
+  --error-fg: red;
   --disabled-bg: #eee;
   --header-bg: #cdf;
   --border: #aaa;

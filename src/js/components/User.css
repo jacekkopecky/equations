@@ -1,0 +1,42 @@
+#user {
+  position: relative;
+  display: inline-block;
+}
+
+#user #user-sign-in {
+  position: absolute;
+  right: 0;
+  top: 0;
+  background: var(--bg);
+  border: solid thin var(--fg);
+  border-radius: 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  padding: 1em 1em 0.5em; /* bottom 0.5em to absorb the bottom margin of last elements */
+  padding-bottom: 0.5em;
+}
+
+#user #user-sign-in > * {
+  margin-bottom: 0.5em;
+}
+
+#user #user-sign-in > .extras {
+  flex-basis: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -0.5em; /* effectively remove this element visually if it's empty */
+}
+
+#user #user-sign-in > .extras > * {
+  margin-bottom: 0.5em;
+}
+
+#user #user-sign-in .error {
+  color: var(--error-fg);
+}
+
+#user #user-sign-in .error::before {
+  content: 'Error: ';
+}

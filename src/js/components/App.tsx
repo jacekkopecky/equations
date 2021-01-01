@@ -11,6 +11,7 @@ import Overview from './Overview';
 import SolveAssignment, { SolveAssignmentProps } from './SolveAssignment';
 import Statistics from './Statistics';
 import About from './About';
+import User from './User';
 
 import './App.css';
 
@@ -25,7 +26,11 @@ export default function App(): JSX.Element {
         <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
         { /* when changing the title above, also change it in index.html and 404.html */ }
         <div>
-          <Link to="/stats">Stats</Link> | <Link to="/about">About</Link>
+          <Link to="/stats">Stats</Link>
+          { ' | ' }
+          <Link to="/about">About</Link>
+          { ' | ' }
+          <User appState={appState} />
         </div>
       </header>
 

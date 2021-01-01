@@ -1,7 +1,11 @@
+import { useState } from 'react';
+
 import * as levels from './levels/index';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
 import { Assignment, AssignmentInformation, Saveable } from './types';
+
+import * as api from './tools/api';
 
 const BATCH_SIZE = 5;
 
@@ -46,6 +50,9 @@ export class AppState {
   private readonly state: InternalState;
   private readonly setState: (state: InternalState) => void;
 
+  private readonly userInfo?: api.UserInfo;
+  private readonly setUserInfo: (info: api.UserInfo) => void;
+
   constructor() {
     const [state, setState] = useLocalStorage(
       'equationsState',
@@ -54,8 +61,12 @@ export class AppState {
     );
     this.state = state;
     this.setState = setState;
-  }
 
+    const [userInfo, setUserInfo] = useState<api.UserInfo>();
+    this.userInfo = userInfo;
+    this.setUserInfo = setUserInfo;
+
+  }
 
   getAssignment(level: number, n: number, startTime: number): Assignment & Saveable {
     let assignment = this.state.assignments[n];
@@ -190,6 +201,25 @@ export class AppState {
     }
 
     return assignmentsOnLastDate;
+  }
+
+  get userName(): string | null {
+    return this.userInfo?.name ?? null;
+  }
+
+  get loggedIn(): boolean {
+    return this.userInfo != null;
+  }
+
+  async logIn(
+    code: string,
+    feedback: (s: string) => void,
+  ): Promise<string | null> {
+    const userInfo = await api.loadUserInformation(code);
+
+    this.setUserInfo(userInfo);
+
+    return null;
   }
 }
 
