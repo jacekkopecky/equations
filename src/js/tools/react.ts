@@ -28,7 +28,7 @@ export function useLocalStorage<T>(
   key: string,
   initialValue: T,
   migration?: (data: unknown) => T,
-): [T, (t: T) => void, () => void] {
+): [T, (t: T | ((t2: T) => T)) => void, () => void] {
   const getCurrentValue = () => {
     try {
       // Get from local storage by key

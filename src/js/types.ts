@@ -53,3 +53,17 @@ export interface Saveable {
 }
 
 export type LevelFunction = (rng: Random) => AssignmentDefinition;
+
+export enum ActivityStatusType {
+  offline = 'offline',
+  loggingIn = 'loggingIn',
+  synced = 'synced',
+  loading = 'loading',
+  saving = 'saving',
+  error = 'error',
+}
+
+export interface ActivityStatus {
+  status: ActivityStatusType,
+  message?: string,
+}

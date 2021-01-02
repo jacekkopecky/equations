@@ -4,6 +4,7 @@
   --error-fg: red;
   --disabled-bg: #eee;
   --header-bg: #cdf;
+  --status-bg: #eee;
   --border: #aaa;
   --border-next-assignment: #00f;
 
@@ -55,6 +56,12 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: baseline;
+  position: relative;
+}
+
+#app-header > div {
+  position: relative;
+  padding: 1em 0;
 }
 
 main {
