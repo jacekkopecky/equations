@@ -3,7 +3,13 @@ import { useState } from 'react';
 import * as levels from './levels/index';
 import { useLocalStorage } from './tools/react';
 import { dateToString } from './tools/durations';
-import { Assignment, AssignmentInformation, Saveable } from './types';
+import {
+  Assignment,
+  AssignmentInformation,
+  Saveable,
+  ActivityStatus,
+  ActivityStatusType,
+} from './types';
 
 import * as api from './tools/api';
 
@@ -12,6 +18,7 @@ const BATCH_SIZE = 5;
 interface InternalState {
   level: number,
   assignments: Assignment[],
+  userCode?: string,
 }
 
 const DEFAULT_INTERNAL_STATE: InternalState = {
@@ -19,10 +26,15 @@ const DEFAULT_INTERNAL_STATE: InternalState = {
   assignments: [],
 };
 
+const DEFAULT_ACTIVITY_STATUS: ActivityStatus = {
+  status: ActivityStatusType.offline,
+};
+
 // unverified InternalState
 interface UnverifiedState {
   level?: number,
   assignments?: Array<{ created?: number, startTime: number }>,
+  userCode?: string,
 }
 
 function migrateCreatedToStartTime(obj: unknown): InternalState {
@@ -33,6 +45,7 @@ function migrateCreatedToStartTime(obj: unknown): InternalState {
   const data = obj as UnverifiedState;
   if (data.assignments == null) data.assignments = [];
   if (typeof data.level !== 'number') data.level = 1;
+  if (typeof data.userCode !== 'string') delete data.userCode;
 
   // assignments[0] is to be ignored
   for (let i = 1; i < data.assignments.length; i += 1) {
@@ -48,10 +61,13 @@ function migrateCreatedToStartTime(obj: unknown): InternalState {
 
 export class AppState {
   private readonly state: InternalState;
-  private readonly setState: (state: InternalState) => void;
+  private readonly setState: (state: InternalState | ((s: InternalState) => InternalState)) => void;
 
   private readonly userInfo?: api.UserInfo;
   private readonly setUserInfo: (info: api.UserInfo) => void;
+
+  readonly activity: ActivityStatus;
+  private readonly setActivity: (info: ActivityStatus) => void;
 
   constructor() {
     const [state, setState] = useLocalStorage(
@@ -66,6 +82,7 @@ export class AppState {
     this.userInfo = userInfo;
     this.setUserInfo = setUserInfo;
 
+    [this.activity, this.setActivity] = useState<ActivityStatus>(DEFAULT_ACTIVITY_STATUS);
   }
 
   getAssignment(level: number, n: number, startTime: number): Assignment & Saveable {
@@ -211,15 +228,26 @@ export class AppState {
     return this.userInfo != null;
   }
 
-  async logIn(
-    code: string,
-    feedback: (s: string) => void,
-  ): Promise<string | null> {
-    const userInfo = await api.loadUserInformation(code);
+  async logIn(code: string): Promise<void> {
+    this.dispatchActivity({ message: '', status: ActivityStatusType.loggingIn });
 
-    this.setUserInfo(userInfo);
+    try {
+      const userInfo = await api.loadUserInformation(code);
 
-    return null;
+      this.setUserInfo(userInfo);
+      // save the code so we can log in automatically next time
+      this.setState((state) => ({ ...state, code }));
+
+
+      this.dispatchActivity({ message: '', status: ActivityStatusType.synced });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'unknown issue';
+      this.dispatchActivity({ message: msg, status: ActivityStatusType.error });
+    }
+  }
+
+  private dispatchActivity(current: ActivityStatus) {
+    this.setActivity({ ...this.activity, ...current });
   }
 }
 

@@ -1,0 +1,53 @@
+.activity-indicator.short {
+  display: inline-block;
+  position: relative;
+  margin: 0 1em;
+}
+
+.activity-indicator.short > .char {
+  display: block;
+  width: 2em;
+  height: 2em;
+  line-height: 2em;
+  text-align: center;
+  background: var(--status-bg);
+  border: solid thin var(--border);
+  border-radius: 100%;
+}
+
+.activity-indicator.short > .expanded {
+  display: inline-block;
+  position: absolute;
+  top: 150%;
+  right: -5em;
+  opacity: 0;
+  transition: opacity 0.5s 0.2s;
+  min-width: 15em;
+  background: var(--status-bg);
+  border: solid thin var(--border);
+  border-radius: 0.4em;
+  padding: 0.5em;
+}
+
+.activity-indicator.short:hover > .expanded {
+  opacity: 1;
+}
+
+.activity-indicator.long {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -0.5em !important; /* effectively remove this element visually if it's empty */
+}
+
+.activity-indicator.long > * {
+  margin-bottom: 0.5em;
+}
+
+.activity-indicator.error .message {
+  color: var(--error-fg);
+}
+
+.activity-indicator.error .message::before {
+  content: 'Error: ';
+}

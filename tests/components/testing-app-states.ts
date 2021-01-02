@@ -6,6 +6,7 @@ import * as reactTools from '../../src/js/tools/react';
 
 interface ReactModule {
   useState: unknown,
+  useEffect: unknown,
 }
 
 jest.mock('react', () => {
@@ -18,10 +19,14 @@ jest.mock('react', () => {
       () => [unknown, React.Dispatch<unknown>],
   );
 
+  const useEffectSpy = jest.fn();
+
   return {
     ...actualReact,
     useState: useStateSpy,
     originalUseState: actualReact.useState,
+    useEffect: useEffectSpy,
+    originalUseEffect: actualReact.useEffect,
   };
 });
 
