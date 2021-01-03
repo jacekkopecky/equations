@@ -10,7 +10,7 @@ interface ActivityIndicatorProps {
   appState: AppState,
 }
 
-const ONE_LETTER_TYPE: {[key in ActivityStatusType]: string} = {
+const ONE_LETTER_TYPE: Record<ActivityStatusType, string> = {
   offline: '⚡️',
   loggingIn: '🔐',
   synced: '✔️',
@@ -19,7 +19,7 @@ const ONE_LETTER_TYPE: {[key in ActivityStatusType]: string} = {
   error: '✘',
 };
 
-const TYPE_TITLE: {[key in ActivityStatusType]: string} = {
+const TYPE_TITLE: Record<ActivityStatusType, string> = {
   offline: 'offline',
   loggingIn: 'logging in',
   synced: 'synced with server',
