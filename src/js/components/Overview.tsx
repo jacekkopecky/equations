@@ -11,6 +11,10 @@ import { AssignmentInformation } from '../types';
 import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
 
+interface ShowingAssignment extends AssignmentInformation {
+  disabled?: boolean;
+}
+
 export default function Overview({ appState }: { appState: AppState }): JSX.Element {
   const batch = appState.getUpcomingAssignments();
   const newcomer = batch[0].n === 1 && !batch[0].done;
@@ -28,7 +32,7 @@ export default function Overview({ appState }: { appState: AppState }): JSX.Elem
     </main>
   );
 
-  function renderAssignment(a: AssignmentInformation) {
+  function renderAssignment(a: ShowingAssignment) {
     return (
       <AssignmentBox
         key={a.n}
@@ -44,7 +48,7 @@ export default function Overview({ appState }: { appState: AppState }): JSX.Elem
   }
 }
 
-function disableAfterFirstUnsolved(assignments: AssignmentInformation[]) {
+function disableAfterFirstUnsolved(assignments: ShowingAssignment[]) {
   let foundUnsolved = false;
   for (const a of assignments) {
     if (foundUnsolved) a.disabled = true;

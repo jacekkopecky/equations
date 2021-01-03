@@ -34,10 +34,9 @@ export interface AssignmentInformation {
 
   answeredCorrectly: boolean,
   done: boolean,
-  disabled?: boolean,
 }
 
-export interface Assignment extends AssignmentDefinition, AssignmentInformation {
+interface AssignmentStats {
   startTime: number,
   doneTime?: number,
 
@@ -47,6 +46,11 @@ export interface Assignment extends AssignmentDefinition, AssignmentInformation 
   attemptText?: string,
   attemptAnswers?: Solutions[],
 }
+
+export interface Assignment extends
+  AssignmentDefinition,
+  AssignmentInformation,
+  AssignmentStats {}
 
 export interface Saveable {
   save: () => void,
