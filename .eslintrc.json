@@ -12,7 +12,6 @@
     "SharedArrayBuffer": "readonly",
     "JSX": "readonly"
   },
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -22,16 +21,8 @@
     "project": "./tsconfig.json"
   },
   "plugins": [
-    "react",
-    "@typescript-eslint/eslint-plugin"
+    "react"
   ],
-  "settings": {
-    "import/resolver": {
-      "node": {
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      }
-    }
-  },
   "rules": {
     "indent": ["error", 2],
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
@@ -50,23 +41,11 @@
     "no-else-return": [0],
     "no-console": [0],
     "no-continue": [0],
-    "no-use-before-define": "off",
-    "@typescript-eslint/no-use-before-define": ["error", { "functions": false }],
     "react/jsx-curly-spacing": ["error", { "when": "never", "children": { "when": "always" }}],
     "jsx-a11y/no-autofocus": [0],
     "no-cond-assign": ["error", "except-parens"],
     "import/no-extraneous-dependencies": ["error", {"devDependencies": true}],
     "import/prefer-default-export": [0],
-    "import/extensions": [
-      "error",
-      "always",
-      {
-        "ts": "never",
-        "tsx": "never",
-        "js": "never",
-        "jsx": "never"
-      }
-    ],
     "react/destructuring-assignment": [0],
     "no-underscore-dangle": [0],
     "no-mixed-operators": [0]
@@ -81,6 +60,7 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:@typescript-eslint/recommended"
       ],
+      "parser": "@typescript-eslint/parser",
       "settings": {
         "import/resolver": {
           "node": {
