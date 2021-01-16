@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/jacekkopecky/equations#readme",
   "dependencies": {
+    "@types/seedrandom": "^2.4.28",
     "nearley": "^2.19.6"
   },
   "devDependencies": {
