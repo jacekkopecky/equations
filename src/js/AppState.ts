@@ -33,7 +33,7 @@ function migrateCreatedToStartTime(obj: unknown): AppStateInternalState {
   // assignments[0] is to be ignored
   for (let i = 1; i < data.assignments.length; i += 1) {
     const a = data.assignments[i];
-    if (a.created != null) {
+    if (a != null && a.created != null) {
       a.startTime = a.created;
       delete a.created;
     }
