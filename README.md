@@ -42,6 +42,7 @@ SOLVABILITY_ITERATIONS=10000 jest tests/levels.test.ts
 - more levels?
   - negative numbers
   - a,b,c...  Alex, Bobby, Cass, ... - each run x,y,z,... meters, totaling N seconds; what's the speed of each runner? – e.g. backstory - a relay race game  (also practices converting speed, time, and distance)
+  - triangle: a + b = 1, b + c = 2, a + c = 3  - draw as triangle
 
 
 ### Levels
