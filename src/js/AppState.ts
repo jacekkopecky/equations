@@ -155,7 +155,7 @@ export class AppState {
     for (const assignment of this.state.assignments) {
       if (assignment == null) continue;
 
-      if (assignment.level > level) {
+      if (assignment.level > level && assignment.answeredCorrectly) {
         progress += 1;
         if (progress >= target) {
           level += 1;
@@ -170,8 +170,10 @@ export class AppState {
 
   get progress(): number {
     const level = this.level;
-    const progress = this.state.assignments.filter((a) => Number(a?.level) > level).length;
-    return progress;
+    const challengesSolved = this.state.assignments.filter(
+      (a) => Number(a?.level) > level && a?.answeredCorrectly,
+    );
+    return challengesSolved.length;
   }
 
   get progressRequired(): number {
