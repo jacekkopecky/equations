@@ -41,23 +41,11 @@ export class AppState {
   private readonly state: InternalState;
   private readonly setState: (state: InternalState | ((s: InternalState) => InternalState)) => void;
 
-  private readonly allAssignments: Assignment[] | null;
-  private readonly setAllAssignments: (arr: Assignment[]) => void;
-
   readonly activity: ActivityStatus;
   private readonly setActivity: (info: ActivityStatus) => void;
 
   constructor() {
-    const [state, setState] = useLocalStorage(
-      'equationsState',
-      DEFAULT_INTERNAL_STATE,
-      migrateState,
-    );
-    this.state = state;
-    this.setState = setState;
-
-    [this.allAssignments, this.setAllAssignments] = useState<Assignment[] | null>(null);
-
+    [this.state, this.setState] = useLocalStorage('equationsState', DEFAULT_INTERNAL_STATE, migrateState);
     [this.activity, this.setActivity] = useState<ActivityStatus>(DEFAULT_ACTIVITY_STATUS);
 
     // todo if we have local storage user code of non-recent timestamp, log in
@@ -124,7 +112,7 @@ export class AppState {
     let firstUnsolved = this.state.assignments.findIndex((a, i) => i > 0 && !a?.done);
     if (firstUnsolved === -1) firstUnsolved = this.state.assignments.length || 1;
 
-    const first = Math.floor(((firstUnsolved - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
+    const first = findBatchStart(firstUnsolved);
     const assignments: AssignmentInformation[] = [];
     const level = this.level;
 
@@ -141,7 +129,8 @@ export class AppState {
   }
 
   get level(): number {
-    return this.state.userInfo.level;
+    // the level is at least 1
+    return Math.max(1, this.state.userInfo.level);
   }
 
   get progress(): number {
@@ -167,7 +156,7 @@ export class AppState {
     const lastAssignment = done[done.length - 1];
     const lastDate = dateToString(lastAssignment);
 
-    // put all with the same date in assignmentsOnDay
+    // put all with the same date in assignmentsOnLastDate
     const assignmentsOnLastDate = [lastAssignment];
     for (let i = done.length - 2; i >= 0; i -= 1) {
       if (dateToString(done[i]) === lastDate) {
@@ -181,11 +170,11 @@ export class AppState {
   }
 
   get userName(): string | null {
-    return this.state.userInfo?.name ?? null;
+    return this.state.userInfo.name ?? null;
   }
 
   get loggedIn(): boolean {
-    return this.state.userInfo != null;
+    return this.state.userCode != null;
   }
 
   async logIn(code: string): Promise<void> {
@@ -195,7 +184,7 @@ export class AppState {
       const userInfo = await api.loadUserInformation(code);
 
       // save the code so we can log in automatically next time
-      this.setState((state) => ({ ...state, userInfo, code }));
+      this.setState((state) => ({ ...state, userInfo, userCode: code }));
 
       this.dispatchActivity({ message: 'working…', status: ActivityStatusType.loading });
       await new Promise((resolve) => { setTimeout(resolve, 1000); });
@@ -205,8 +194,8 @@ export class AppState {
 
       this.dispatchActivity({ message: '', status: ActivityStatusType.synced });
     } catch (e) {
-      const msg = e instanceof Error ? e.message : 'unknown issue';
-      this.dispatchActivity({ message: msg, status: ActivityStatusType.error });
+      const message = e instanceof Error ? e.message : 'unknown issue';
+      this.dispatchActivity({ message, status: ActivityStatusType.error });
     }
 
     // start loading all assignments from server
@@ -238,6 +227,11 @@ function chooseLevel(l: number, n: number): number {
   default:
     return l;
   }
+}
+
+// batches start at 1, 1+BATCH_SIZE, 1+2*BATCH_SIZE etc.
+function findBatchStart(l: number) {
+  return Math.floor(((l - 1) / BATCH_SIZE)) * BATCH_SIZE + 1;
 }
 
 // how many challenges at the given level are required to reach this level

@@ -17,12 +17,10 @@ interface ShowingAssignment extends AssignmentInformation {
 
 export default function Overview({ appState }: { appState: AppState }): JSX.Element {
   const batch = appState.getUpcomingAssignments();
-  const newcomer = batch[0].n === 1 && !batch[0].done;
   disableAfterFirstUnsolved(batch);
 
   return (
     <main id="overview">
-      <h1>Hello { newcomer ? 'newcomer' : 'again' }</h1>
       <p>Score: { appState.score }</p>
       <LevelIndicator appState={appState} />
       <Duration appState={appState} />

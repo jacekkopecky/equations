@@ -51,3 +51,7 @@
 .activity-indicator.error .message::before {
   content: 'Error: ';
 }
+
+.activity-indicator .status {
+  text-align: center;
+}

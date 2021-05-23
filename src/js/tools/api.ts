@@ -13,7 +13,7 @@ export async function loadUserInformation(code: string): Promise<UserInfo> {
     name: code,
     score: 0,
     progress: 0,
-    level: 0,
+    level: 1,
     lastAssignments: [],
   };
 }

@@ -41,7 +41,7 @@ export default function ActivityIndicator(props: ActivityIndicatorProps): JSX.El
           { ONE_LETTER_TYPE[status] }
         </span>
         <div className="expanded">
-          <div className="status">{ ONE_LETTER_TYPE[status] }: { TYPE_TITLE[status] }</div>
+          <div className="status">{ ONE_LETTER_TYPE[status] } { TYPE_TITLE[status] }</div>
           { message && <div className="message">{ message }</div> }
         </div>
       </div>
