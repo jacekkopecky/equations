@@ -11,10 +11,12 @@
     "moduleResolution": "node",
     "jsx": "react",
     "allowJs": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
   },
   "include": [
     "./src/",
+    "./server/",
     "./tests/"
   ]
 }

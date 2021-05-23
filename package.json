@@ -26,6 +26,7 @@
   "homepage": "https://github.com/jacekkopecky/equations#readme",
   "dependencies": {
     "@types/seedrandom": "^2.4.29",
+    "express": "^4.17.1",
     "nearley": "^2.20.1"
   },
   "devDependencies": {
@@ -37,6 +38,7 @@
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
     "@types/enzyme": "^3.10.8",
+    "@types/express": "^4.17.9",
     "@types/jest": "^26.0.22",
     "@types/react": "^17.0.3",
     "@types/react-dom": "^17.0.3",
