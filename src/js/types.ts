@@ -47,13 +47,21 @@ interface AssignmentStats {
   attemptAnswers?: Solutions[],
 }
 
-export interface Assignment extends
-  AssignmentDefinition,
-  AssignmentInformation,
-  AssignmentStats {}
+export type Assignment =
+  & AssignmentDefinition
+  & AssignmentInformation
+  & AssignmentStats;
 
 export interface Saveable {
   save: () => void,
+}
+
+export interface UserInfo {
+  name?: string,
+  score: number,
+  progress: number,
+  level: number,
+  lastAssignments: AssignmentInformation[],
 }
 
 export type LevelFunction = (rng: Random) => AssignmentDefinition;

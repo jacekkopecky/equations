@@ -9,20 +9,27 @@ import {
   Saveable,
   ActivityStatus,
   ActivityStatusType,
+  UserInfo,
 } from './types';
 
 import * as api from './tools/api';
+import migrateState from './tools/state-migrations';
 
 const BATCH_SIZE = 5;
 
-interface InternalState {
-  level: number,
+export interface InternalState {
+  userInfo: UserInfo,
   assignments: Assignment[],
   userCode?: string,
 }
 
 const DEFAULT_INTERNAL_STATE: InternalState = {
-  level: 1,
+  userInfo: {
+    score: 0,
+    progress: 0,
+    level: 1,
+    lastAssignments: [],
+  },
   assignments: [],
 };
 
@@ -30,41 +37,12 @@ const DEFAULT_ACTIVITY_STATUS: ActivityStatus = {
   status: ActivityStatusType.offline,
 };
 
-// unverified InternalState
-interface UnverifiedState {
-  level?: number,
-  assignments?: Array<{ created?: number, startTime: number }>,
-  userCode?: string,
-}
-
-function migrateCreatedToStartTime(obj: unknown): InternalState {
-  if (obj == null || typeof obj !== 'object' || Array.isArray(obj)) {
-    obj = {};
-  }
-
-  const data = obj as UnverifiedState;
-  if (data.assignments == null) data.assignments = [];
-  if (typeof data.level !== 'number') data.level = 1;
-  if (typeof data.userCode !== 'string') delete data.userCode;
-
-  // assignments[0] is to be ignored
-  for (let i = 1; i < data.assignments.length; i += 1) {
-    const a = data.assignments[i];
-    if (a != null && a.created != null) {
-      a.startTime = a.created;
-      delete a.created;
-    }
-  }
-  // todo we could also verify the structure of assignments
-  return data as InternalState;
-}
-
 export class AppState {
   private readonly state: InternalState;
   private readonly setState: (state: InternalState | ((s: InternalState) => InternalState)) => void;
 
-  private readonly userInfo?: api.UserInfo;
-  private readonly setUserInfo: (info: api.UserInfo) => void;
+  private readonly allAssignments: Assignment[] | null;
+  private readonly setAllAssignments: (arr: Assignment[]) => void;
 
   readonly activity: ActivityStatus;
   private readonly setActivity: (info: ActivityStatus) => void;
@@ -73,16 +51,16 @@ export class AppState {
     const [state, setState] = useLocalStorage(
       'equationsState',
       DEFAULT_INTERNAL_STATE,
-      migrateCreatedToStartTime,
+      migrateState,
     );
     this.state = state;
     this.setState = setState;
 
-    const [userInfo, setUserInfo] = useState<api.UserInfo>();
-    this.userInfo = userInfo;
-    this.setUserInfo = setUserInfo;
+    [this.allAssignments, this.setAllAssignments] = useState<Assignment[] | null>(null);
 
     [this.activity, this.setActivity] = useState<ActivityStatus>(DEFAULT_ACTIVITY_STATUS);
+
+    // todo if we have local storage user code of non-recent timestamp, log in
   }
 
   getAssignment(level: number, n: number, startTime: number): Assignment & Saveable {
@@ -101,9 +79,12 @@ export class AppState {
     }
 
     const save = () => {
-      this.state.assignments[n] = assignment;
-      this._recomputeUserLevel();
-      this.setState({ ...this.state });
+      this.setState((oldState) => {
+        const newState = { ...oldState, assignments: [...oldState.assignments] };
+        newState.assignments[n] = assignment;
+        newState.userInfo.level = recomputeUserLevel(newState);
+        return newState;
+      });
     };
 
     // todo what to do if we already have the assignment, it's not done, and startTime differs?
@@ -111,7 +92,14 @@ export class AppState {
     return { ...assignment, save };
   }
 
-  getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
+  getNextAssignment(n: number): AssignmentInformation | null {
+    const assignmentN = this.getAssignmentInformation(0, n);
+    if (!assignmentN.done) return null; // there should be no "next" link
+
+    return this.getAssignmentInformation(this.level, n + 1);
+  }
+
+  private getAssignmentInformation(userLevel: number, n: number): AssignmentInformation {
     const challenge = (userLevel < levels.topLevel) && (n % BATCH_SIZE === 0);
     const assignmentInfo = {
       level: challenge ? userLevel + 1 : chooseLevel(userLevel, n),
@@ -130,13 +118,6 @@ export class AppState {
     }
 
     return assignmentInfo;
-  }
-
-  getNextAssignment(n: number): AssignmentInformation | null {
-    const assignmentN = this.getAssignmentInformation(0, n);
-    if (!assignmentN.done) return null; // there should be no "next" link
-
-    return this.getAssignmentInformation(this.level, n + 1);
   }
 
   getUpcomingAssignments(): AssignmentInformation[] {
@@ -160,28 +141,7 @@ export class AppState {
   }
 
   get level(): number {
-    return this.state.level;
-  }
-
-  private _recomputeUserLevel(): void {
-    let level = 1;
-    let progress = 0;
-    let target = challengesRequired(level + 1);
-
-    for (const assignment of this.state.assignments) {
-      if (assignment == null) continue;
-
-      if (assignment.level > level && assignment.answeredCorrectly) {
-        progress += 1;
-        if (progress >= target) {
-          level += 1;
-          target = challengesRequired(level + 1);
-          progress = 0;
-        }
-      }
-    }
-
-    this.state.level = level;
+    return this.state.userInfo.level;
   }
 
   get progress(): number {
@@ -221,11 +181,11 @@ export class AppState {
   }
 
   get userName(): string | null {
-    return this.userInfo?.name ?? null;
+    return this.state.userInfo?.name ?? null;
   }
 
   get loggedIn(): boolean {
-    return this.userInfo != null;
+    return this.state.userInfo != null;
   }
 
   async logIn(code: string): Promise<void> {
@@ -234,16 +194,27 @@ export class AppState {
     try {
       const userInfo = await api.loadUserInformation(code);
 
-      this.setUserInfo(userInfo);
       // save the code so we can log in automatically next time
-      this.setState((state) => ({ ...state, code }));
+      this.setState((state) => ({ ...state, userInfo, code }));
 
+      this.dispatchActivity({ message: 'working…', status: ActivityStatusType.loading });
+      await new Promise((resolve) => { setTimeout(resolve, 1000); });
+
+      this.dispatchActivity({ message: 'foo', status: ActivityStatusType.error });
+      await new Promise((resolve) => { setTimeout(resolve, 1000); });
 
       this.dispatchActivity({ message: '', status: ActivityStatusType.synced });
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'unknown issue';
       this.dispatchActivity({ message: msg, status: ActivityStatusType.error });
     }
+
+    // start loading all assignments from server
+    // if server progress doesn't agree with local storage:
+    //   if we have extra assignments, save them from local storage on server (one by one)
+    //   if we have fewer, load assignments from server and put them in ours
+
+    // later, when finishing an assignment, save it to server (start the same subprocess as above)
   }
 
   private dispatchActivity(current: ActivityStatus) {
@@ -273,4 +244,25 @@ function chooseLevel(l: number, n: number): number {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function challengesRequired(level?: number) {
   return 5; // might be variable at some point
+}
+
+function recomputeUserLevel(state: InternalState): number {
+  let level = 1;
+  let progress = 0;
+  let target = challengesRequired(level + 1);
+
+  for (const assignment of state.assignments) {
+    if (assignment == null) continue;
+
+    if (assignment.level > level && assignment.answeredCorrectly) {
+      progress += 1;
+      if (progress >= target) {
+        level += 1;
+        target = challengesRequired(level + 1);
+        progress = 0;
+      }
+    }
+  }
+
+  return level;
 }
