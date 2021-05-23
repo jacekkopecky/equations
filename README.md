@@ -45,6 +45,9 @@ SOLVABILITY_ITERATIONS=10000 jest tests/levels.test.ts
   - triangle: a + b = 1, b + c = 2, a + c = 3  - draw as triangle
 
 
+- add other types of maths: ratios? fractions? decimals?
+
+
 ### Levels
 
 `js/levels/index.js` defines the levels
