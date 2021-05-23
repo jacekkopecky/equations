@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import * as levels from './levels/index';
-import { useLocalStorage } from './tools/react';
+import { useLocalStorage, StateSetter } from './tools/react';
 import { dateToString } from './tools/durations';
 import {
   Assignment,
@@ -23,7 +23,7 @@ export interface InternalState {
   userCode?: string,
 }
 
-const DEFAULT_INTERNAL_STATE: InternalState = {
+export const DEFAULT_INTERNAL_STATE: InternalState = {
   userInfo: {
     score: 0,
     progress: 0,
@@ -39,10 +39,10 @@ const DEFAULT_ACTIVITY_STATUS: ActivityStatus = {
 
 export class AppState {
   private readonly state: InternalState;
-  private readonly setState: (state: InternalState | ((s: InternalState) => InternalState)) => void;
+  private readonly setState: StateSetter<InternalState>;
 
   readonly activity: ActivityStatus;
-  private readonly setActivity: (info: ActivityStatus) => void;
+  private readonly setActivity: StateSetter<ActivityStatus>;
 
   constructor() {
     [this.state, this.setState] = useLocalStorage('equationsState', DEFAULT_INTERNAL_STATE, migrateState);
@@ -178,7 +178,7 @@ export class AppState {
   }
 
   async logIn(code: string): Promise<void> {
-    this.dispatchActivity({ message: '', status: ActivityStatusType.loggingIn });
+    this.dispatchActivity({ status: ActivityStatusType.loggingIn, message: '' });
 
     try {
       const userInfo = await api.loadUserInformation(code);
@@ -186,16 +186,16 @@ export class AppState {
       // save the code so we can log in automatically next time
       this.setState((state) => ({ ...state, userInfo, userCode: code }));
 
-      this.dispatchActivity({ message: 'working…', status: ActivityStatusType.loading });
+      this.dispatchActivity({ status: ActivityStatusType.loading, message: 'working…' });
       await new Promise((resolve) => { setTimeout(resolve, 1000); });
 
-      this.dispatchActivity({ message: 'foo', status: ActivityStatusType.error });
+      this.dispatchActivity({ status: ActivityStatusType.error, message: 'foo' });
       await new Promise((resolve) => { setTimeout(resolve, 1000); });
 
-      this.dispatchActivity({ message: '', status: ActivityStatusType.synced });
+      this.dispatchActivity({ status: ActivityStatusType.synced, message: '' });
     } catch (e) {
       const message = e instanceof Error ? e.message : 'unknown issue';
-      this.dispatchActivity({ message, status: ActivityStatusType.error });
+      this.dispatchActivity({ status: ActivityStatusType.error, message });
     }
 
     // start loading all assignments from server
@@ -207,7 +207,7 @@ export class AppState {
   }
 
   private dispatchActivity(current: ActivityStatus) {
-    this.setActivity({ ...this.activity, ...current });
+    this.setActivity((activity) => ({ ...activity, ...current }));
   }
 }
 

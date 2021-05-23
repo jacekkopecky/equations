@@ -1,32 +1,36 @@
-import { InternalState } from '../AppState';
+import { InternalState, DEFAULT_INTERNAL_STATE } from '../AppState';
+import { Assignment, UserInfo } from '../types';
 
 // unverified InternalState
-
 interface UnverifiedAssignment {
   created?: number,
   startTime: number,
 }
 
 interface UnverifiedState {
-  level?: number,
-  assignments?: Array<UnverifiedAssignment>,
+  level?: number, // from previous version of state
+  userInfo?: UserInfo,
+  assignments?: Array<Assignment>,
   userCode?: string,
 }
 
 export default function migrateState(obj: unknown): InternalState {
   const data = isUnverifiedState(obj) ? obj : {};
 
-  if (data.assignments == null) data.assignments = [];
-  if (typeof data.level !== 'number') data.level = 1;
-  if (typeof data.userCode !== 'string') delete data.userCode;
+  // todo we could also verify the structure of assignments
+  const assignments = Array.isArray(data.assignments) ? data.assignments : [];
+  const userInfo = data.userInfo ?? DEFAULT_INTERNAL_STATE.userInfo;
+  const userCode = typeof data.userCode === 'string' ? data.userCode : undefined;
 
-  // assignments[0] is to be ignored
-  for (let i = 1; i < data.assignments.length; i += 1) {
-    const a = data.assignments[i];
+  for (const a of assignments) {
     if (a != null) migrateCreatedToStartTime(a);
   }
-  // todo we could also verify the structure of assignments
-  return data as InternalState;
+
+  return {
+    assignments,
+    userInfo,
+    userCode,
+  };
 }
 
 function isUnverifiedState(obj: unknown): obj is UnverifiedState {

@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
+
 // This hook returns a ref.
 // If the dependencies have changed and the ref has an element, it will focus.
 export function useAutofocusRef<T extends HTMLInputElement|HTMLTextAreaElement>(
