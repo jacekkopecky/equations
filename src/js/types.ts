@@ -76,6 +76,10 @@ export enum ActivityType {
   error = 'error',
 }
 
+export const ActivityWorking: ActivityType[] = [
+  ActivityType.loggingIn,
+];
+
 export interface ActivityStatus {
   status: ActivityType,
   message?: string,

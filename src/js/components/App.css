@@ -87,3 +87,28 @@ footer > * {
 footer > *:not(:last-child)::after {
   content: '   |   ';
 }
+
+#app > div.working > * {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+#app > div.working::after {
+  content: ' ';
+  background-image: url(/images/spinner.svg);
+  background-position: center;
+  background-size: 5em;
+  background-repeat: no-repeat;
+  animation: spin 1s steps(12) infinite;
+  display: block;
+  width: 5em;
+  height: 5em;
+  position: absolute;
+  top: calc(50% - 2.5em);
+  left: calc(50% - 2.5em);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}

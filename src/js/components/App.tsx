@@ -14,12 +14,16 @@ import About from './About';
 import User from './User';
 import ActivityIndicator from './ActivityIndicator';
 
+import * as types from '../types';
+
 import './App.css';
 
 import useAppState from '../AppState';
 
 export default function App(): JSX.Element {
   const appState = useAppState();
+
+  const working = types.ActivityWorking.includes(appState.activity.status);
 
   return (
     <Router>
@@ -36,26 +40,28 @@ export default function App(): JSX.Element {
         </div>
       </header>
 
-      <Switch>
-        <Route exact path="/">
-          <Overview appState={appState} />
-        </Route>
-        <Route exact path="/eq/:level(\d+)/:n(\d+)">
-          <SolveAssignmentWithParams appState={appState} back="/" />
-        </Route>
-        <Route path="/eq" exact>
-          <SolveAssignment level={1} n={1} appState={appState} back="/" />
-        </Route>
-        <Route path="/stats" exact>
-          <Statistics appState={appState} />
-        </Route>
-        <Route path="/about">
-          <About />
-        </Route>
-        <Route path="*">
-          <NotFound />
-        </Route>
-      </Switch>
+      <div className={working ? 'working' : ''}>
+        <Switch>
+          <Route exact path="/">
+            <Overview appState={appState} />
+          </Route>
+          <Route exact path="/eq/:level(\d+)/:n(\d+)">
+            <SolveAssignmentWithParams appState={appState} back="/" />
+          </Route>
+          <Route path="/eq" exact>
+            <SolveAssignment level={1} n={1} appState={appState} back="/" />
+          </Route>
+          <Route path="/stats" exact>
+            <Statistics appState={appState} />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="*">
+            <NotFound />
+          </Route>
+        </Switch>
+      </div>
     </Router>
   );
 }
