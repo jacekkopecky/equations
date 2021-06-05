@@ -67,7 +67,7 @@ export interface UserInfo {
 
 export type LevelFunction = (rng: Random) => AssignmentDefinition;
 
-export enum ActivityStatusType {
+export enum ActivityType {
   offline = 'offline',
   loggingIn = 'loggingIn',
   synced = 'synced',
@@ -77,6 +77,6 @@ export enum ActivityStatusType {
 }
 
 export interface ActivityStatus {
-  status: ActivityStatusType,
+  status: ActivityType,
   message?: string,
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import './ActivityIndicator.css';
 
-import { ActivityStatusType } from '../types';
+import { ActivityType } from '../types';
 import { AppState } from '../AppState';
 
 interface ActivityIndicatorProps {
@@ -10,7 +10,7 @@ interface ActivityIndicatorProps {
   appState: AppState,
 }
 
-const ONE_LETTER_TYPE: Record<ActivityStatusType, string> = {
+const ONE_LETTER_TYPE: Record<ActivityType, string> = {
   offline: '⚡️',
   loggingIn: '🔐',
   synced: '✔️',
@@ -19,7 +19,7 @@ const ONE_LETTER_TYPE: Record<ActivityStatusType, string> = {
   error: '✘',
 };
 
-const TYPE_TITLE: Record<ActivityStatusType, string> = {
+const TYPE_TITLE: Record<ActivityType, string> = {
   offline: 'offline',
   loggingIn: 'logging in',
   synced: 'synced with server',
@@ -50,7 +50,7 @@ export default function ActivityIndicator(props: ActivityIndicatorProps): JSX.El
     return (
       <div className={className}>
         { message && <div className="message">{ message }</div> }
-        { !message && status === ActivityStatusType.loggingIn && <div className="message">Logging in…</div> }
+        { !message && status === ActivityType.loggingIn && <div className="message">Logging in…</div> }
       </div>
     );
   }
