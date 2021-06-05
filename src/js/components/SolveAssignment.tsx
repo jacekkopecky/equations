@@ -36,7 +36,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   const history = useHistory();
 
   const appState = props.appState;
-  const assignment = appState.getAssignment(level, n, startTime);
+  const { assignment, save } = appState.getAssignment(level, n, startTime);
   const nextAssignment = appState.getNextAssignment(n);
 
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
@@ -228,7 +228,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
       assignment.interactionPauses = pauses;
     }
     setAskedToCheckOrShowAnswers(true);
-    assignment.save();
+    save();
   }
 
   function showAnswers() {
@@ -238,7 +238,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
     assignment.done = true;
     assignment.doneTime = Date.now();
     assignment.interactionPauses = pauses;
-    assignment.save();
+    save();
     deleteStoredAttemptText();
     clearState();
     setAskedToCheckOrShowAnswers(true);

@@ -54,6 +54,7 @@ export type Assignment =
   & AssignmentStats;
 
 export interface Saveable {
+  assignment: Assignment,
   save: () => void,
 }
 

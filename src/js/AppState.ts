@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import * as levels from './levels/index';
 import { useLocalStorage, StateSetter } from './tools/react';
@@ -48,10 +48,13 @@ export class AppState {
     [this.state, this.setState] = useLocalStorage('equationsState', DEFAULT_INTERNAL_STATE, migrateState);
     [this.activity, this.setActivity] = useState<ActivityStatus>(DEFAULT_ACTIVITY_STATUS);
 
-    // todo if we have local storage user code of non-recent timestamp, log in
+    useEffect(() => {
+      this.loadUserInformation()
+        .catch((error) => console.error('error loading UserInformation', error));
+    }, [this.state.userCode]);
   }
 
-  getAssignment(level: number, n: number, startTime: number): Assignment & Saveable {
+  getAssignment(level: number, n: number, startTime: number): Saveable {
     let assignment = this.state.assignments[n];
 
     if (!assignment) {
@@ -66,18 +69,29 @@ export class AppState {
       };
     }
 
-    const save = () => {
+    const save = async () => {
       this.setState((oldState) => {
         const newState = { ...oldState, assignments: [...oldState.assignments] };
         newState.assignments[n] = assignment;
         newState.userInfo.level = recomputeUserLevel(newState);
         return newState;
       });
+
+      if (assignment.done && this.state.userCode) {
+        this.dispatchActivity({ status: ActivityType.saving, message: '' });
+        try {
+          await api.saveAssignment(this.state.userCode, assignment);
+          this.dispatchActivity({ status: ActivityType.synced, message: '' });
+        } catch (e) {
+          console.error(e);
+          this.dispatchActivity({ status: ActivityType.error, message: 'error saving' });
+        }
+      }
     };
 
     // todo what to do if we already have the assignment, it's not done, and startTime differs?
 
-    return { ...assignment, save };
+    return { assignment, save };
   }
 
   getNextAssignment(n: number): AssignmentInformation | null {
@@ -177,37 +191,67 @@ export class AppState {
     return this.state.userCode != null;
   }
 
-  async logIn(code: string): Promise<void> {
+  logIn(code: string): void {
+    this.setState((state) => ({ ...state, userCode: code }));
+  }
+
+  private async loadUserInformation() {
+    if (!this.state.userCode) return; // not logged in, nothing to load
+
     this.dispatchActivity({ status: ActivityType.loggingIn, message: '' });
 
     try {
-      const userInfo = await api.loadUserInformation(code);
+      const userInfo = await api.loadUserInformation(this.state.userCode);
 
       // save the code so we can log in automatically next time
-      this.setState((state) => ({ ...state, userInfo, userCode: code }));
+      this.setState((state) => ({ ...state, userInfo }));
 
-      this.dispatchActivity({ status: ActivityType.loading, message: 'working…' });
-      await new Promise((resolve) => { setTimeout(resolve, 1000); });
+      this.dispatchActivity({ status: ActivityType.loading, message: '' });
 
-      this.dispatchActivity({ status: ActivityType.error, message: 'foo' });
-      await new Promise((resolve) => { setTimeout(resolve, 1000); });
+      const allAssignments = await api.loadDoneAssignments(this.state.userCode);
+      await this.syncAssignments(allAssignments, this.state.assignments);
 
       this.dispatchActivity({ status: ActivityType.synced, message: '' });
     } catch (e) {
-      const message = e instanceof Error ? e.message : 'unknown issue';
-      this.dispatchActivity({ status: ActivityType.error, message });
+      if (e instanceof api.Forbidden) {
+        // remove userCode if the server rejects it
+        this.setState((state) => ({ ...state, userCode: undefined }));
+        this.dispatchActivity({ status: ActivityType.error, message: 'unknown login code' });
+      } else {
+        const message = e instanceof Error ? e.message : 'unknown issue';
+        this.dispatchActivity({ status: ActivityType.error, message });
+      }
+      console.error(e);
     }
-
-    // start loading all assignments from server
-    // if server progress doesn't agree with local storage:
-    //   if we have extra assignments, save them from local storage on server (one by one)
-    //   if we have fewer, load assignments from server and put them in ours
-
-    // later, when finishing an assignment, save it to server (start the same subprocess as above)
   }
 
   private dispatchActivity(current: ActivityStatus) {
     this.setActivity((activity) => ({ ...activity, ...current }));
+  }
+
+  // if server progress doesn't agree with local storage:
+  //   if server has extra assignments, put them in ours
+  //   if we have extra assignments, save them from local storage on server (one by one)
+  private async syncAssignments(server: Assignment[], local: Assignment[]) {
+    const merged: Assignment[] = Array.from(server);
+    const toSave: Assignment[] = [];
+
+    for (let i = 0; i < local.length; i += 1) {
+      if (local[i] && !server[i]) {
+        merged[i] = local[i];
+        toSave.push(local[i]);
+      }
+    }
+
+    this.setState((state) => ({ ...state, assignments: merged }));
+
+    if (this.state.userCode) {
+      this.dispatchActivity({ status: ActivityType.saving, message: '' });
+      for (const assignment of toSave) {
+        // eslint-disable-next-line no-await-in-loop
+        await api.saveAssignment(this.state.userCode, assignment);
+      }
+    }
   }
 }
 

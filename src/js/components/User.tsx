@@ -18,10 +18,10 @@ export default function User({ appState }: { appState: AppState }): JSX.Element 
     }
   });
 
-  async function logIn(e: React.FormEvent) {
+  function logIn(e: React.FormEvent) {
     e.preventDefault();
 
-    await appState.logIn(currentCode);
+    appState.logIn(currentCode);
     setSignInShowing(false);
   }
 
