@@ -19,25 +19,26 @@ export interface Solutions {
 export type AnswersMap = Map<string, number>;
 
 export interface AssignmentDefinition {
-  equations: Equation[],
-  solution: Solutions,
+  readonly equations: Equation[],
+  readonly solution: Solutions,
+
+  readonly image: string,
 
   onlyText?: boolean,
   text?: string[],
-  image: string,
 }
 
 export interface AssignmentInformation {
-  level: number,
-  n: number,
-  challenge: boolean,
+  readonly level: number,
+  readonly n: number,
+  readonly challenge: boolean,
 
   answeredCorrectly: boolean,
   done: boolean,
 }
 
 interface AssignmentStats {
-  startTime: number,
+  readonly startTime: number,
   doneTime?: number,
 
   attemptCount?: number,
