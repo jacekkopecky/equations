@@ -16,8 +16,7 @@ export default function About(): JSX.Element {
           <a href="https://github.com/jacekkopecky/equations/issues">GitHub issues page</a>.
         </p>
         {
-          // todo:
-          // maybe incorporate the pictures, list level types
+          // todo: maybe incorporate the pictures, list level types
           // show an example question and how it could be solved
         }
       </section>

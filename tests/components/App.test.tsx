@@ -31,5 +31,5 @@ test('basic contents', () => {
   expect(wrapper.find('SolveAssignmentWithParams')).toHaveLength(1);
 });
 
-test.todo('more routes');
+test.todo('more routes'); // add tests for more routes in App
 // see https://medium.com/@antonybudianto/react-router-testing-with-jest-and-enzyme-17294fefd303
