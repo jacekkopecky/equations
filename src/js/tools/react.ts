@@ -67,17 +67,14 @@ export function useLocalStorage<T>(
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
   const setValue = (value: T | ((t: T) => T)) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
+    setStoredValue((oldValue: T) => {
+      const valueToStore = value instanceof Function ? value(oldValue) : value;
+
       // Save to local storage (remove if)
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error);
-    }
+
+      return valueToStore;
+    });
   };
 
   const deleteValue = () => {
