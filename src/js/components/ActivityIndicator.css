@@ -22,7 +22,8 @@
   top: 150%;
   right: -5em;
   opacity: 0;
-  transition: opacity 0.5s 0.2s;
+  visibility: hidden;
+  transition: opacity 0.5s 0.2s, visibility 0.7s;
   min-width: 15em;
   background: var(--status-bg);
   border: solid thin var(--border);
@@ -32,6 +33,7 @@
 
 .activity-indicator.short:hover > .expanded {
   opacity: 1;
+  visibility: visible;
 }
 
 .activity-indicator.long {
