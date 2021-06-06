@@ -1,0 +1,18 @@
+{
+  "name": "equations-server",
+  "version": "0.0.1",
+  "description": "server cloud function for equations (bananas for maths)",
+  "main": "index.js",
+  "author": "Jacek Kopecky <jacek@jacek.cz>",
+  "scripts": {
+    "deploy": "gcloud functions deploy equationsAPI --runtime nodejs14 --trigger-http --allow-unauthenticated",
+    "local": "TESTING=true DATASTORE_EMULATOR_HOST=localhost:8081 node ./index.js",
+    "localds": "gcloud beta emulators datastore start --no-store-on-disk"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/datastore": "^6.3.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}

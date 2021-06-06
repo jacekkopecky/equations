@@ -94,10 +94,10 @@ API:
 - save done assignment (no overwrite, POST)
 - retrieve done assignments (GET)
 
+/api/users/:code (GET)
+/api/users/:code/assignments (GET, POST)
+
 tasks:
 
-- add sign-in component - just a code
 - add server that lets you sign in, returns basic info, has a built-in list of allowed codes
-- having loaded assignments from local storage, if server – on sign-in – doesn't agree with progress, save extra assignments from local storage on server (one by one) or load assignments from server (if we have fewer)
-- add status (synced, saving, loading, offline)
-- add username, make it settable?
+- add sign-out

@@ -12,7 +12,8 @@
     "coverage": "jest --coverage --collectCoverageFrom=src/**/*.{js,ts,tsx}",
     "lint": "echo lint javascript && npm run --silent lint:js && echo lint css && npm run --silent lint:css",
     "lint:js": "eslint src tests --ext .js,.json,.ts,.tsx",
-    "lint:css": "stylelint 'src/**/*.css' 'src/**/*.html'"
+    "lint:css": "stylelint 'src/**/*.css' 'src/**/*.html'",
+    "postinstall": "cd server; npm i"
   },
   "repository": {
     "type": "git",
