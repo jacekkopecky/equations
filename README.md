@@ -99,5 +99,11 @@ API:
 
 tasks:
 
-- add server that lets you sign in, returns basic info, has a built-in list of allowed codes
+- when an assignment is being saved, compute userinfo
+  - score: number of assignments answered correctly (AppState.get score())
+  - progress: progress towards next level (AppState.get progress())
+  - level: AppState.recomputeUserLevel
+  - lastAssignments to serve getUpcomingAssignments and get lastDayAssignments
+- change POST on /user/:code/assignments to return new UserInfo
+- add database
 - add sign-out
