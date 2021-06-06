@@ -96,11 +96,13 @@ export function formatEquation(e: t.Equation, n: number, onlyText?: false): JSX.
 export function formatEquation(e: t.Equation, n: number, onlyText: true): string;
 export function formatEquation(e: t.Equation, n: number, onlyText?: boolean): JSX.Element | string {
   const text = `${formatAddition(e.lhs)}\u00a0=\u00a0${formatAddition(e.rhs)} (${n})`;
-  return onlyText ? text : (
-    <span className="equation">
-      { text }
-    </span>
-  );
+  return onlyText
+    ? text
+    : (
+      <span className="equation">
+        { text }
+      </span>
+    );
 }
 
 function formatAddition(arr: t.EquationParts) {

@@ -40,7 +40,7 @@ function renderProgress(appState: AppState, justWonAStar: boolean) {
   const progress = appState.progress;
   const required = appState.progressRequired;
 
-  const stars:JSX.Element[] = [];
+  const stars: JSX.Element[] = [];
 
   for (let i = 0; i < required; i += 1) {
     if (i < progress) {

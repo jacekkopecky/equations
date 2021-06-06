@@ -12,7 +12,7 @@ import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
 
 interface ShowingAssignment extends AssignmentInformation {
-  disabled?: boolean;
+  disabled?: boolean,
 }
 
 export default function Overview({ appState }: { appState: AppState }): JSX.Element {

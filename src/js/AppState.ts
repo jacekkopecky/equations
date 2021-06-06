@@ -264,12 +264,12 @@ export default function useAppState(): AppState {
 function chooseLevel(l: number, n: number): number {
   const inBatch = n % BATCH_SIZE;
   switch (inBatch) {
-  case 1:
-    return Math.max(1, Math.floor(l / 2));
-  case 3:
-    return Math.max(1, Math.floor(l * 0.8));
-  default:
-    return l;
+    case 1:
+      return Math.max(1, Math.floor(l / 2));
+    case 3:
+      return Math.max(1, Math.floor(l * 0.8));
+    default:
+      return l;
   }
 }
 

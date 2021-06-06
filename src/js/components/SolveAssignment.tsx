@@ -71,8 +71,8 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   const justFinished = assignment.done && justCheckedOrShowing;
   const justWon = justFinished && assignment.answeredCorrectly;
   const canCheckAnswers = (
-    !transitioning && !assignment.done
-    && Equations.areAllVariablesAnswered(assignment.equations, answers)
+    !transitioning && !assignment.done &&
+    Equations.areAllVariablesAnswered(assignment.equations, answers)
   );
 
   const classes = [];
@@ -103,16 +103,18 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
         ) }
 
         {
-          assignment.done ? <pre className="equation">{ assignment.attemptText }</pre> : (
-            <textarea
-              className="equation"
-              onChange={saveAttemptText}
-              autoFocus
-              ref={textAreaRef}
-              value={storedAttemptText}
-              disabled={assignment.done}
-            />
-          )
+          assignment.done
+            ? <pre className="equation">{ assignment.attemptText }</pre>
+            : (
+              <textarea
+                className="equation"
+                onChange={saveAttemptText}
+                autoFocus
+                ref={textAreaRef}
+                value={storedAttemptText}
+                disabled={assignment.done}
+              />
+            )
         }
 
         <div className="answers">
@@ -255,9 +257,11 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
       <div className="answer" key={varName}>
         { varName }
         { ' = ' }
-        { assignment.done ? assignment.solution[varName] : (
-          <input type="number" onChange={(e) => setAnswer(varName, e.target.valueAsNumber)} />
-        ) }
+        { assignment.done
+          ? assignment.solution[varName]
+          : (
+            <input type="number" onChange={(e) => setAnswer(varName, e.target.valueAsNumber)} />
+          ) }
       </div>
     );
   }
