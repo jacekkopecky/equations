@@ -5,19 +5,22 @@ const db = require('./db');
 const api = express.Router();
 module.exports = api;
 
+// authorization
+api.use('/users/:code', asyncWrap(checkUserExists));
+
 api.get('/users/:code', asyncWrap(retrieveUserInfo));
 api.get('/users/:code/assignments', asyncWrap(retrieveAssignments));
 api.post('/users/:code/assignments', express.json(), asyncWrap(saveAssignment));
 
 // authorization: unknown users get 403
-// db must check and if the user is unknown, throw db.UnknownUser
-api.use((err, req, res, next) => {
-  if (err instanceof db.UnknownUser) {
-    res.sendStatus(403);
+async function checkUserExists(req, res, next) {
+  const user = req.params.code;
+  if (await db.checkUserIsKnown(user)) {
+    next();
   } else {
-    next(err);
+    res.sendStatus(403);
   }
-});
+}
 
 // wrap async function for express.js error handling
 function asyncWrap(f) {

@@ -1,16 +1,6 @@
 // Imports the Google Cloud client library
 // const { Datastore } = require('@google-cloud/datastore');
 
-// IMPORTANT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// this module's exported functions must check that user is known,
-// and if the user is unknown, throw db.UnknownUser
-// use the following function to do that:
-function checkUserIsKnown(user) {
-  if (!knownUsers.has(user)) {
-    throw new UnknownUser();
-  }
-}
-
 // Creates a client
 // const datastore = new Datastore({ namespace: 'v1' });
 
@@ -34,17 +24,14 @@ for (const user of knownUsers.keys()) {
 }
 
 exports.getUserInfo = (user) => {
-  checkUserIsKnown(user);
   return knownUsers.get(user);
 };
 
 exports.getAssignments = (user) => {
-  checkUserIsKnown(user);
   return knownAssignments.get(user);
 };
 
 exports.saveAssignment = (user, assignment) => {
-  checkUserIsKnown(user);
   const assignments = knownAssignments.get(user);
   if (!assignments[assignment.n]) {
     assignments[assignment.n] = assignment;
@@ -54,5 +41,6 @@ exports.saveAssignment = (user, assignment) => {
   }
 };
 
-class UnknownUser extends Error {}
-exports.UnknownUser = UnknownUser;
+exports.checkUserIsKnown = (user) => {
+  return knownUsers.has(user);
+};
