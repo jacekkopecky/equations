@@ -13,7 +13,8 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "allowUnreachableCode": false
   },
   "include": [
     "./src/",

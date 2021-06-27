@@ -81,7 +81,16 @@ export const ActivityWorking: ActivityType[] = [
   ActivityType.loggingIn,
 ];
 
-export interface ActivityStatus {
-  status: ActivityType,
-  message?: string,
+export class ActivityStatus {
+  public status: ActivityType;
+  public message?: string;
+
+  constructor(status = ActivityType.offline, message = '') {
+    this.status = status;
+    this.message = message;
+  }
+
+  isWorking(): boolean {
+    return ActivityWorking.includes(this.status);
+  }
 }

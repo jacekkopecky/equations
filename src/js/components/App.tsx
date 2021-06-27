@@ -14,8 +14,6 @@ import About from './About';
 import User from './User';
 import ActivityIndicator from './ActivityIndicator';
 
-import * as types from '../types';
-
 import './App.css';
 
 import useAppState from '../AppState';
@@ -23,7 +21,7 @@ import useAppState from '../AppState';
 export default function App(): JSX.Element {
   const appState = useAppState();
 
-  const working = types.ActivityWorking.includes(appState.activity.status);
+  const working = appState.activity.isWorking();
 
   return (
     <Router>

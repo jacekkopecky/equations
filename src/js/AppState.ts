@@ -33,10 +33,6 @@ export const DEFAULT_INTERNAL_STATE: InternalState = {
   assignments: [],
 };
 
-const DEFAULT_ACTIVITY_STATUS: ActivityStatus = {
-  status: ActivityType.offline,
-};
-
 export class AppState {
   private readonly state: InternalState;
   private readonly setState: StateSetter<InternalState>;
@@ -46,7 +42,7 @@ export class AppState {
 
   constructor() {
     [this.state, this.setState] = useLocalStorage('equationsState', DEFAULT_INTERNAL_STATE, migrateState);
-    [this.activity, this.setActivity] = useState<ActivityStatus>(DEFAULT_ACTIVITY_STATUS);
+    [this.activity, this.setActivity] = useState<ActivityStatus>(new ActivityStatus());
 
     useEffect(() => {
       this.loadUserInformation()
@@ -78,13 +74,13 @@ export class AppState {
       });
 
       if (assignment.done && this.state.userCode) {
-        this.dispatchActivity({ status: ActivityType.saving, message: '' });
+        this.dispatchActivity(ActivityType.saving);
         try {
           await api.saveAssignment(this.state.userCode, assignment);
-          this.dispatchActivity({ status: ActivityType.synced, message: '' });
+          this.dispatchActivity(ActivityType.synced);
         } catch (e) {
           console.error(e);
-          this.dispatchActivity({ status: ActivityType.error, message: 'error saving' });
+          this.dispatchActivity(ActivityType.error, 'error saving');
         }
       }
     };
@@ -198,7 +194,7 @@ export class AppState {
   private async loadUserInformation() {
     if (!this.state.userCode) return; // not logged in, nothing to load
 
-    this.dispatchActivity({ status: ActivityType.loggingIn, message: '' });
+    this.dispatchActivity(ActivityType.loggingIn);
 
     try {
       const userInfo = await api.loadUserInformation(this.state.userCode);
@@ -206,27 +202,27 @@ export class AppState {
       // save the code so we can log in automatically next time
       this.setState((state) => ({ ...state, userInfo }));
 
-      this.dispatchActivity({ status: ActivityType.loading, message: '' });
+      this.dispatchActivity(ActivityType.loading);
 
       const allAssignments = await api.loadDoneAssignments(this.state.userCode);
       await this.syncAssignments(allAssignments, this.state.assignments);
 
-      this.dispatchActivity({ status: ActivityType.synced, message: '' });
+      this.dispatchActivity(ActivityType.synced);
     } catch (e) {
       if (e instanceof api.Forbidden) {
         // remove userCode if the server rejects it
         this.setState((state) => ({ ...state, userCode: undefined }));
-        this.dispatchActivity({ status: ActivityType.error, message: 'unknown login code' });
+        this.dispatchActivity(ActivityType.error);
       } else {
         const message = e instanceof Error ? e.message : 'unknown issue';
-        this.dispatchActivity({ status: ActivityType.error, message });
+        this.dispatchActivity(ActivityType.error, message);
       }
       console.error(e);
     }
   }
 
-  private dispatchActivity(current: ActivityStatus) {
-    this.setActivity((activity) => ({ ...activity, ...current }));
+  private dispatchActivity(status: ActivityType, message?: string) {
+    this.setActivity(new ActivityStatus(status, message));
   }
 
   // if server progress doesn't agree with local storage:
@@ -246,7 +242,7 @@ export class AppState {
     this.setState((state) => ({ ...state, assignments: merged }));
 
     if (this.state.userCode) {
-      this.dispatchActivity({ status: ActivityType.saving, message: '' });
+      this.dispatchActivity(ActivityType.saving);
       for (const assignment of toSave) {
         // eslint-disable-next-line no-await-in-loop
         await api.saveAssignment(this.state.userCode, assignment);
