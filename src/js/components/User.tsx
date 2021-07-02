@@ -8,7 +8,9 @@ import ActivityIndicator from './ActivityIndicator';
 
 export default function User({ appState }: { appState: AppState }): JSX.Element {
   const [signInShowing, setSignInShowing] = useState(false);
-  const [currentCode, setCurrentCode] = useState('');
+  const [currentCode, setCurrentCode] = useState(appState.currentLoginCode ?? '');
+
+  const loggedIn = Boolean(appState.currentLoginCode);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -20,12 +22,14 @@ export default function User({ appState }: { appState: AppState }): JSX.Element 
 
   function logIn(e: React.FormEvent) {
     e.preventDefault();
-
-    appState.logIn(currentCode);
-    setSignInShowing(false);
+    const trimmed = currentCode.trim();
+    if (trimmed) {
+      appState.logIn(trimmed);
+      setSignInShowing(false);
+    }
   }
 
-  const signInBox = signInShowing && (
+  const signInBoxIfShowing = signInShowing && (
     <form id="user-sign-in" onSubmit={logIn}>
       <input
         placeholder="enter user code"
@@ -49,18 +53,18 @@ export default function User({ appState }: { appState: AppState }): JSX.Element 
     </form>
   );
 
-  if (appState.loggedIn) {
+  if (loggedIn) {
     // todo add sign-out that will clear local storage
     return (
       <div id="user">
-        { signInBox }
-        { appState.userName || 'anonymous' }
+        { signInBoxIfShowing }
+        { appState.userState.name || 'guest' }
       </div>
     );
   } else {
     return (
       <div id="user">
-        { signInBox }
+        { signInBoxIfShowing }
         <button onClick={() => setSignInShowing((s) => !s)} type="button">sign in</button>
       </div>
     );

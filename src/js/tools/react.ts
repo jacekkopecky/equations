@@ -39,9 +39,12 @@ export function useLocalStorage<T>(
       if (!item) return initialValue;
 
       // Parse stored json and possibly migrate
-      let parsed: unknown = JSON.parse(item);
-      if (migration) parsed = migration(parsed);
-      return parsed as T;
+      const parsed: unknown = JSON.parse(item);
+      if (migration) {
+        return migration(parsed);
+      } else {
+        return parsed as T;
+      }
     } catch (error) {
       // If error also return initialValue
       console.log(error);

@@ -11,6 +11,7 @@ interface ActivityIndicatorProps {
 }
 
 const ONE_LETTER_TYPE: Record<ActivityType, string> = {
+  start: '…',
   offline: '⚡️',
   loggingIn: '🔐',
   synced: '✔️',
@@ -20,6 +21,7 @@ const ONE_LETTER_TYPE: Record<ActivityType, string> = {
 };
 
 const TYPE_TITLE: Record<ActivityType, string> = {
+  start: 'starting',
   offline: 'offline',
   loggingIn: 'logging in',
   synced: 'synced with server',

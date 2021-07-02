@@ -2,6 +2,7 @@ import * as React from 'react';
 
 import { AppState } from '../AppState';
 import * as levels from '../levels/index';
+import * as types from '../types';
 
 import './LevelIndicator.css';
 
@@ -13,11 +14,11 @@ interface LevelIndicatorProps {
 export default function LevelIndicator(
   { appState, justWonAStar }: LevelIndicatorProps,
 ): JSX.Element {
-  const userLevel = appState.level;
+  const userLevel = appState.userState.level;
   justWonAStar = justWonAStar ?? false;
 
   const classes = ['level-indicator'];
-  if (justWonAStar && appState.progress === 0) classes.push('won');
+  if (justWonAStar && appState.userState.progressTowardsNextLevel === 0) classes.push('won');
 
   return (
     <p className={classes.join(' ')}>
@@ -29,7 +30,7 @@ export default function LevelIndicator(
 }
 
 function renderProgress(appState: AppState, justWonAStar: boolean) {
-  const userLevel = appState.level;
+  const userLevel = appState.userState.level;
 
   if (userLevel === levels.topLevel) {
     return (
@@ -37,8 +38,8 @@ function renderProgress(appState: AppState, justWonAStar: boolean) {
     );
   }
 
-  const progress = appState.progress;
-  const required = appState.progressRequired;
+  const progress = appState.userState.progressTowardsNextLevel;
+  const required = types.PROGRESS_PER_LEVEL;
 
   const stars: JSX.Element[] = [];
 

@@ -5,7 +5,7 @@
  * - retrieve done assignments
  */
 
-import { Assignment, UserInfo } from '../types';
+import { Assignment, UserState, UserInfo } from '../types';
 
 import config from '../../../server-config.json';
 
@@ -15,11 +15,19 @@ export class Forbidden extends Error {
   }
 }
 
-export async function loadUserInformation(code: string): Promise<UserInfo> {
+export async function loadUserState(code: string): Promise<UserState> {
   const url = userUrl(code);
   const response = await fetch(url);
   if (response.ok) {
-    const data = await response.json() as UserInfo;
+    const data = await response.json() as UserState;
+
+    // reindex lastAssignments so theyr `n` matches their index
+    const lastAssignments = data.lastAssignments;
+    data.lastAssignments = [];
+    for (const assignment of lastAssignments) {
+      data.lastAssignments[assignment.n] = assignment;
+    }
+
     return data;
   } else if (response.status === 403) {
     throw new Forbidden();
@@ -43,7 +51,7 @@ export async function loadDoneAssignments(code: string): Promise<Assignment[]> {
   }
 }
 
-export async function saveAssignment(code: string, assignment: Assignment): Promise<void> {
+export async function saveAssignment(code: string, assignment: Assignment): Promise<UserInfo> {
   console.log('saving assignment', assignment.n);
 
   const url = assignmentsUrl(code);
@@ -55,13 +63,14 @@ export async function saveAssignment(code: string, assignment: Assignment): Prom
     },
   });
 
-  if (!response.ok) {
-    if (response.status === 403) {
-      throw new Forbidden();
-    } else {
-      console.error(response);
-      throw new Error('unknown error loading user information');
-    }
+  if (response.ok) {
+    const data = await response.json() as UserInfo;
+    return data;
+  } else if (response.status === 403) {
+    throw new Forbidden();
+  } else {
+    console.error(response);
+    throw new Error('unknown error loading user information');
   }
 }
 

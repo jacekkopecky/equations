@@ -16,12 +16,12 @@ interface ShowingAssignment extends AssignmentInformation {
 }
 
 export default function Overview({ appState }: { appState: AppState }): JSX.Element {
-  const batch = appState.getUpcomingAssignments();
+  const batch = appState.getCurrentAssignmentBatch();
   disableAfterFirstUnsolved(batch);
 
   return (
     <main id="overview">
-      <p>Score: { appState.score }</p>
+      <p>Score: { appState.userState.score }</p>
       <LevelIndicator appState={appState} />
       <Duration appState={appState} />
       <div className="assignments">
@@ -83,7 +83,7 @@ function AssignmentBox(props: AssignmentBoxProps) {
 
   const canMakeChallenge = !isChallenge && !done && level < levels.topLevel;
 
-  const realLevel = makeChallenge ? appState.level + 1 : level;
+  const realLevel = makeChallenge ? appState.userState.level + 1 : level;
 
   const classes = ['assignment'];
   if (isChallenge || makeChallenge) classes.push('challenge');

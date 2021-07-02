@@ -23,20 +23,24 @@ export default function App(): JSX.Element {
 
   const working = appState.activity.isWorking();
 
+  const header = (
+    <header id="app-header">
+      <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
+      { /* when changing the title above, also change it in index.html and 404.html */ }
+      <div>
+        <ActivityIndicator short appState={appState} />
+        <Link to="/stats">Stats</Link>
+        { ' | ' }
+        <Link to="/about">About</Link>
+        { ' | ' }
+        <User appState={appState} />
+      </div>
+    </header>
+  );
+
   return (
     <Router>
-      <header id="app-header">
-        <h1><Link to="/">bananas for maths (…and apples)</Link></h1>
-        { /* when changing the title above, also change it in index.html and 404.html */ }
-        <div>
-          <ActivityIndicator short appState={appState} />
-          <Link to="/stats">Stats</Link>
-          { ' | ' }
-          <Link to="/about">About</Link>
-          { ' | ' }
-          <User appState={appState} />
-        </div>
-      </header>
+      { header }
 
       <div className={working ? 'working' : ''}>
         <Switch>

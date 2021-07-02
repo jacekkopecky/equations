@@ -37,7 +37,6 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
 
   const appState = props.appState;
   const { assignment, save } = appState.getAssignment(level, n, startTime);
-  const nextAssignment = appState.getNextAssignment(n);
 
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
 
@@ -154,7 +153,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
             </Link>
           ) }
 
-          { nextAssignment && (
+          { assignment.done && (
             <button
               type="button"
               onClick={goToNext}
@@ -175,7 +174,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
         </div>
       </main>
       <footer>
-        <p>Score: { appState.score }</p>
+        <p>Score: { appState.userState.score }</p>
         <LevelIndicator
           appState={appState}
           justWonAStar={justWon && assignment.challenge}
@@ -192,11 +191,10 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   }
 
   function doGoToNext() {
-    if (!nextAssignment) return;
-
     clearState();
     resetInteractionPauses();
     setStartTime(Date.now());
+    const nextAssignment = appState.getNextAssignment(n);
     history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
   }
 

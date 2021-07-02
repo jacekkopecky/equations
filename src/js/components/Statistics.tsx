@@ -5,7 +5,7 @@ import './Statistics.css';
 
 import * as levels from '../levels/index';
 import { useQuery } from '../tools/react';
-import { dateToString, sumDuration } from '../tools/durations';
+import { dateToString, sumDuration } from '../shared-with-server/durations';
 import LevelIndicator from './LevelIndicator';
 
 import { AppState } from '../AppState';
@@ -16,7 +16,7 @@ export default function Statistics({ appState }: { appState: AppState }): JSX.El
   return (
     <main id="statistics">
       <h1>Statistics</h1>
-      <p>Score: { appState.score }</p>
+      <p>Score: { appState.userState.score }</p>
       <LevelIndicator appState={appState} />
       <table className="assignments">
         <thead>
@@ -40,8 +40,11 @@ interface AssignmentsProps {
 }
 
 function Assignments({ appState, showAll }: AssignmentsProps): JSX.Element {
-  // reverse() is safe because doneAssignments gives a new array
-  const assignments = appState.doneAssignments.reverse();
+  const doneAssignments = appState.useDoneAssignments();
+
+  // get non-null assignments (the first one may be null)
+  // then reverse so we show everything counterchronologically
+  const assignments = doneAssignments.filter(a => a).reverse();
 
   // group assignments by their date
   const assignmentsPerDay = new Map<string, Assignment[]>();
