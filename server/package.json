@@ -2,11 +2,13 @@
   "name": "equations-server",
   "version": "0.0.1",
   "description": "server cloud function for equations (bananas for maths)",
-  "main": "index.js",
+  "main": "src/index.js",
+  "type": "module",
   "author": "Jacek Kopecky <jacek@jacek.cz>",
   "scripts": {
-    "deploy": "gcloud functions deploy equationsAPI --runtime nodejs14 --trigger-http --allow-unauthenticated",
-    "local": "TESTING=true DATASTORE_EMULATOR_HOST=localhost:8081 nodemon ./index.js",
+    "build": "tsc",
+    "deploy": "npm run build && gcloud functions deploy equationsAPI --runtime nodejs14 --trigger-http --allow-unauthenticated",
+    "local": "tsc && TESTING=true DATASTORE_EMULATOR_HOST=localhost:8081 node ./dist/server/src/server-start.js",
     "localds": "gcloud beta emulators datastore start --no-store-on-disk"
   },
   "license": "ISC",
@@ -16,6 +18,10 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "@types/cors": "^2.8.10",
+    "@types/express": "^4.17.12",
+    "nodemon": "^2.0.7",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.5"
   }
 }

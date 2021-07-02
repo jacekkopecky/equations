@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist-ts/",
+    "outDir": "./dist/",
     "sourceMap": true,
     "strictNullChecks": true,
     "strict": true,
@@ -17,7 +17,7 @@
     "allowUnreachableCode": false
   },
   "include": [
-    "./src/",
-    "./tests/"
+    "./src",
+    "../src/js/shared-with-server/"
   ]
 }

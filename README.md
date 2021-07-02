@@ -91,7 +91,7 @@ threats:
 API:
 
 - get user information: name, progress, score, level, last page of finished assignments? (GET)
-- save done assignment (no overwrite, POST)
+- save done assignment (no overwrite, POST), returns recomputed user information
 - retrieve done assignments (GET)
 
 /api/users/:code (GET)

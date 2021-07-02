@@ -2,6 +2,9 @@
   "extends": "portsoc-ts",
   "plugins": [ "json" ],
   "root": true,
+  "parserOptions": {
+    "project": ["./tsconfig.json", "./server/tsconfig.json"]
+  },
   "env": {
     "browser": true
   }

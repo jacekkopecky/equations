@@ -1,9 +1,15 @@
-const express = require('express');
+import express, {
+  Request,
+  Response,
+  NextFunction,
+} from 'express';
 
-const db = require('./db');
+import * as db from './db.js';
+
+import { Assignment } from '../../src/js/shared-with-server/types.js';
 
 const api = express.Router();
-module.exports = api;
+export default api;
 
 // authorization
 api.use('/users/:code', asyncWrap(checkUserExists));
@@ -13,7 +19,7 @@ api.get('/users/:code/assignments', asyncWrap(retrieveAssignments));
 api.post('/users/:code/assignments', express.json(), asyncWrap(saveAssignment));
 
 // authorization: unknown users get 403
-async function checkUserExists(req, res, next) {
+async function checkUserExists(req: Request, res: Response, next: NextFunction) {
   const user = req.params.code;
   if (await db.checkUserIsKnown(user)) {
     next();
@@ -22,8 +28,10 @@ async function checkUserExists(req, res, next) {
   }
 }
 
+type AsyncHandler = (r: Request, s: Response, n: NextFunction) => Promise<void>;
+
 // wrap async function for express.js error handling
-function asyncWrap(f) {
+function asyncWrap(f: AsyncHandler): express.Handler {
   return (req, res, next) => {
     Promise.resolve(f(req, res, next))
       .catch((e) => next(e || new Error()));
@@ -35,18 +43,17 @@ function asyncWrap(f) {
  * `GET` on `/users/:code/assignments` – retrieve Assignment[]
  * `POST` on `/users/:code/assignments` – save an Assignment
  */
-
-async function retrieveUserInfo(req, res) {
+async function retrieveUserInfo(req: Request, res: Response) {
   const user = req.params.code;
-  res.json(await db.getUserInfo(user));
+  res.json(await db.getUserState(user));
 }
 
-async function retrieveAssignments(req, res) {
+async function retrieveAssignments(req: Request, res: Response) {
   const user = req.params.code;
   res.json(await db.getAssignments(user));
 }
 
-async function saveAssignment(req, res) {
+async function saveAssignment(req: Request, res: Response) {
   const user = req.params.code;
   const validatedAssignment = validateAssignment(req.body);
   if (!validatedAssignment) {
@@ -54,17 +61,19 @@ async function saveAssignment(req, res) {
     return;
   }
 
-  const saved = await db.saveAssignment(user, validatedAssignment);
-  if (saved) {
-    res.sendStatus(204);
-  } else {
+  try {
+    const newProgress = await db.saveAssignment(user, validatedAssignment);
+    res.json(newProgress);
+  } catch (e) {
+    console.error(e);
+    // DB saving failed, probably conflict
     res.sendStatus(409);
   }
 }
 
 // validation functions
 
-function validateAssignment(assignment) {
+function validateAssignment(assignment: Partial<Assignment>): Assignment | false {
   if (!assignment ||
     typeof assignment !== 'object' ||
     Array.isArray(assignment) ||
@@ -77,5 +86,5 @@ function validateAssignment(assignment) {
 
   // todo use a comprehensive verification of Assignment structure?
 
-  return assignment;
+  return assignment as Assignment;
 }
