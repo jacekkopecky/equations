@@ -284,8 +284,6 @@ async function mergeUserState(local: Readonly<UserState>, server: UserState, cod
     }
   }
 
-  // todo remove saved local.lastAssignments we no longer care about (beyond BATCH_SIZE and lastDayAssignments)
-
   // if saved, use the last userinfo computed on server
   if (lastSaveUserInfo) {
     return {

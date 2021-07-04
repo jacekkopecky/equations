@@ -21,7 +21,7 @@ export async function loadUserState(code: string): Promise<UserState> {
   if (response.ok) {
     const data = await response.json() as UserState;
 
-    // reindex lastAssignments so theyr `n` matches their index
+    // reindex lastAssignments so their `n` matches their index
     const lastAssignments = data.lastAssignments;
     data.lastAssignments = [];
     for (const assignment of lastAssignments) {
