@@ -137,7 +137,13 @@ export class AppState {
       if (assignment.done && this.userCode) {
         this.changeActivity(ActivityType.saving);
         try {
-          await api.saveAssignment(this.userCode, assignment);
+          const newInfo = await api.saveAssignment(this.userCode, assignment);
+          this.setUserState((oldUserState) => {
+            return {
+              ...oldUserState,
+              ...newInfo,
+            };
+          });
           this.changeActivity(ActivityType.synced);
         } catch (e) {
           console.error(e);
