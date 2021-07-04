@@ -2,6 +2,8 @@ import { dateToString } from './durations';
 
 import {
   Assignment,
+  UserInfo,
+  PROGRESS_PER_LEVEL,
 } from './types';
 
 export const BATCH_SIZE = 5;
@@ -40,4 +42,39 @@ export function chooseLevel(l: number, n: number): number {
     default:
       return l;
   }
+}
+
+/*
+ * computes new user progress information:
+ * score: number of assignments answered correctly
+ * lastDone: the `n` of the last finished assignment
+ * level: a level grows every time PROGRESS_PER_LEVEL challenges are answered correctly
+ * progressTowardsNextLevel: how many challenges above the current level are answered correctly
+*/
+export function recomputeUserProgress(userInfo: UserInfo, assignments: Assignment[]): void {
+  const score = assignments.filter((a) => a?.answeredCorrectly).length;
+
+  const lastDone = Math.max(0, assignments.length - 1);
+
+  let progress = 0;
+  let level = 1;
+  let target = PROGRESS_PER_LEVEL;
+
+  for (const assignment of assignments) {
+    if (assignment == null) continue;
+
+    if (assignment.level > level && assignment.answeredCorrectly) {
+      progress += 1;
+      if (progress >= target) {
+        level += 1;
+        target = PROGRESS_PER_LEVEL;
+        progress = 0;
+      }
+    }
+  }
+
+  userInfo.score = score;
+  userInfo.lastDone = lastDone;
+  userInfo.level = level;
+  userInfo.progressTowardsNextLevel = progress;
 }
