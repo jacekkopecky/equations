@@ -2,6 +2,7 @@ import { dateToString } from './durations';
 
 import {
   Assignment,
+  UserState,
   UserInfo,
   PROGRESS_PER_LEVEL,
 } from './types';
@@ -77,4 +78,33 @@ export function recomputeUserProgress(userInfo: UserInfo, assignments: Assignmen
   userInfo.lastDone = lastDone;
   userInfo.level = level;
   userInfo.progressTowardsNextLevel = progress;
+}
+
+export function addToUserProgress(oldState: UserState, assignment: Assignment): UserState {
+  const n = assignment.n;
+
+  const newState = {
+    ...oldState,
+    lastAssignments: [...oldState.lastAssignments],
+  };
+
+  // ignore if it was already done
+  if (!newState.lastAssignments[n]?.done) {
+    newState.lastAssignments[n] = assignment;
+    if (newState.lastAssignments[n]?.done) {
+      newState.lastDone = n;
+      if (assignment.answeredCorrectly) {
+        newState.score += 1;
+        if (assignment.level > newState.level) {
+          newState.progressTowardsNextLevel += 1;
+          if (newState.progressTowardsNextLevel === PROGRESS_PER_LEVEL) {
+            newState.progressTowardsNextLevel = 0;
+            newState.level += 1;
+          }
+        }
+      }
+    }
+  }
+
+  return newState;
 }

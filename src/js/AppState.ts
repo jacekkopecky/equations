@@ -28,6 +28,7 @@ import {
   BATCH_SIZE,
   chooseLevel,
   selectLastDayAssignments,
+  addToUserProgress,
 } from './shared-with-server/assignments';
 
 import {
@@ -126,11 +127,7 @@ export class AppState {
       });
 
       this.setUserState((oldUserState) => {
-        const newUserState = {
-          ...oldUserState,
-          lastAssignments: [...oldUserState.lastAssignments],
-        };
-        newUserState.lastAssignments[n] = assignment;
+        const newUserState = addToUserProgress(oldUserState, assignment);
         return newUserState;
       });
 
