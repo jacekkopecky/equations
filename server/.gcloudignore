@@ -13,12 +13,12 @@
 .git
 .gitignore
 
+# ignore unnecessary files
 .eslintrc.json
 node_modules
 
-#ignore typescript sources
-src
+# ignore typescript sources
+*.ts
+*.map
+dist/server/src/testing-server
 tsconfig.json
-
-#ignore unnecessary file
-dist/server/src/testing-server.*
