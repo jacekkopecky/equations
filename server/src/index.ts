@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import api from './api.js';
+import api from './api';
 
 const app = express();
 export { app as bookListAPI };

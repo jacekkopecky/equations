@@ -13,7 +13,7 @@ import {
   UserState,
   Assignment,
   PROGRESS_PER_LEVEL,
-} from '../../src/js/shared-with-server/types.js';
+} from '../../src/js/shared-with-server/types';
 
 // initialize in-memory data
 const knownUsers = new Map<string, UserInfo>();

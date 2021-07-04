@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "server cloud function for equations (bananas for maths)",
   "main": "src/index.js",
-  "type": "module",
   "author": "Jacek Kopecky <jacek@jacek.cz>",
   "scripts": {
     "build": "tsc",

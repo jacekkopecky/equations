@@ -6,7 +6,7 @@
     "strict": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
-    "module": "es2020",
+    "module": "CommonJS",
     "target": "es2019",
     "moduleResolution": "node",
     "jsx": "react",

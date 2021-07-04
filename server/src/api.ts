@@ -4,9 +4,9 @@ import express, {
   NextFunction,
 } from 'express';
 
-import * as db from './db.js';
+import * as db from './db';
 
-import { Assignment } from '../../src/js/shared-with-server/types.js';
+import { Assignment } from '../../src/js/shared-with-server/types';
 
 const api = express.Router();
 export default api;
