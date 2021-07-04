@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc",
     "deploy": "npm run build && gcloud functions deploy equationsAPI --runtime nodejs14 --trigger-http --allow-unauthenticated",
-    "local": "tsc && DATASTORE_EMULATOR_HOST=localhost:8081 node ./dist/server/src/server-start.js",
+    "local": "tsc && DATASTORE_EMULATOR_HOST=localhost:8081 node ./dist/server/src/testing-server.js",
     "localds": "gcloud beta emulators datastore start --no-store-on-disk"
   },
   "license": "ISC",
