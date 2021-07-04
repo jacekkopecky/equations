@@ -268,10 +268,13 @@ function findBatchStart(l: number) {
 async function mergeUserState(local: Readonly<UserState>, server: UserState, code: string): Promise<UserState> {
   let lastSaveUserInfo: UserInfo | undefined;
 
+  const lastServerN = server.lastAssignments[server.lastAssignments.length - 1]?.n ?? 0;
+
   // merge all local assignments, only if the server didn't know about them already
   // save any done local.lastAssignments that aren't saved
   for (const localAssignment of local.lastAssignments) {
-    if (localAssignment == null) continue;
+    // skip empty assignments and those presumed already saved
+    if (localAssignment == null || localAssignment.n <= lastServerN) continue;
 
     if (server.lastAssignments[localAssignment.n] == null) {
       if (localAssignment.done) {
