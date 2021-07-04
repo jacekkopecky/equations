@@ -6,7 +6,9 @@ import {
 
 export const BATCH_SIZE = 5;
 
-export function selectLastDayAssignments(done: Assignment[]): Assignment[] {
+// returns all assignments from the last day (those finished on the same day as the last-finished assignment),
+// and possibly more assignments so it at least returns `min` assignments
+export function selectLastDayAssignments(done: Assignment[], min = 0): Assignment[] {
   if (done.length === 0) return done;
 
   const lastAssignment = done[done.length - 1];
@@ -15,7 +17,10 @@ export function selectLastDayAssignments(done: Assignment[]): Assignment[] {
   // put all with the same date in assignmentsOnLastDate
   const assignmentsOnLastDate = [lastAssignment];
   for (let i = done.length - 2; i >= 0; i -= 1) {
-    if (dateToString(done[i]) === lastDate) {
+    // there may be missing assignments
+    if (!done[i]) continue;
+
+    if (dateToString(done[i]) === lastDate || assignmentsOnLastDate.length < min) {
       assignmentsOnLastDate.push(done[i]);
     } else {
       break;

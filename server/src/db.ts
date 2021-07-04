@@ -15,6 +15,11 @@ import {
   PROGRESS_PER_LEVEL,
 } from '../../src/js/shared-with-server/types';
 
+import {
+  selectLastDayAssignments,
+  BATCH_SIZE,
+} from '../../src/js/shared-with-server/assignments';
+
 // initialize in-memory data
 const knownUsers = new Map<string, UserInfo>();
 knownUsers.set('a', /* 96C9364D-4CFD-4B6D-AB5B-2D9D7172DA67', */ {
@@ -37,7 +42,7 @@ export function getUserState(user: string): Promise<UserState | undefined> {
 
   const userState = {
     ...userInfo,
-    lastAssignments: selectLastAssignments(assignments),
+    lastAssignments: selectLastDayAssignments(assignments, BATCH_SIZE),
   };
   return Promise.resolve(userState);
 }
@@ -100,8 +105,4 @@ function recomputeUserProgress(userInfo: UserInfo, assignments: Assignment[]) {
 
 export function checkUserIsKnown(user: string): Promise<boolean> {
   return Promise.resolve(knownUsers.has(user));
-}
-
-function selectLastAssignments(assignments: Assignment[]) {
-  return assignments.filter(a => a);
 }
