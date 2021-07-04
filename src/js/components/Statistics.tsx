@@ -6,7 +6,9 @@ import './Statistics.css';
 import * as levels from '../levels/index';
 import { useQuery } from '../tools/react';
 import { dateToString, sumDuration } from '../shared-with-server/durations';
+
 import LevelIndicator from './LevelIndicator';
+import Spinner from './Spinner';
 
 import { AppState } from '../AppState';
 import { Assignment } from '../types';
@@ -40,7 +42,7 @@ interface AssignmentsProps {
 }
 
 function Assignments({ appState, showAll }: AssignmentsProps): JSX.Element {
-  const doneAssignments = appState.useDoneAssignments();
+  const { doneAssignments, loadingMore } = appState.useDoneAssignments();
 
   // get non-null assignments (the first one may be null)
   // then reverse so we show everything counterchronologically
@@ -79,6 +81,7 @@ function Assignments({ appState, showAll }: AssignmentsProps): JSX.Element {
   return (
     <>
       { tbodies }
+      { loadingMore && <tbody><tr><td colSpan={5}><Spinner /></td></tr></tbody> }
     </>
   );
 

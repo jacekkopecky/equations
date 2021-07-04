@@ -48,6 +48,11 @@ const DEFAULT_USER_INFO: UserState = {
   lastAssignments: [],
 };
 
+interface DoneAssignments {
+  doneAssignments: readonly Readonly<Assignment>[],
+  loadingMore: boolean,
+}
+
 export class AppState {
   readonly activity: Readonly<ActivityStatus>;
   private readonly setActivity: StateSetter<ActivityStatus>;
@@ -153,7 +158,7 @@ export class AppState {
   }
 
   // useDoneAssignments is a hook – it invokes useEffect
-  useDoneAssignments(): readonly Readonly<Assignment>[] {
+  useDoneAssignments(): DoneAssignments {
     // set up background loading of the assignments
     useEffect(() => {
       (async () => {
@@ -161,7 +166,9 @@ export class AppState {
           this.changeActivity(ActivityType.loading);
 
           const allAssignments = await api.loadDoneAssignments(this.userCode);
-          this.setAssignments(allAssignments);
+          if (allAssignments.length > 0) {
+            this.setAssignments(allAssignments);
+          }
 
           this.changeActivity(ActivityType.synced);
         }
@@ -169,7 +176,10 @@ export class AppState {
         .catch((error) => console.error('error loading UserState', error));
     }, [this.userCode]);
 
-    return this.assignments ?? this.getDoneLastAssignments();
+    return {
+      doneAssignments: this.assignments ?? this.getDoneLastAssignments(),
+      loadingMore: Boolean(this.userCode && !this.assignments),
+    };
   }
 
   logIn(code: string): void {

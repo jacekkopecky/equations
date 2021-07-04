@@ -1,0 +1,20 @@
+.spinner {
+  text-align: center;
+}
+
+.spinner::after {
+  content: ' ';
+  display: inline-block;
+  background-image: url(/images/spinner.svg);
+  background-position: center;
+  background-size: 2em;
+  background-repeat: no-repeat;
+  animation: spinner-spin 1s steps(12) infinite;
+  height: 2em;
+  width: 2em;
+}
+
+@keyframes spinner-spin {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
