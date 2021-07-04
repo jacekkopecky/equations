@@ -74,10 +74,20 @@ export async function saveAssignment(code: string, assignment: Assignment): Prom
   }
 }
 
+export async function checkUser(code: string): Promise<boolean> {
+  const url = signInUrl(code);
+  const response = await fetch(url, { method: 'POST' });
+  return response.ok;
+}
+
 function userUrl(code: string): string {
   return `${config.apiUrl}/users/${encodeURIComponent(code)}`;
 }
 
 function assignmentsUrl(code: string): string {
   return `${userUrl(code)}/assignments`;
+}
+
+function signInUrl(code: string): string {
+  return `${userUrl(code)}/sign-in`;
 }

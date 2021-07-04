@@ -93,9 +93,11 @@ API:
 - get user information: name, progress, score, level, last page of finished assignments? (GET)
 - save done assignment (no overwrite, POST), returns recomputed user information
 - retrieve done assignments (GET)
+- check that a user is registered (POST)
 
 /api/users/:code (GET)
 /api/users/:code/assignments (GET, POST)
+/api/users/:code/sign-in (POST)
 
 tasks:
 

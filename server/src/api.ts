@@ -14,6 +14,7 @@ export default api;
 // authorization
 api.use('/users/:code', asyncWrap(checkUserExists));
 
+api.post('/users/:code/sign-in', signIn);
 api.get('/users/:code', asyncWrap(retrieveUserInfo));
 api.get('/users/:code/assignments', asyncWrap(retrieveAssignments));
 api.post('/users/:code/assignments', express.json(), asyncWrap(saveAssignment));
@@ -24,6 +25,7 @@ async function checkUserExists(req: Request, res: Response, next: NextFunction) 
   if (await db.checkUserIsKnown(user)) {
     next();
   } else {
+    console.warn(`user check failed: "${user}"`);
     res.sendStatus(403);
   }
 }
@@ -39,10 +41,16 @@ function asyncWrap(f: AsyncHandler): express.Handler {
 }
 
 /*
+ * `POST` on `/users/:code/sign-in` – check that user exists
  * `GET` on `/users/:code` – retrieve UserInfo
  * `GET` on `/users/:code/assignments` – retrieve Assignment[]
  * `POST` on `/users/:code/assignments` – save an Assignment
  */
+function signIn(req: Request, res: Response) {
+  // checkUserExists already checked the login
+  res.sendStatus(204);
+}
+
 async function retrieveUserInfo(req: Request, res: Response) {
   const user = req.params.code;
   res.json(await db.getUserState(user));

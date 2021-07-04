@@ -21,6 +21,16 @@
 #user #user-sign-in > * {
   margin-bottom: 0.5em;
   margin-left: 1em;
+  margin-top: 0;
+}
+
+#user #user-sign-in > p {
+  font-size: 90%;
+  flex-basis: 100%;
+}
+
+#user #user-sign-in > .error {
+  color: var(--error-fg);
 }
 
 #user #user-sign-in > input,
