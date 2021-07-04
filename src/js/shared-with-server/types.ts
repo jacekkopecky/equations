@@ -86,6 +86,7 @@ export enum ActivityType {
 export const ActivityWorking: ActivityType[] = [
   ActivityType.loggingIn,
   ActivityType.starting,
+  ActivityType.saving,
 ];
 
 export class ActivityStatus {
