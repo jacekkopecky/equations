@@ -17,5 +17,9 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => { res.send('function running'); });
 
-app.use((req, res, next) => { setTimeout(next, 1000); });
+if (process.env.TESTING && process.env.DELAY) {
+  const delay = parseInt(process.env.DELAY) || 0;
+  app.use((req, res, next) => { setTimeout(next, delay); });
+}
+
 app.use('/api', api);
