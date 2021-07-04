@@ -11,15 +11,17 @@ import { AssignmentInformation } from '../types';
 import LevelIndicator from './LevelIndicator';
 import Duration from './Duration';
 
+interface ShowingAssignment extends AssignmentInformation {
+  disabled?: boolean,
+}
+
 export default function Overview({ appState }: { appState: AppState }): JSX.Element {
-  const batch = appState.getUpcomingAssignments();
-  const newcomer = batch[0].n === 1 && !batch[0].done;
+  const batch = appState.getCurrentAssignmentBatch();
   disableAfterFirstUnsolved(batch);
 
   return (
     <main id="overview">
-      <h1>Hello { newcomer ? 'newcomer' : 'again' }</h1>
-      <p>Score: { appState.score }</p>
+      <p>Score: { appState.userState.score }</p>
       <LevelIndicator appState={appState} />
       <Duration appState={appState} />
       <div className="assignments">
@@ -28,7 +30,7 @@ export default function Overview({ appState }: { appState: AppState }): JSX.Elem
     </main>
   );
 
-  function renderAssignment(a: AssignmentInformation) {
+  function renderAssignment(a: ShowingAssignment) {
     return (
       <AssignmentBox
         key={a.n}
@@ -44,7 +46,7 @@ export default function Overview({ appState }: { appState: AppState }): JSX.Elem
   }
 }
 
-function disableAfterFirstUnsolved(assignments: AssignmentInformation[]) {
+function disableAfterFirstUnsolved(assignments: ShowingAssignment[]) {
   let foundUnsolved = false;
   for (const a of assignments) {
     if (foundUnsolved) a.disabled = true;
@@ -81,7 +83,7 @@ function AssignmentBox(props: AssignmentBoxProps) {
 
   const canMakeChallenge = !isChallenge && !done && level < levels.topLevel;
 
-  const realLevel = makeChallenge ? appState.level + 1 : level;
+  const realLevel = makeChallenge ? appState.userState.level + 1 : level;
 
   const classes = ['assignment'];
   if (isChallenge || makeChallenge) classes.push('challenge');

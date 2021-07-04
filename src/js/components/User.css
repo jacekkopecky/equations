@@ -1,0 +1,39 @@
+#user {
+  display: inline-block;
+}
+
+#user #user-sign-in {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 15em;
+  background: var(--bg);
+  border: solid thin var(--fg);
+  border-radius: 0.25em;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  padding: 1em 1em 0.5em 0; /* bottom 0.5em to absorb the bottom margin of last elements */
+  padding-bottom: 0.5em;
+  z-index: 1;
+}
+
+#user #user-sign-in > * {
+  margin-bottom: 0.5em;
+  margin-left: 1em;
+  margin-top: 0;
+}
+
+#user #user-sign-in > p {
+  font-size: 90%;
+  flex-basis: 100%;
+}
+
+#user #user-sign-in > .error {
+  color: var(--error-fg);
+}
+
+#user #user-sign-in > input,
+#user #user-sign-in > .activity-indicator {
+  flex-basis: 100%;
+}

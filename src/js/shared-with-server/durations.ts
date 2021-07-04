@@ -1,6 +1,6 @@
 // functions for dealing with dates and durations of assignments
 
-import { Assignment } from '../types';
+import { Assignment } from './types';
 
 const dateOptions = {
   weekday: 'long' as const,

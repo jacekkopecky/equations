@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { sumDuration, dateToString } from '../tools/durations';
+import { sumDuration, dateToString } from '../shared-with-server/durations';
 import { AppState } from '../AppState';
 
 interface DurationProps {
@@ -8,7 +8,7 @@ interface DurationProps {
 }
 
 export default function Duration({ appState, onlyToday }: DurationProps): JSX.Element | null {
-  const lastDayAssignments = appState.lastDayAssignments;
+  const lastDayAssignments = appState.getLastDayAssignments();
   if (lastDayAssignments.length === 0) return null;
 
   const duration = sumDuration(lastDayAssignments);

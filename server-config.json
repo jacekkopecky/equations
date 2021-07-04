@@ -1,0 +1,4 @@
+{
+  "apiUrl-test": "http://localhost:8082/api",
+  "apiUrl": "https://europe-west2-book-list-309615.cloudfunctions.net/equationsAPI/api"
+}

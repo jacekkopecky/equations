@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useRef, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+export type StateSetter<T> = React.Dispatch<React.SetStateAction<T>>;
+
 // This hook returns a ref.
 // If the dependencies have changed and the ref has an element, it will focus.
 export function useAutofocusRef<T extends HTMLInputElement|HTMLTextAreaElement>(
@@ -28,7 +30,7 @@ export function useLocalStorage<T>(
   key: string,
   initialValue: T,
   migration?: (data: unknown) => T,
-): [T, (t: T) => void, () => void] {
+): [T, (t: T | ((t2: T) => T)) => void, () => void] {
   const getCurrentValue = () => {
     try {
       // Get from local storage by key
@@ -37,9 +39,12 @@ export function useLocalStorage<T>(
       if (!item) return initialValue;
 
       // Parse stored json and possibly migrate
-      let parsed: unknown = JSON.parse(item);
-      if (migration) parsed = migration(parsed);
-      return parsed as T;
+      const parsed: unknown = JSON.parse(item);
+      if (migration) {
+        return migration(parsed);
+      } else {
+        return parsed as T;
+      }
     } catch (error) {
       // If error also return initialValue
       console.log(error);
@@ -65,17 +70,18 @@ export function useLocalStorage<T>(
   // Return a wrapped version of useState's setter function that ...
   // ... persists the new value to localStorage.
   const setValue = (value: T | ((t: T) => T)) => {
-    try {
-      // Allow value to be a function so we have same API as useState
-      const valueToStore = value instanceof Function ? value(storedValue) : value;
-      // Save state
-      setStoredValue(valueToStore);
+    setStoredValue((oldValue: T) => {
+      const valueToStore = value instanceof Function ? value(oldValue) : value;
+
       // Save to local storage (remove if)
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
-    } catch (error) {
-      // A more advanced implementation would handle the error case
-      console.log(error);
-    }
+      if (valueToStore != null) {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } else {
+        window.localStorage.removeItem(key);
+      }
+
+      return valueToStore;
+    });
   };
 
   const deleteValue = () => {

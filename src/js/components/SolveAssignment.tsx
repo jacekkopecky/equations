@@ -36,8 +36,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   const history = useHistory();
 
   const appState = props.appState;
-  const assignment = appState.getAssignment(level, n, startTime);
-  const nextAssignment = appState.getNextAssignment(n);
+  const { assignment, save } = appState.getAssignment(level, n, startTime);
 
   const varNames = Array.from(Equations.extractVariables(assignment.equations));
 
@@ -71,8 +70,8 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   const justFinished = assignment.done && justCheckedOrShowing;
   const justWon = justFinished && assignment.answeredCorrectly;
   const canCheckAnswers = (
-    !transitioning && !assignment.done
-    && Equations.areAllVariablesAnswered(assignment.equations, answers)
+    !transitioning && !assignment.done &&
+    Equations.areAllVariablesAnswered(assignment.equations, answers)
   );
 
   const classes = [];
@@ -103,16 +102,18 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
         ) }
 
         {
-          assignment.done ? <pre className="equation">{ assignment.attemptText }</pre> : (
-            <textarea
-              className="equation"
-              onChange={saveAttemptText}
-              autoFocus
-              ref={textAreaRef}
-              value={storedAttemptText}
-              disabled={assignment.done}
-            />
-          )
+          assignment.done
+            ? <pre className="equation">{ assignment.attemptText }</pre>
+            : (
+              <textarea
+                className="equation"
+                onChange={saveAttemptText}
+                autoFocus
+                ref={textAreaRef}
+                value={storedAttemptText}
+                disabled={assignment.done}
+              />
+            )
         }
 
         <div className="answers">
@@ -152,7 +153,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
             </Link>
           ) }
 
-          { nextAssignment && (
+          { assignment.done && (
             <button
               type="button"
               onClick={goToNext}
@@ -173,7 +174,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
         </div>
       </main>
       <footer>
-        <p>Score: { appState.score }</p>
+        <p>Score: { appState.userState.score }</p>
         <LevelIndicator
           appState={appState}
           justWonAStar={justWon && assignment.challenge}
@@ -190,11 +191,10 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
   }
 
   function doGoToNext() {
-    if (!nextAssignment) return;
-
     clearState();
     resetInteractionPauses();
     setStartTime(Date.now());
+    const nextAssignment = appState.getNextAssignment(n);
     history.push(`/eq/${nextAssignment.level}/${nextAssignment.n}`);
   }
 
@@ -228,7 +228,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
       assignment.interactionPauses = pauses;
     }
     setAskedToCheckOrShowAnswers(true);
-    assignment.save();
+    save();
   }
 
   function showAnswers() {
@@ -238,7 +238,7 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
     assignment.done = true;
     assignment.doneTime = Date.now();
     assignment.interactionPauses = pauses;
-    assignment.save();
+    save();
     deleteStoredAttemptText();
     clearState();
     setAskedToCheckOrShowAnswers(true);
@@ -255,9 +255,11 @@ export default function SolveAssignment(props: SolveAssignmentProps): JSX.Elemen
       <div className="answer" key={varName}>
         { varName }
         { ' = ' }
-        { assignment.done ? assignment.solution[varName] : (
-          <input type="number" onChange={(e) => setAnswer(varName, e.target.valueAsNumber)} />
-        ) }
+        { assignment.done
+          ? assignment.solution[varName]
+          : (
+            <input type="number" onChange={(e) => setAnswer(varName, e.target.valueAsNumber)} />
+          ) }
       </div>
     );
   }
