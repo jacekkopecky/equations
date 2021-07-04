@@ -74,7 +74,11 @@ export function useLocalStorage<T>(
       const valueToStore = value instanceof Function ? value(oldValue) : value;
 
       // Save to local storage (remove if)
-      window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      if (valueToStore != null) {
+        window.localStorage.setItem(key, JSON.stringify(valueToStore));
+      } else {
+        window.localStorage.removeItem(key);
+      }
 
       return valueToStore;
     });
