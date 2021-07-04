@@ -4,7 +4,6 @@ import cors from 'cors';
 import api from './api';
 
 const app = express();
-export { app as bookListAPI };
 
 app.use(cors());
 
@@ -17,9 +16,6 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => { res.send('function running'); });
 
-if (process.env.TESTING && process.env.DELAY) {
-  const delay = parseInt(process.env.DELAY) || 0;
-  app.use((req, res, next) => { setTimeout(next, delay); });
-}
-
 app.use('/api', api);
+
+export { app as bookListAPI };
