@@ -18,4 +18,4 @@ app.get('/', (req, res) => { res.send('function running'); });
 
 app.use('/api', api);
 
-export { app as bookListAPI };
+export { app as equationsAPI };

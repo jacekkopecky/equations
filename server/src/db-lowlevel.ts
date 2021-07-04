@@ -2,7 +2,7 @@ import { Datastore, Transaction, Entity } from '@google-cloud/datastore';
 
 import { UserInfo, Assignment } from '../../src/js/shared-with-server/types';
 
-const datastore = new Datastore({ namespace: 'v1' });
+const datastore = new Datastore({ namespace: 'equations-v1' });
 const KIND = 'UserState';
 
 interface DBUserState {
