@@ -10,7 +10,7 @@ export function onlyText(f: LevelFunction): LevelFunction {
   return (rng) => {
     const retval = f(rng);
     retval.onlyText = true;
-    retval.text?.push('', 'Part of the challenge is to write the first two equations.');
+    retval.text?.push('', 'Part of the challenge is to write down the equations.');
     return retval;
   };
 }

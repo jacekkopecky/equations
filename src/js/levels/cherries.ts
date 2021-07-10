@@ -1,5 +1,5 @@
 /*
- * 3-variable sets of two equations
+ * 3-variable sets of three equations
  */
 
 import image from '../../../images/cherries.png';
