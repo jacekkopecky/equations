@@ -33,6 +33,7 @@ SOLVABILITY_ITERATIONS=10000 jest tests/levels.test.ts
   - tutorial levels don't get selected (as easy) when we're above this level
 - initial tutorial
   - explain level progress (gathering stars from doing challenges)
+- the tutorial also needs to explain how the equations are created from the text of the assignment – algebra actually comes later after children do these assignments without thinking of them as variables
 
 - move it to bananas.jacek.cz
 
